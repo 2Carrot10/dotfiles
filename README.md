@@ -1,9 +1,4 @@
-This repo currently uses vim instead of nvim file path to store configs for nvim.
-That is because nvim was incorrectly interpreted as a submodule in github.
-It will be switched back shortly.
-To use this repo, first change vim to nvim using the command
-'''
-mv vim nvim
-'''
-
-when in the root of the repo
+This repo contains the main dotfiles I use on Arch Linux with AwesomeWM.
+The locations of all configuration folders can be set up automatically with the `applyConfig.sh` script, although make sure you read the logs carfuly before aproving each change so preexisting files do not get deleted.
+Instead of cloning each folder into the correct location, the `applyConfig.sh` script creates symlinks so you can edit and store all your dotfiles from one folder.
+You will still need to install the software that uses each config.
