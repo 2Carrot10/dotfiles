@@ -12,11 +12,13 @@ return {
       require("neorg").setup {
         load = {
           ["core.defaults"] = {},
+					["core.summary"] = {},
           ["core.concealer"] = {},
           ["core.dirman"] = {
             config = {
               workspaces = {
                 notes = "~/notes",
+								programmingClass = "~/Documents/programmingClass/notes"
               },
               default_workspace = "notes",
             },
