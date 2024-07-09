@@ -21,8 +21,13 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 
+local lain          = require("lain")
+--local menubar       = require("menubar")
+local freedesktop   = require("freedesktop")
+local hotkeys_popup = require("awful.hotkeys_popup")
+local mytable       = awful.util.table or gears.table -- 4.{0,1} compatibility
 
-    require("collision")()
+require("collision")()
 
 
 -- {{{ Error handling
@@ -39,7 +44,50 @@ end)
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init("/home/twocarrot10/.config/awesome/default/theme.lua")
+--beautiful.init("/home/twocarrot10/.config/awesome/default/theme.lua")
+
+local function run_once(cmd_arr)
+    for _, cmd in ipairs(cmd_arr) do
+        awful.spawn.with_shell(string.format("pgrep -u $USER -fx '%s' > /dev/null || (%s)", cmd, cmd))
+    end
+end
+
+run_once({ "urxvtd", "unclutter -root" }) -- comma-separated entries
+
+local themes = {
+    "blackburn",       -- 1
+    "copland",         -- 2
+    "dremora",         -- 3
+    "holo",            -- 4
+    "multicolor",      -- 5
+    "powerarrow",      -- 6
+    "powerarrow-dark", -- 7
+    "rainbow",         -- 8
+    "steamburn",       -- 9
+    "vertex"           -- 10
+}
+
+local chosen_theme = themes[7]
+beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme))
+
+
+if beautiful.at_screen_connect then
+
+naughty.notification {
+        urgency = "critical",
+        title   = "connected",
+        message = message
+    }
+
+else
+    naughty.notification {
+        urgency = "critical",
+        title   = "beuatiful not screen connect \n" .. string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme),
+        message = message
+    }
+end
+
+
 
 -- This is used later as the default terminal and editor to run.
 terminal = "kitty"
@@ -53,6 +101,7 @@ editor_cmd = terminal .. " -e " .. editor
 -- I suggest you to remap Mod4 to another key using xmodmap or other tools.
 -- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
+altkey = "Mod1"
 -- }}}
 
 -- {{{ Menu
@@ -100,6 +149,17 @@ tag.connect_signal("request::default_layouts", function()
 end)
 -- }}}
 
+
+lain.layout.termfair.nmaster           = 3
+lain.layout.termfair.ncol              = 1
+lain.layout.termfair.center.nmaster    = 3
+lain.layout.termfair.center.ncol       = 1
+lain.layout.cascade.tile.offset_x      = 2
+lain.layout.cascade.tile.offset_y      = 32
+lain.layout.cascade.tile.extra_padding = 5
+lain.layout.cascade.tile.nmaster       = 5
+lain.layout.cascade.tile.ncol          = 2
+
 -- {{{ Wallpaper
 screen.connect_signal("request::wallpaper", function(s)
     awful.wallpaper {
@@ -132,13 +192,12 @@ screen.connect_signal("request::desktop_decoration", function(s)
     -- Each screen has its own tag table.
     awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
 
-myTextLayout = wibox.widget{
-    markup = "This <i>is</i> a <b>" .. awful.layout.getname (awful.layout.get(s)) .. "</b>!!!",
-    halign = "center",
-    valign = "center",
-    widget = wibox.widget.textbox
-}
-
+	myTextLayout = wibox.widget{
+			markup = "This <i>is</i> a <b>" .. awful.layout.getname (awful.layout.get(s)) .. "</b>!!!",
+			halign = "center",
+			valign = "center",
+			widget = wibox.widget.textbox
+	}
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -192,6 +251,7 @@ myTextLayout = wibox.widget{
     }
 
     -- Create the wibox
+	--[[
     s.mywibox = awful.wibar {
         position = "bottom",
         screen   = s,
@@ -214,8 +274,9 @@ myTextLayout = wibox.widget{
             },
         }
     }
+		--]]
 end)
-
+--]]
 -- }}}
 
 -- {{{ Mouse bindings
@@ -266,6 +327,24 @@ awful.keyboard.append_global_keybindings({
               {description = "view next", group = "tag"}),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
               {description = "go back", group = "tag"}),
+
+
+    -- ALSA volume control
+    awful.key({ altkey }, "Up",
+        function ()
+            os.execute(string.format("pamixer -i 5"))
+        end,
+        {description = "volume up", group = "hotkeys"}),
+    awful.key({ altkey }, "Down",
+        function ()
+            os.execute(string.format("pamixer -d 5"))
+        end,
+        {description = "volume down", group = "hotkeys"}),
+    awful.key({ altkey }, "m",
+        function ()
+            os.execute(string.format("pamixer -t"))
+        end,
+        {description = "toggle mute", group = "hotkeys"}),
 })
 
 -- Focus related keybindings
@@ -581,3 +660,9 @@ end)
     c:activate { context = "mouse_enter", raise = false }
 end)
 ]]--
+
+
+
+--awful.screen.connect_for_each_screen(function(s) end)
+
+awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) end)
