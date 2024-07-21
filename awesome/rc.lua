@@ -17,6 +17,7 @@ local naughty = require("naughty")
 local ruled = require("ruled")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
+local fancytaglist = require("fancy-taglist")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
@@ -68,25 +69,7 @@ local themes = {
 }
 
 local chosen_theme = themes[7]
-beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme))
-
-
-if beautiful.at_screen_connect then
-
-naughty.notification {
-        urgency = "critical",
-        title   = "connected",
-        message = message
-    }
-
-else
-    naughty.notification {
-        urgency = "critical",
-        title   = "beuatiful not screen connect \n" .. string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme),
-        message = message
-    }
-end
-
+beautiful.init(string.format("%s/.config/awesome/theme/theme.lua", os.getenv("HOME")))
 
 
 -- This is used later as the default terminal and editor to run.
@@ -113,14 +96,6 @@ myawesomemenu = {
    { "restart", awesome.restart },
    { "quit", function() awesome.quit() end },
 }
-
-mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                    { "open terminal", terminal }
-                                  }
-                        })
-
-mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
-                                     menu = mymainmenu })
 
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
@@ -214,32 +189,27 @@ screen.connect_signal("request::desktop_decoration", function(s)
         }
     }
 
-    -- Create a taglist widget
-    s.mytaglist = awful.widget.taglist {
-        screen  = s,
-        filter  = awful.widget.taglist.filter.all,
-        buttons = {
-            awful.button({ }, 1, function(t) t:view_only() end),
-            awful.button({ modkey }, 1, function(t)
-                                            if client.focus then
-                                                client.focus:move_to_tag(t)
-                                            end
-                                        end),
-            awful.button({ }, 3, awful.tag.viewtoggle),
-            awful.button({ modkey }, 3, function(t)
-                                            if client.focus then
-                                                client.focus:toggle_tag(t)
-                                            end
-                                        end),
-            awful.button({ }, 4, function(t) awful.tag.viewprev(t.screen) end),
-            awful.button({ }, 5, function(t) awful.tag.viewnext(t.screen) end),
-        }
-    }
+    -- 
 
     -- Create a tasklist widget
+		mytaglist = fancytaglist.new({
+screen  = s,
+        filter  = awful.widget.tasklist.filter.currenttags,
+        buttons = {
+            awful.button({ }, 1, function (c)
+                c:activate { context = "tasklist", action = "toggle_minimization" }
+            end),
+            awful.button({ }, 3, function() awful.menu.client_list { theme = { width = 250 } } end),
+            awful.button({ }, 4, function() awful.client.focus.byidx(-1) end),
+            awful.button({ }, 5, function() awful.client.focus.byidx( 1) end),
+
+		}
+	})
+	s.mytaglist = mytaglist
+	--[[
     s.mytasklist = awful.widget.tasklist {
         screen  = s,
-        filter  = awful.widget.tasklist.filter.currenttags,
+        filter  = fancytaglist.fancytaglist(),--awful.widget.tasklist.filter.currenttags,
         buttons = {
             awful.button({ }, 1, function (c)
                 c:activate { context = "tasklist", action = "toggle_minimization" }
@@ -249,7 +219,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
             awful.button({ }, 5, function() awful.client.focus.byidx( 1) end),
         }
     }
-
+--]]
     -- Create the wibox
 	--[[
     s.mywibox = awful.wibar {
@@ -279,9 +249,33 @@ end)
 --]]
 -- }}}
 
+
+mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+                                    { "open terminal", terminal }
+                                  }
+                        })
+
+mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
+                                     menu = mymainmenu })
+
 -- {{{ Mouse bindings
-awful.mouse.append_global_mousebindings({
-    awful.button({ }, 3, function () mymainmenu:toggle() end),
+
+
+
+awful.mouse.append_global_mousebindings(
+	{
+	--[[
+    awful.button({ }, 3, function () wibox {
+    width = 200,
+    height = 50,
+    ontop = true,
+    visible = true,
+    bg = beautiful.bg_normal,
+    widget = fancytaglist
+}
+ end),
+ ]]
+		--awful.button({ }, 3, function () mymainmenu:toggle() end),
     awful.button({ }, 4, awful.tag.viewprev),
     awful.button({ }, 5, awful.tag.viewnext),
 })
@@ -317,6 +311,8 @@ awful.keyboard.append_global_keybindings({
               {description = "run prompt", group = "launcher"}),
     awful.key({ modkey }, "p", function() menubar.show() end,
               {description = "show the menubar", group = "launcher"}),
+		awful.key({ modkey }, "d", function () os.execute(string.format("rofi -show drun -display-drun ''")) end,
+						 {description = "launch program using rofi", group = "launcher"})
 })
 
 -- Tags related keybindings
@@ -595,9 +591,11 @@ ruled.client.connect_signal("request::rules", function()
 end)
 -- }}}
 
---[[
+-- [[
 -- {{{ Titlebars
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
+
+--[[
 client.connect_signal("request::titlebars", function(c)
     -- buttons for the titlebar
     local buttons = {

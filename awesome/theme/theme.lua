@@ -3,6 +3,8 @@ local gears = require("gears")
 local lain  = require("lain")
 local awful = require("awful")
 local wibox = require("wibox")
+local beautiful = require("beautiful")
+local cr = require("lgi").cairo
 local dpi   = require("beautiful.xresources").apply_dpi
 
 local os = os
@@ -12,18 +14,19 @@ local theme                                     = {}
 
 
 local separators = lain.util.separators
-theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/powerarrow-dark"
+theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/theme"
 theme.wallpaper                                 = theme.dir .. "/wall.png"
 theme.font                                      = "Terminus 9"
 theme.fg_normal                                 = "#DDDDFF"
 theme.fg_focus                                  = "#EA6F81"
 theme.fg_urgent                                 = "#CC9393"
-theme.bg_normal                                 = "#1A1A1A"
-theme.bg_focus                                  = "#313131"
+
+theme.bg_normal                                 = "#202129"
+theme.bg_focus                                  = "#000000"--"#b1bcd7"
 theme.bg_urgent                                 = "#1A1A1A"
-theme.border_width                              = dpi(1)
-theme.border_normal                             = "#3F3F3F"
-theme.border_focus                              = "#7F7F7F"
+theme.border_width                              = dpi(2)
+theme.border_normal                             = "#484755"
+theme.border_focus                              = "#b1bcd7"
 theme.border_marked                             = "#CC9393"
 theme.tasklist_bg_focus                         = "#1A1A1A"
 theme.titlebar_bg_focus                         = theme.bg_focus
@@ -65,7 +68,7 @@ theme.widget_mail                               = theme.dir .. "/icons/mail.png"
 theme.widget_mail_on                            = theme.dir .. "/icons/mail_on.png"
 theme.tasklist_plain_task_name                  = true
 theme.tasklist_disable_icon                     = true
-theme.useless_gap                               = dpi(0)
+theme.useless_gap                               = dpi(3)
 theme.titlebar_close_button_focus               = theme.dir .. "/icons/titlebar/close_focus.png"
 theme.titlebar_close_button_normal              = theme.dir .. "/icons/titlebar/close_normal.png"
 theme.titlebar_ontop_button_focus_active        = theme.dir .. "/icons/titlebar/ontop_focus_active.png"
@@ -92,11 +95,19 @@ local keyboardlayout = awful.widget.keyboardlayout:new()
 -- Textclock
 local clockicon = wibox.widget.imagebox(theme.widget_clock)
 local clock = awful.widget.watch(
-    "date +'%a %d %b %R'", 60,
+    "date +'%y-%m-%d %R'", 60,
     function(widget, stdout)
         widget:set_markup(" " .. markup.font(theme.font, stdout))
     end
 )
+--[[
+local clock = awful.widget.watch(
+    "acpi", 60,
+    function(widget, stdout)
+        widget:set_markup(" " .. markup.font(theme.font, stdout))
+    end
+)
+]]-- power_time_left
 
 -- Calendar
 theme.cal = lain.widget.cal({
@@ -258,62 +269,93 @@ function theme.at_screen_connect(s)
             },
     }
 	]]--
- s.mywibox = awful.wibar {
-        position = "bottom",
+-- [[
+ s.wibox =  awful.popup {-- wibox
+    width = 200,
+    height = 200,
+		x = 100,
+		expand = "outside",
+		y = 100,
+    visible = true,
+    bg = beautiful.bg_normal,
+widget = s.mytaglist--clock 
+}
+--]]--
+
+ s.mywibox = awful.wibox {
+
+				expand = "outside",
+        position = "top",
         screen   = s,
+  --shape    = gears.shape.rounded_bar,
 				height = 40,
-        widget   = {
-            layout = wibox.layout.align.horizontal,
+				ontop    = true,
+				--stretch = true,
+
+	}
+
+	s.mywibox.widget = {
+ layout = wibox.layout.align.horizontal,
+			-- [[
+widget = wibox.container.background,
+    shape_border_width = 30,
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
-            spr,
+            --spr,
             s.mytaglist,
-            s.mypromptbox,
+            --s.mypromptbox,
+border_width = 20,
             spr,
-        },
-        s.mytasklist, -- Middle widget
+        }
+    }
+end
+
+
+        --s.mytasklist, -- Middle widget
+			--[[
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             wibox.widget.systray(),
             keyboardlayout,
-            spr,
-            arrl_ld,
+            --spr,
+            --arrl_ld,
             --wibox.container.background(mpdicon, theme.bg_focus),
             --wibox.container.background(theme.mpd.widget, theme.bg_focus),
-            arrl_dl,
+            --arrl_dl,
             volicon,
+						power_time_left,
             theme.volume.widget,
-            arrl_ld,
+            --arrl_ld,
             --wibox.container.background(mailicon, theme.bg_focus),
             --wibox.container.background(theme.mail.widget, theme.bg_focus),
-            arrl_dl,
+            --arrl_dl,
             memicon,
             mem.widget,
-            arrl_ld,
+            --arrl_ld,
             wibox.container.background(cpuicon, theme.bg_focus),
             wibox.container.background(cpu.widget, theme.bg_focus),
-            arrl_dl,
+            --arrl_dl,
             tempicon,
             temp.widget,
-            arrl_ld,
+            --arrl_ld,
             --wibox.container.background(fsicon, theme.bg_focus),
             --wibox.container.background(theme.fs.widget, theme.bg_focus),
-            arrl_dl,
+            --arrl_dl,
             baticon,
             bat.widget,
-            arrl_ld,
+            --arrl_ld,
             wibox.container.background(neticon, theme.bg_focus),
             wibox.container.background(net.widget, theme.bg_focus),
-            arrl_dl,
+            --arrl_dl,
 						clockicon,
             clock,
             spr,
-            arrl_ld,
+            --arrl_ld,
             wibox.container.background(s.mylayoutbox, theme.bg_focus),
         },
-    }
-    }
-end
+	--]]
+
+
 --[[
 function theme.at_screen_connect(s)
     -- Quake application
