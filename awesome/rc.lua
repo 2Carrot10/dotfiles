@@ -193,7 +193,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
 
     -- Create a tasklist widget
 		mytaglist = fancytaglist.new({
-screen  = s,
+				screen  = s,
         filter  = awful.widget.tasklist.filter.currenttags,
         buttons = {
             awful.button({ }, 1, function (c)

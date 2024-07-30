@@ -1,3 +1,4 @@
+local theme_assets = require("beautiful.theme_assets")
 local naughty = require("naughty")
 local gears = require("gears")
 local lain  = require("lain")
@@ -6,6 +7,8 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local cr = require("lgi").cairo
 local dpi   = require("beautiful.xresources").apply_dpi
+local hotkeys_popup = require("awful.hotkeys_popup")
+require("awful.hotkeys_popup.keys")
 
 local os = os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
@@ -17,13 +20,14 @@ local separators = lain.util.separators
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/theme"
 theme.wallpaper                                 = theme.dir .. "/wall.png"
 theme.font                                      = "Terminus 9"
-theme.fg_normal                                 = "#DDDDFF"
-theme.fg_focus                                  = "#EA6F81"
-theme.fg_urgent                                 = "#CC9393"
+-- foreground is just text
+theme.fg_normal                                 = "#FFFFFF" 
+theme.fg_focus                                  = "#FFFFFF"
+theme.fg_urgent                                 = "#09090a"
 
 theme.bg_normal                                 = "#202129"
-theme.bg_focus                                  = "#000000"--"#b1bcd7"
-theme.bg_urgent                                 = "#1A1A1A"
+theme.bg_focus                                  = "#09090a"
+theme.bg_urgent                                 = "#D43B3B"
 theme.border_width                              = dpi(2)
 theme.border_normal                             = "#484755"
 theme.border_focus                              = "#b1bcd7"
@@ -90,6 +94,10 @@ theme.titlebar_maximized_button_normal_inactive = theme.dir .. "/icons/titlebar/
 
 local markup = lain.util.markup
 
+
+theme.awesome_icon = theme.dir .. "/icons/awesome_logo.png"
+
+
 local keyboardlayout = awful.widget.keyboardlayout:new()
 
 -- Textclock
@@ -110,6 +118,17 @@ local clock = awful.widget.watch(
 ]]-- power_time_left
 
 -- Calendar
+
+
+local separator =  wibox.widget {
+		orientation = 'vertical',
+		forced_height = dpi(10),
+		forced_width = dpi(30),
+		span_ratio = 0.55,
+		widget = wibox.widget.separator
+	}
+
+--[[
 theme.cal = lain.widget.cal({
     attach_to = { clock },
     notification_preset = {
@@ -118,6 +137,7 @@ theme.cal = lain.widget.cal({
         bg   = theme.bg_normal
     }
 })
+]]--
 
 -- Mail IMAP check
 local mailicon = wibox.widget.imagebox(theme.widget_mail)
@@ -270,30 +290,69 @@ function theme.at_screen_connect(s)
     }
 	]]--
 -- [[
+
+
+
+
+-- {{{ Menu
+-- Create a launcher widget and a main menu
+myawesomemenu = {
+   { "hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
+   { "manual", terminal .. " -e man awesome" },
+   { "edit config", editor_cmd .. " " .. awesome.conffile },
+   { "restart", awesome.restart },
+   { "quit", function() awesome.quit() end },
+}
+
+mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+                                    { "open terminal", terminal }
+                                  }
+                        })
+
+mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
+                                     menu = mymainmenu })
+
+
  s.wibox =  awful.popup {-- wibox
+		position = "top",
     width = 200,
-    height = 200,
+		border_width = 10,
+		margins = dpi(100),
 		x = 100,
-		expand = "outside",
+		--expand = "outside",
 		y = 100,
     visible = true,
-    bg = beautiful.bg_normal,
-widget = s.mytaglist--clock 
+widget = wibox.widget {
+			mylauncher, separator, mytaglist, separator, clock,
+    layout  = wibox.layout.fixed.horizontal,
+		},
+    border_color = theme.bg_normal
+,
+type = 'dock',
+		screen = s,
+		ontop = true,
+		minimum_height = 40,
+		maximum_height = 40,
+		placement = awful.placement.bottom,
+		shape = gears.shape.rectangle,
+		bg = beautiful.normal,
+  	--shape  = gears.shape.partially_rounded_rect(cr, 70, 70),--gears.shape.rounded_bar,
+		--clock--widget = {nil,s.mytaglist,nil} --clock
 }
---]]--
 
+	-- [[
+--[[
  s.mywibox = awful.wibox {
 
-				expand = "outside",
-        position = "top",
+				--expand = "outside",
+        --position = "top",
         screen   = s,
   --shape    = gears.shape.rounded_bar,
 				height = 40,
-				ontop    = true,
+				--ontop    = true,
 				--stretch = true,
 
 	}
-
 	s.mywibox.widget = {
  layout = wibox.layout.align.horizontal,
 			-- [[
@@ -308,8 +367,8 @@ border_width = 20,
             spr,
         }
     }
+--]]
 end
-
 
         --s.mytasklist, -- Middle widget
 			--[[

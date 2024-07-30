@@ -4,4 +4,4 @@ Instead of cloning each folder into the correct location, the `applyConfig.sh` s
 You will still need to install the software that uses each config.
 
 Uses this color pallete:
-https://colorkit.co/palette/b1bcd7-484755-202129-222640/
+https://colorkit.co/palette/d43b3b-b1bcd7-484755-202129-09090a-222640/
