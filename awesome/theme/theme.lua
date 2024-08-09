@@ -11,24 +11,22 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 require("awful.hotkeys_popup.keys")
 
 local os = os
-local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
-
 
 local separators = lain.util.separators
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/theme"
 theme.wallpaper                                 = theme.dir .. "/wall.png"
 theme.font                                      = "Terminus 9"
 -- foreground is just text
-theme.fg_normal                                 = "#FFFFFF" 
+theme.fg_normal                                 = "#FFFFFF"
 theme.fg_focus                                  = "#FFFFFF"
 theme.fg_urgent                                 = "#09090a"
 
 theme.bg_normal                                 = "#202129"
 theme.bg_focus                                  = "#09090a"
 theme.bg_urgent                                 = "#D43B3B"
-theme.border_width                              = dpi(2)
+theme.border_width                              = dpi(1)
 theme.border_normal                             = "#484755"
 theme.border_focus                              = "#b1bcd7"
 theme.border_marked                             = "#CC9393"
@@ -96,7 +94,7 @@ local markup = lain.util.markup
 
 
 theme.awesome_icon = theme.dir .. "/icons/awesome_logo.png"
-
+theme.gap_single_client = false
 
 local keyboardlayout = awful.widget.keyboardlayout:new()
 
@@ -309,36 +307,39 @@ mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesom
                                   }
                         })
 
+editconfig = {
+		{ "edit config", editor_cmd .. " " .. awesome.conffile }
+	}
+
+
 mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
-                                     menu = mymainmenu })
+                                     editconfig}) -- menu = mymainmenu
 
 
- s.wibox =  awful.popup {-- wibox
+	s.wibox =  awful.popup {-- wibox
 		position = "top",
-    width = 200,
+		width = 200,
 		border_width = 10,
-		margins = dpi(100),
-		x = 100,
+		border_color = theme.bg_normal,--theme.border_focus,
 		--expand = "outside",
-		y = 100,
-    visible = true,
-widget = wibox.widget {
-			mylauncher, separator, mytaglist, separator, clock,
-    layout  = wibox.layout.fixed.horizontal,
-		},
-    border_color = theme.bg_normal
-,
-type = 'dock',
+		visible = true,
+		type = 'dock',
 		screen = s,
 		ontop = true,
-		minimum_height = 40,
-		maximum_height = 40,
+		minimum_height = 30,
+		maximum_height = 30,
 		placement = awful.placement.bottom,
 		shape = gears.shape.rectangle,
 		bg = beautiful.normal,
-  	--shape  = gears.shape.partially_rounded_rect(cr, 70, 70),--gears.shape.rounded_bar,
+		--shape  = gears.shape.partially_rounded_rect(cr, 70, 70),--gears.shape.rounded_bar,
 		--clock--widget = {nil,s.mytaglist,nil} --clock
-}
+		widget = wibox.widget {
+			mylauncher, separator, mytaglist, separator, clock,
+			layout  = wibox.layout.fixed.horizontal,
+			border_width = 100,
+			border_color = theme.bg_urgent,
+		}
+	}
 
 	-- [[
 --[[
