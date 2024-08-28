@@ -6,7 +6,7 @@ read -p "Continue installation? (Y/N):" confirm && [[ $confirm == [yY][eE][sS] |
 printf "Running command: git clone https://github.com/2Carrot10/dotfiles.git\n"
 git clone "https://github.com/2Carrot10/dotfiles.git"
 printf "The repo is now cloned! Would you like to automatically continue to setup?"
-printf "\nTo do so, you must have 'python' as an environment variable."
+printf "\nTo do so, you must have 'python' as an environment variable.\n"
 read -p "Start setup? (Y/N):" confirm && [[ $confirm == [yY][eE][sS] || $confirm == [yY] ]] || exit
-python setup.py
+python dotfiles/setup.py
 
