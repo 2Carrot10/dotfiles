@@ -6,5 +6,5 @@ cloning each folder into the correct location, the `setup.sh` script creates
 symlinks so you can edit all your dotfiles from one folder. You will still need
 to install the software that uses each config. 
 
-To install these dotfiles, either download this GitHub repo or run this command:
-    `curl -s https://github.com/2Carrot10/dotfiles/blob/master/install.sh | bash`
+To install these dotfiles, either download this GitHub repo or run this command in the desired location:
+`curl -s https://raw.githubusercontent.com/2Carrot10/dotfiles/master/install.sh | bash`
