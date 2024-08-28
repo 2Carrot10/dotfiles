@@ -45,13 +45,13 @@ vim.api.nvim_set_keymap("n", "<leader>tf", "<cmd>tabnew %<CR>", { desc = "Open c
 
 vim.api.nvim_set_keymap("n", "<leader>lh", "<cmd>lua vim.lsp.buf.hover()<CR>", { desc = "Gives information about current function"})
 
-vim.api.nvim_set_keymap("n", "<leader>ln", "<cmd>lua vim.lsp.buf.rename()<CR>", { desc = "Gives information about current function"})
+vim.api.nvim_set_keymap("n", "<leader>ln", "<cmd>lua vim.lsp.buf.rename()<CR>", { desc = "Rename function"})
 
-vim.api.nvim_set_keymap("n", "<leader>ld", "<cmd>lua vim.lsp.buf.declaration()<CR>", { desc = "Gives information about current function"})
+vim.api.nvim_set_keymap("n", "<leader>ld", "<cmd>lua vim.lsp.buf.declaration()<CR>", { desc = "Go to decleration"})
 
-vim.api.nvim_set_keymap("n", "<leader>lr", "<cmd>lua vim.lsp.buf.references()<CR>", { desc = "Gives information about current function"})
+vim.api.nvim_set_keymap("n", "<leader>lr", "<cmd>lua vim.lsp.buf.references()<CR>", { desc = "Go to references"})
 
-vim.api.nvim_set_keymap("n", "<leader>li", "<cmd>=vim.lsp.buf<CR>", { desc = "Gives information about current function"})
+vim.api.nvim_set_keymap("n", "<leader>li", "<cmd>=vim.lsp.buf<CR>", { desc = "See all lsp commands"})
 
 vim.keymap.set("n", "<leader>sv", "<C-w>v", { desc = "Split window vertically" }) -- split window vertically
 vim.keymap.set("n", "<leader>sh", "<C-w>s", { desc = "Split window horizontally" }) -- split window horizontally

@@ -28,7 +28,7 @@
       ensure_installed = {
         "lua_ls",
 				"clangd",
-				"pylsp",
+				--"pylsp",
 				--"java_language_server"
 				"jdtls"
       },
