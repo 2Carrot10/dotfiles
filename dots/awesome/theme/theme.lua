@@ -388,7 +388,7 @@ awful.popup {
 
 
 	mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
-		command = function() os.execute("kitty -e htop") end
+		menu=mymainmenu--command = function() os.execute("kitty -e htop") end
 
 	}
 	)
@@ -412,7 +412,7 @@ awful.popup {
 		--shape  = gears.shape.partially_rounded_rect(cr, 70, 70),--gears.shape.rounded_bar,
 		--clock--widget = {nil,s.mytaglist,nil} --clock
 		widget = wibox.widget {
-			launchbutton, separator, mytaglist, separator, clock,
+			mylauncher, separator, mytaglist, separator, clock,
 			layout  = wibox.layout.fixed.horizontal,
 			border_width = 100,
 			border_color = theme.bg_urgent,

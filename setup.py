@@ -8,6 +8,7 @@ noRegEx = re.compile("n(o)?", re.IGNORECASE)
 
 def confirmResponse(question):
     response = input(question)
+    print("\n")
     if yesRegEx.match(response):
         return True
     if not noRegEx.match(response):
