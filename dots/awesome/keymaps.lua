@@ -1,4 +1,3 @@
-
 local awful = require("awful")
 local hotkeys_popup = require("awful.hotkeys_popup")
 
@@ -22,9 +21,9 @@ awful.keyboard.append_global_keybindings({
                   }
               end,
               {description = "lua execute prompt", group = "awesome"}),
-    awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
+    awful.key({ modkey,           }, "Return", function () awful.spawn(Terminal) end,
               {description = "open a terminal", group = "launcher"}),
-    awful.key({ modkey,           }, "b", function () awful.spawn(browser) end,
+    awful.key({ modkey,           }, "b", function () awful.spawn(Browser) end,
               {description = "open a browser", group = "launcher"}),
     awful.key({ modkey },            "r",     function () awful.screen.focused().mypromptbox:run() end,
               {description = "run prompt", group = "launcher"}),

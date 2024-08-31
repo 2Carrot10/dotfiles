@@ -3,7 +3,6 @@ import re
 import os
 import json
 
-
 yesRegEx = re.compile("y(es)?", re.IGNORECASE)
 noRegEx = re.compile("n(o)?", re.IGNORECASE)
 
@@ -31,7 +30,7 @@ def excecuteCommand(command):
     subprocess.run(command, shell = True)
 
 def confirmCommand(command):
-    if confirmResponse(f"Would you like to excecute this command: '{command}' (Y/N):"):
+    if confirmResponse(f"Would you like to excecute this command: '{command}' (Y/N): "):
         excecuteCommand(command)
     else:
         print("Command will not be excecuted.")
@@ -48,24 +47,16 @@ def linkFiles(name):
            return 
 
     with open(locationConfPath) as locationFile:
-        print(f"""Current dotfile settings from {bcolors.OKBLUE}{configFileName}{bcolors.ENDC}:""")
+        print(f"""Current dotfile settings from {bcolors.OKBLUE}{configFileName}{bcolors.ENDC}: """)
         print(locationFile.read())
         if not automatic:
-            goToNext = False
-            while not goToNext:
-                response = input("Would you like to go through with the linking prosses using these settings? (Y/N): ")
-                if yesRegEx.match(response):
-                    goToNext = True
-                elif noRegEx.match(response):
-                    continue
-                else:
-                    print(f"Error! Can not understand {response}.")
-                    goToNext = False
+            if not confirmResponse("Would you like to go through with the linking prosses using these settings? (Y/N): "):
+                return 
         locationFile.seek(0)
         data = json.load(locationFile)
         target_files = os.path.join(os.getcwd(), name, data["target_files"])
         desired_endpoint = os.path.expanduser(data["desired_endpoint"])
-        endpoint_with_name = os.path.join(desired_endpoint, name)
+        endpoint_with_name = os.path.join(desired_endpoint, os.path.basename(os.path.normpath(target_files)))
         if os.path.islink(endpoint_with_name):
             print(f"""{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is a link.
 It must be removed before the new dotfiles can be added.""")
@@ -137,11 +128,12 @@ Please confirm that you know what you are doing!""")
     else:
         print(f"Error! Can not understand {response}.")
 
-directory = os.getcwd()
+directory = os.path.join(os.getcwd(), "dots/")
 
 print(f"Locating all directories within {bcolors.OKBLUE}{directory}{bcolors.ENDC} for dotfiles")
 
 for name in os.listdir(directory):
-    if os.path.isdir(name):
-        linkFiles(name)
+    fullName = os.path.join(directory, name)
+    if os.path.isdir(fullName):
+        linkFiles(fullName)
 print(f"{bcolors.UNDERLINE}Setup complete!{bcolors.ENDC} Thank you for installing these dotfiles.")

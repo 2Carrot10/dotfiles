@@ -1,7 +1,7 @@
 local beautiful = require("beautiful")
 local awful = require("awful")
 beautiful.init(string.format("%s/.config/awesome/theme/theme.lua", os.getenv("HOME")))
-require("rcTemp")
+require("setup")
 require("keymaps")
 --local logout_popup = require("theme.layout")
 
