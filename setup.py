@@ -6,16 +6,6 @@ import json
 yesRegEx = re.compile("y(es)?", re.IGNORECASE)
 noRegEx = re.compile("n(o)?", re.IGNORECASE)
 
-automatic = False
-
-def handleCommand(response):
-    if automatic:
-        excecuteCommand(response)
-        return True
-    else:
-        confirmCommand(response)
-        return False
-
 def confirmResponse(question):
     response = input(question)
     if yesRegEx.match(response):
@@ -42,16 +32,14 @@ def linkFiles(name):
         return
     print(f"\n{bcolors.BOLD}{"━" * 50}{bcolors.ENDC}\n")
     print(f"{bcolors.BOLD}Located the following dotfiles: {bcolors.OKBLUE}{name}{bcolors.ENDC}")
-    if not automatic:
-        if not confirmResponse("Would you like to add these dotfiles? (Y/N): "):
-           return 
+    if not confirmResponse("Would you like to add these dotfiles? (Y/N): "):
+       return 
 
     with open(locationConfPath) as locationFile:
         print(f"""Current dotfile settings from {bcolors.OKBLUE}{configFileName}{bcolors.ENDC}: """)
         print(locationFile.read())
-        if not automatic:
-            if not confirmResponse("Would you like to go through with the linking prosses using these settings? (Y/N): "):
-                return 
+        if not confirmResponse("Would you like to go through with the linking prosses using these settings? (Y/N): "):
+            return 
         locationFile.seek(0)
         data = json.load(locationFile)
         target_files = os.path.join(os.getcwd(), name, data["target_files"])
@@ -60,19 +48,19 @@ def linkFiles(name):
         if os.path.islink(endpoint_with_name):
             print(f"""{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is a link.
 It must be removed before the new dotfiles can be added.""")
-            if automatic or confirmResponse("Remove link? (Y/N): "):
-                handleCommand(f"rm {endpoint_with_name}")
+            if confirmResponse("Remove link? (Y/N): "):
+                confirmCommand(f"rm {endpoint_with_name}")
 
         elif os.path.isdir(endpoint_with_name):
             print(f"""{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} already exists!
 It must be removed before the new dotfiles can be added.""")
-            if automatic or confirmResponse("Remove files? (Y/N): "):
-                handleCommand(f"rm -r {endpoint_with_name}")
+            if confirmResponse("Remove files? (Y/N): "):
+                confirmCommand(f"rm -r {endpoint_with_name}")
 
         if os.path.isdir(endpoint_with_name) or os.path.exists(endpoint_with_name):
             print(f"Because {bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} already exists, no further opperations can be done on this file")
             return 
-        if handleCommand(f"ln -s {target_files} {desired_endpoint}"):
+        if confirmCommand(f"ln -s {target_files} {desired_endpoint}"):
             print(f"Sucsessfuly added dotfiles from {bcolors.OKBLUE}{name}{bcolors.ENDC}!")
 
 class bcolors:
@@ -100,34 +88,10 @@ print(f"""This is the setup program for my dotfiles. It will create dotfile
 symlinks for each program. {bcolors.WARNING}WARNING: this program has the
 ability to permenantly delete your files; be careful! {bcolors.ENDC}
 
-This command can either be run (A)utomatically or (M)anually (with oversight
-from the user). It is reccomended to only use automatic mode if you fully
-understand what this script does. {bcolors.WARNING}Automatic mode may delete preexisting dotfiles!!!{bcolors.ENDC} 
-When using manual mode, you have the ability to confirm or veto every command
-before it is executed.
+This command can either be run You have the ability to confirm or veto every command
+before it is executed. If you would like, you can pipe the `yes` command into this
+command to automate the installation prosses!
 """)
-goToNext = False
-manualRegEx = re.compile("m(anual)?", re.IGNORECASE)
-automaticRegEx = re.compile("a(utomatic)?", re.IGNORECASE)
-acceptDangerRegEx = re.compile("I accept the risk", re.IGNORECASE)
-while not goToNext:
-    response = input("Which would you prefer? ((A)utomatic/(M)anual): ")
-    if automaticRegEx.match(response):
-        print("""This mode is dangerous! 
-The new dotfiles will permenantly replace the old ones.
-If you would like to confirm each command before it is excecuted, use manual mode instead.
-Please confirm that you know what you are doing!""")
-        response = input("Type 'I accept the risk' to continue with automatic mode:'")
-        if(not acceptDangerRegEx.match(response)):
-            continue
-        goToNext = True
-        automatic = True
-    elif manualRegEx.match(response):
-        goToNext = True
-        automatic = False
-    else:
-        print(f"Error! Can not understand {response}.")
-
 directory = os.path.join(os.getcwd(), "dots/")
 
 print(f"Locating all directories within {bcolors.OKBLUE}{directory}{bcolors.ENDC} for dotfiles")
