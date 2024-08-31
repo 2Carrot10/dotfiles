@@ -7,7 +7,7 @@ symlinks so you can edit all your dotfiles from one folder. You will still need
 to install the software that uses each config. 
 
 To install these dotfiles, either download this GitHub repo or run this command in the desired location:
-`bash <(curl -s https://raw.githubusercontent.com/2Carrot10/dotfiles/master/install.sh)`
+```bash <(curl -s https://raw.githubusercontent.com/2Carrot10/dotfiles/master/install.sh)```
 
 Using a live USB, install the OS using `archinstall` by running the following code:
-`archinstall --config https://raw.githubusercontent.com/2Carrot10/dotfiles/master/archinstall/config.json`
+```archinstall --config https://raw.githubusercontent.com/2Carrot10/dotfiles/master/archinstall/config.json```
