@@ -28,8 +28,9 @@
       ensure_installed = {
         "lua_ls",
 				"clangd",
-				"cssls",
-				"tailwindcss",--language-server",
+				"glslls",
+				--"cssls",
+				--"tailwindcss",--language-server",
 				"tsserver",--"typescript-language-server",
 				--"css-lsp",
 				--"pylsp",

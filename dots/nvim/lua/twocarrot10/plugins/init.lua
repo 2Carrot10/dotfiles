@@ -1,5 +1,5 @@
 return {
-	"nvim-colorizer.lua",
+	--"nvim-colorizer.lua",
 	"nvim-lua/plenary.nvim",
 	"nvim-neorg/lua-utils.nvim",
 	{"vhyrro/luarocks.nvim",

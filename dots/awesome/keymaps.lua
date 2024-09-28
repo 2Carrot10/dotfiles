@@ -42,7 +42,16 @@ awful.keyboard.append_global_keybindings({
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
               {description = "go back", group = "tag"}),
 
-
+		awful.key({ modkey, "Shift"}, "s",
+			function ()
+				os.execute("scrot -s -F ~/screenshots/selected-screenshot-`date +\"%Y-%m-%d:%H-%M:%S\"`.png")
+			end,
+		{description = "selected screenshot", group = "hotkeys"}),
+		awful.key({ modkey, "Shift", "Control"}, "s",
+			function ()
+				os.execute("scrot -F ~/screenshots/full-screenshot-`date +\"%Y-%m-%d:%H-%M:%S\"`.png")
+			end,
+		{description = "full screenshot", group = "hotkeys"}),
     --volume control
     awful.key({ altkey }, "Up",
         function ()

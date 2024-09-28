@@ -1,3 +1,4 @@
+
 return {
   "neovim/nvim-lspconfig",
   event = { "BufReadPre", "BufNewFile" },
@@ -9,6 +10,8 @@ return {
   config = function()
     -- import lspconfig plugin
     local lspconfig = require("lspconfig")
+
+		lspconfig.gdscript.setup({})
 
     -- import mason_lspconfig plugin
     local mason_lspconfig = require("mason-lspconfig")
@@ -112,6 +115,12 @@ return {
         lspconfig["emmet_ls"].setup({
           capabilities = capabilities,
           filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
+        })
+      end,
+      ["glslls"] = function()
+        lspconfig["glslls"].setup({
+          capabilities = capabilities,
+          filetypes = {"glsl", "html", "vert", "frag"},
         })
       end,
       ["lua_ls"] = function()

@@ -44,6 +44,7 @@ return {
         "query",
         "vimdoc",
         "c",
+				"glsl"
       },
       incremental_selection = {
         enable = true,

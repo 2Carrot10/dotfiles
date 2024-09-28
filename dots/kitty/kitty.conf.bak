@@ -2,10 +2,10 @@
 include colors.conf
 
 # Fonts
-# font_family      JetBrainsMono Nerd Font
-# bold_font        JetBrainsMono NF Bold
-# italic_font      JetBrainsMono NF Italic
-# bold_italic_font JetBrainsMono NF Bold Italic
+font_family      JetBrainsMono Nerd Font
+bold_font        JetBrainsMono NF Bold
+italic_font      JetBrainsMono NF Italic
+bold_italic_font JetBrainsMono NF Bold Italic
 
 adjust_line_height 0
 adjust_column_width 0
@@ -118,11 +118,3 @@ map ctrl+shift+equal    increase_font_size
 map ctrl+shift+minus    decrease_font_size
 map ctrl+shift+backspace restore_font_size
 map ctrl+shift+f6     set_font_size 16.0
-
-
-# BEGIN_KITTY_FONTS
-font_family      family="JetBrains Mono"
-bold_font        auto
-italic_font      auto
-bold_italic_font auto
-# END_KITTY_FONTS
