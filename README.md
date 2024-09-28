@@ -18,5 +18,5 @@ Using a live USB, install most necessary software and setup most presets using `
 ```sh
 archinstall --config https://raw.githubusercontent.com/2Carrot10/dotfiles/master/archinstall/config.json
 ```
-# Requirements
-te
+# Requirements to install 
+- Python
