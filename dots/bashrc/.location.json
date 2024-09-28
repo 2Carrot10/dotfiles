@@ -1,0 +1,4 @@
+{
+  "desired_endpoint": "~/",
+  "target_files": ".bashrc" 
+}

@@ -1,3 +1,4 @@
+# About
 This repo contains the main dotfiles I use on Arch Linux with AwesomeWM. The
 locations of all configuration folders can be set up automatically with the
 `setup.py` script, although make sure you read the logs carefully before
