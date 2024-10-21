@@ -29,7 +29,7 @@ awful.keyboard.append_global_keybindings({
               {description = "run prompt", group = "launcher"}),
     awful.key({ modkey }, "p", function() menubar.show() end,
               {description = "show the menubar", group = "launcher"}),
-		awful.key({ modkey }, "d", function () os.execute(string.format("rofi -show drun -display-drun ''")) end,
+		awful.key({ modkey }, "d", function () os.execute(string.format("rofi -show drun -display-drun 'run' -theme-str 'listview { scrollbar: false; } entry { placeholder: \"\"; }'" )) end,
 						 {description = "launch program using rofi", group = "launcher"})
 })
 
