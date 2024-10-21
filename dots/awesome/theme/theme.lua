@@ -11,7 +11,6 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 local launchbutton = require("super_key.super_key")
 require("awful.hotkeys_popup.keys")
 
-
 local os = os
 
 local theme                                     = {}
@@ -94,7 +93,7 @@ theme.titlebar_maximized_button_normal_inactive = theme.dir .. "/icons/titlebar/
 
 local markup = lain.util.markup
 theme.awesome_icon = theme.dir .. "/icons/awesome_logo.png"
-theme.gap_single_client = false
+theme.gap_single_client = true
 
 local keyboardlayout = awful.widget.keyboardlayout:new()
 

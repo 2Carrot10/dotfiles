@@ -27,6 +27,8 @@ opt.cursorline = true
 opt.spelllang = 'en_us'
 opt.spell = true
 
+vim.opt.backupcopy = "yes"
+
 --[[
 vim.api.nvim_set_keymap('v','jk','<Esc>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v','kj','<Esc>', { noremap = true, silent = true })
