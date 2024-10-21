@@ -6,7 +6,7 @@ luarocks
  luarocks --local --lua-version=5.1 install magick
 for image.nvim
 
-Disable cpspkr
+Disable pcspkr
 https://superuser.com/questions/15770/what-is-the-best-way-to-turn-off-the-ubuntu-beep-permanently
 
 Switch esc and capslock
