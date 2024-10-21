@@ -20,7 +20,7 @@ folder. You will still need to install the software that uses each config.
 * Zathura
 * Tmux
 
-# Features
+# Notable Features
 ## Keybind and color consistency
 All programs use the same color scheme 
 ([tokyo-night](https://github.com/tokyo-night/tokyo-night-vscode-theme)) and keymaps (VI).
@@ -28,8 +28,6 @@ All programs use the same color scheme
 ## Awesomewm (window manager)
 The window manager features a minimalist system tray that lays on top of all
 windows so all windows can be viewed in full screen by default.
-
-## Neovim (text editor) 
 
 ## Bash (shell) 
 File navigation functions.
