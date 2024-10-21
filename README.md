@@ -25,6 +25,11 @@ folder. You will still need to install the software that uses each config.
 All programs use the same color scheme 
 ([tokyo-night](https://github.com/tokyo-night/tokyo-night-vscode-theme)) and keymaps (VI).
 
+## Extensibility
+The final filepath locations of each configuration is not hardcoded. Instead,
+each configuration has a .location.json file. If you add your own dotfiles,
+they will be detected by the install script.
+
 ## Awesomewm (window manager)
 The window manager features a minimalist system tray that lays on top of all
 windows so all windows can be viewed in full screen by default.
