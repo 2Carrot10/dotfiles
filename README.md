@@ -7,6 +7,9 @@ cloning each folder into the correct location, the `setup.py` script creates
 symlinks so you can edit all your dotfiles from one folder. You will still need
 to install the software that uses each config. 
 
+![Example Screenshot](READMEAssets/example.png?raw=true)
+![Example Screenshot](READMEAssets/example2.png?raw=true)
+
 # Installation
 To install these dotfiles, either clone this GitHub repo, or run this command in the desired location:
 ```sh

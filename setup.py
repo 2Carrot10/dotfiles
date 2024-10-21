@@ -1,3 +1,4 @@
+#!/bin/python
 import subprocess
 import re
 import os
@@ -5,6 +6,7 @@ import json
 
 yesRegEx = re.compile("y(es)?", re.IGNORECASE)
 noRegEx = re.compile("n(o)?", re.IGNORECASE)
+
 
 def confirmResponse(question):
     response = input(question)
@@ -18,13 +20,17 @@ def confirmResponse(question):
 
 def excecuteCommand(command):
     print(f"Excecuting '{command}'...")
-    subprocess.run(command, shell = True)
+    subprocess.run(command, shell=True)
+
 
 def confirmCommand(command):
-    if confirmResponse(f"Would you like to excecute this command: '{command}' (Y/N): "):
+    if confirmResponse(
+        f"Would you like to excecute this command: '{command}' (Y/N): "
+    ):
         excecuteCommand(command)
     else:
         print("Command will not be excecuted.")
+
 
 def linkFiles(name):
     locationConfPath = os.path.join(name, configFileName)
@@ -34,7 +40,7 @@ def linkFiles(name):
     print(f"\n{bcolors.BOLD}{"━" * 50}{bcolors.ENDC}\n")
     print(f"{bcolors.BOLD}Located the following dotfiles: {bcolors.OKBLUE}{name}{bcolors.ENDC}")
     if not confirmResponse("Would you like to add these dotfiles? (Y/N): "):
-       return 
+        return
 
     with open(locationConfPath) as locationFile:
         print(f"""Current dotfile settings from {bcolors.OKBLUE}{configFileName}{bcolors.ENDC}: """)
