@@ -70,6 +70,7 @@ It must be removed before the new dotfiles can be added.""")
         if confirmCommand(f"ln -s {target_files} {desired_endpoint}"):
             print(f"Sucsessfuly added dotfiles from {bcolors.OKBLUE}{name}{bcolors.ENDC}!")
 
+
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -80,6 +81,7 @@ class bcolors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+
 
 configFileName = ".location.json"
 
@@ -99,7 +101,7 @@ This command can either be run You have the ability to confirm or veto every com
 before it is executed. If you would like, you can pipe the `yes` command into this
 command to automate the installation prosses!
 """)
-directory = os.path.join(os.getcwd(), "dots/")
+directory = os.path.join(os.getcwd(), "../dots/")
 
 print(f"Locating all directories within {bcolors.OKBLUE}{directory}{bcolors.ENDC} for dotfiles")
 
