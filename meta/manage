@@ -8,8 +8,24 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--install", help="Install all neccecary files", action="store_true")
 parser.add_argument("--health", help="Check health of installed filed", action="store_true")
 parser.add_argument("--add", help="Start tracking another file", action="store_true")
+parser.add_argument("filename", nargs='*', help="Name of file(s) to opperate upon.")
+
+autoExcecute = True
+viewJson = False
+friendlyMode = True
+dirOfPythonScript = os.path.dirname(os.path.realpath(__file__))
+directory = os.path.normpath(os.path.join(dirOfPythonScript, "../dots/"))
+
+useFileSelection = True
+verbose = True
 
 args = parser.parse_args()
+if len(args.filename) == 0:
+    useFileSelection = False
+else:
+    files = args.filename
+    friendlyMode = False
+    verbose = False
 
 yesRegEx = re.compile("y(es)?", re.IGNORECASE)
 noRegEx = re.compile("n(o)?", re.IGNORECASE)
@@ -17,7 +33,6 @@ noRegEx = re.compile("n(o)?", re.IGNORECASE)
 
 def confirmResponse(question):
     response = input(question)
-    print("\n")
     if yesRegEx.match(response):
         return True
     if not noRegEx.match(response):
@@ -26,26 +41,35 @@ def confirmResponse(question):
 
 
 def excecuteCommand(command):
-    print(f"Excecuting '{command}'...")
     subprocess.run(command, shell=True)
+
+
+def runCommandWithPref(command):
+    if autoExcecute:
+        excecuteCommand(command)
+    else:
+        confirmCommand(command)
 
 
 def confirmCommand(command):
     if confirmResponse(
         f"Would you like to excecute this command: '{command}' (Y/N): "
     ):
+        print(f"Excecuting '{command}'...")
         excecuteCommand(command)
     else:
         print("Command will not be excecuted.")
 
 
 def healthCheckLinks(name):
+    # Default status
     status = "not added"
     print(bcolors.FAIL, end='')
+
     locationConfPath = os.path.join(name, configFileName)
     with open(locationConfPath) as locationFile:
         data = json.load(locationFile)
-        target_files = os.path.normpath(os.path.join(os.getcwd(), name, data["target_files"]))
+        target_files = os.path.normpath(os.path.join(dirOfPythonScript, name, data["target_files"]))
         desired_endpoint = os.path.expanduser(data["desired_endpoint"])
         endpoint_with_name = os.path.join(desired_endpoint, os.path.basename(os.path.normpath(target_files)))
         if os.path.islink(endpoint_with_name):
@@ -57,7 +81,7 @@ def healthCheckLinks(name):
                 print(bcolors.FAIL, end='')
         elif os.path.isdir(endpoint_with_name):
             status = "wrong directory"
-    print(os.path.basename(name)+ ": "+ status)
+    print(os.path.basename(name) + ": " + status)
     print(bcolors.ENDC, end='')
 
 
@@ -66,37 +90,39 @@ def linkFiles(name):
     if not os.path.isfile(locationConfPath):
         print(f"Configuration could not be found for {name}")
         return
-    print(f"\n{bcolors.BOLD}{"━" * 50}{bcolors.ENDC}\n")
-    print(f"{bcolors.BOLD}Located the following dotfiles: {bcolors.OKBLUE}{name}{bcolors.ENDC}")
-    if not confirmResponse("Would you like to add these dotfiles? (Y/N): "):
-        return
-    with open(locationConfPath) as locationFile:
-        print(f"""Current dotfile settings from {bcolors.OKBLUE}{configFileName}{bcolors.ENDC}: """)
-        print(locationFile.read())
-        if not confirmResponse("Would you like to go through with the linking prosses using these settings? (Y/N): "):
+    if verbose:
+        print(f"{bcolors.BOLD}Located the following dotfiles: {bcolors.OKBLUE}{name}{bcolors.ENDC}")
+    if not useFileSelection:
+        if not confirmResponse("Would you like to add these dotfiles? (Y/N): "):
             return
-        locationFile.seek(0)
+    with open(locationConfPath) as locationFile:
+        if viewJson and verbose:
+            print(f"""Current dotfile settings from {bcolors.OKBLUE}{configFileName}{bcolors.ENDC}: """)
+            print(locationFile.read())
+            if not confirmResponse("Would you like to go through with the linking prosses using these settings? (Y/N): "):
+                return
+            locationFile.seek(0)
         data = json.load(locationFile)
-        target_files = os.path.normpath(os.path.join(os.getcwd(), name, data["target_files"]))
+        target_files = os.path.normpath(os.path.join(dirOfPythonScript, name, data["target_files"]))
         desired_endpoint = os.path.expanduser(data["desired_endpoint"])
         endpoint_with_name = os.path.join(desired_endpoint, os.path.basename(os.path.normpath(target_files)))
         if os.path.islink(endpoint_with_name):
             print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is a link to {bcolors.OKBLUE}{os.path.realpath(endpoint_with_name)}{bcolors.ENDC}")
             if os.path.realpath(endpoint_with_name) == target_files:
-                print("These files have already been linked! There is no more work to do.")
+                print("Already correctly linked. There is no more work to do.")
                 return
             if confirmResponse("Remove link? (Y/N): "):
-                confirmCommand(f"rm {endpoint_with_name}")
-        elif os.path.isdir(endpoint_with_name):
+                runCommandWithPref(f"rm {endpoint_with_name}")
+        elif os.path.isdir(endpoint_with_name) or os.path.isfile(endpoint_with_name):
             print(f"""{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} already exists!
 It must be removed before the new dotfiles can be added.""")
             if confirmResponse("Remove files? (Y/N): "):
-                confirmCommand(f"rm -r {endpoint_with_name}")
+                runCommandWithPref(f"rm -r {endpoint_with_name}")
 
         if os.path.isdir(endpoint_with_name) or os.path.exists(endpoint_with_name):
             print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is full. No further opperations can be done on this file")
             return
-        if confirmCommand(f"ln -s {target_files} {desired_endpoint}"):
+        if runCommandWithPref(f"ln -s {target_files} {desired_endpoint}"):
             print(f"Sucsessfuly added dotfiles from {bcolors.OKBLUE}{name}{bcolors.ENDC}!")
 
 
@@ -116,53 +142,65 @@ configFileName = ".location.json"
 
 
 def add():
-    pass
+    print("add is currently work in progress")
 
 
 def health():
-    directory = os.path.normpath(os.path.join(os.getcwd(), "../dots/"))
     for name in os.listdir(directory):
         fullName = os.path.join(directory, name)
-        if os.path.isdir(fullName):
-            healthCheckLinks(fullName)
+        if (not useFileSelection) or name in files:
+            if os.path.isdir(fullName):
+                healthCheckLinks(fullName)
 
 def install():
-    print("""          _       _    __ _ _                         _
-         | |     | |  / _(_) |                       | |
-       __| | ___ | |_| |_ _| | ___  ___      ___  ___| |_ _   _ _ __
-      / _` |/ _ \\| __|  _| | |/ _ \\/ __|    / __|/ _ \\ __| | | | '_ \\
-     | (_| | (_) | |_| | | | |  __/\\__ \\    \\__ \\  __/ |_| |_| | |_) |
-      \\__,_|\\___/ \\__|_| |_|_|\\___||___/    |___/\\___|\\__|\\__,_| .__/
-                                                               | |
-                                                               |_|""")
-    print(f"""This is the setup program for my dotfiles. It will create dotfile
-    symlinks for each program. {bcolors.WARNING}WARNING: this program has the
-    ability to permenantly delete your files; be careful! {bcolors.ENDC}
+    if friendlyMode:
+        print("""              _       _    __ _ _                         _
+             | |     | |  / _(_) |                       | |
+           __| | ___ | |_| |_ _| | ___  ___      ___  ___| |_ _   _ _ __
+          / _` |/ _ \\| __|  _| | |/ _ \\/ __|    / __|/ _ \\ __| | | | '_ \\
+         | (_| | (_) | |_| | | | |  __/\\__ \\    \\__ \\  __/ |_| |_| | |_) |
+          \\__,_|\\___/ \\__|_| |_|_|\\___||___/    |___/\\___|\\__|\\__,_| .__/
+                                                                   | |
+                                                                   |_|""")
+        print(f"""This is the setup program for my dotfiles. It will create dotfile
+        symlinks for each program. {bcolors.WARNING}WARNING: this program has the
+        ability to permenantly delete your files; be careful! {bcolors.ENDC}
 
-    This command can either be run You have the ability to confirm or veto every command
-    before it is executed. If you would like, you can pipe the `yes` command into this
-    command to automate the installation prosses!
-    """)
-    directory = os.path.normpath(os.path.join(os.getcwd(), "../dots/"))
+        This command can either be run You have the ability to confirm or veto every
+        command before it is executed. If you would like, you can pipe the `yes`
+        command into this command to automate the installation prosses!""")
 
-    print(f"Locating all directories within {bcolors.OKBLUE}{directory}{bcolors.ENDC} for dotfiles")
+        print(f"Locating all directories within {bcolors.OKBLUE}{directory}{bcolors.ENDC} for dotfiles")
+        autoExcecute = not confirmResponse("Would you like to confirm each command before it is excecuted? (Y/N): ")
+        print(f"autoExcecute {autoExcecute}")
+        viewJson = confirmResponse("Would you like to view each file .location.json config before it is excecuted? (Y/N): ")
+        print()
+        print("Located a configuration for the following files:")
+        for name in os.listdir(directory):
+            fullName = os.path.join(directory, name)
+            if os.path.isdir(fullName):
+                print(name)
 
-    print("Located a configuration for the following files:")
+        print(f"\n{bcolors.BOLD}{"━" * 50}{bcolors.ENDC}\n")
+
     i = 0
     for name in os.listdir(directory):
         fullName = os.path.join(directory, name)
-        if os.path.isdir(fullName):
-            print(i, " ", name)
-            i = i + 1
-
-    for name in os.listdir(directory):
-        fullName = os.path.join(directory, name)
-        if os.path.isdir(fullName):
-            linkFiles(fullName)
-    print(f"\n{bcolors.BOLD}{"━" * 50}{bcolors.ENDC}\n")
-    health()
-    print()
-    print(f"{bcolors.UNDERLINE}Setup complete!{bcolors.ENDC} Thank you for installing these dotfiles.")
+        if (not useFileSelection) or name in files:
+            if os.path.isdir(fullName):
+                if i > 0:
+                    if verbose:
+                        print(f"\n{bcolors.BOLD}{"━" * 50}{bcolors.ENDC}\n")
+                    else:
+                        print()
+                linkFiles(fullName)
+                i = i + 1
+    if friendlyMode:
+        print(f"\n{bcolors.BOLD}{"━" * 50}{bcolors.ENDC}\n")
+        print("Installation complete! Here is the status of your dotfiles:")
+        health()
+        print()
+        print("Thank you for installing the dotfiles.")
 
 
 if args.install:

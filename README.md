@@ -28,7 +28,7 @@ All programs use the same color scheme
 ## Extensibility
 The final filepath locations of each configuration is not hardcoded. Instead,
 each configuration has a .location.json file. If you add your own dotfiles,
-they will be detected by the install script.
+they will be detected by the `manage --install` script.
 
 ## Awesomewm (window manager)
 The window manager features a minimalist system tray that lays on top of all
@@ -44,7 +44,7 @@ To install these dotfiles, either clone this GitHub repo, or run this command in
 ```sh
 bash <(curl -s https://raw.githubusercontent.com/2Carrot10/dotfiles/master/setup/download)
 ```
-After the repo has been cloned, link the dotfiles to their respective locations by running `setup`.
+After the repo has been cloned, link the dotfiles to their respective locations by running `manage --install`.
 The `download` script should automatically give you the option to run setup.py.
 
 ## Archinstall config 

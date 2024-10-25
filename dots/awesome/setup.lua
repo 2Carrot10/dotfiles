@@ -164,6 +164,23 @@ end)
 
 ruled.notification.connect_signal('request::rules', function()
     -- All notifications will match this rule.
+ruled.notification.append_rule {
+        rule       = { urgency = "critical" },
+        properties = { bg = "#ff0000", fg = "#ffffff", timeout = 0 }
+    }
+
+    -- Or green background for normal ones.
+    ruled.notification.append_rule {
+        rule       = { urgency = "normal" },
+        properties = { bg      = "#00ff00", fg = "#000000"}
+    }
+
+
+    ruled.notification.append_rule {
+        rule       = { urgency = "low" },
+        properties = { bg      = "#0000ff", fg = "#000000"}
+    }
+	--[[
     ruled.notification.append_rule {
         rule       = { },
         properties = {
@@ -171,6 +188,7 @@ ruled.notification.connect_signal('request::rules', function()
             implicit_timeout = 5,
         }
     }
+	]]--
 end)
 
 naughty.connect_signal("request::display", function(n)
