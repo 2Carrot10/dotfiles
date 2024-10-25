@@ -42,7 +42,7 @@ Print string (PS1)
 ## Dotfiles
 To install these dotfiles, either clone this GitHub repo, or run this command in the desired location:
 ```sh
-bash <(curl -s https://raw.githubusercontent.com/2Carrot10/dotfiles/master/setup/download)
+bash <(curl -s https://raw.githubusercontent.com/2Carrot10/dotfiles/master/meta/download)
 ```
 After the repo has been cloned, link the dotfiles to their respective locations by running `manage --install`.
 The `download` script should automatically give you the option to run setup.py.
