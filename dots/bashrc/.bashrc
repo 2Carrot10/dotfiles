@@ -1,24 +1,29 @@
-
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 set -o vi 
 
-# set show-mode-in-prompt on
-# set vi-ins-mode-string \1\e[6 q\2
-# set vi-cmd-mode-string \1\e[2 q\2
-
 set wildmode=longest,list,full
 set wildmenu
 
-# optionally:
-# switch to block cursor before executing a command
-
-
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
+alias df='df -h'
+alias df='du -h'
+alias df='free -h'
+alias scr="maim -sok 1 | xclip -selection clipboard -t image/png"
+alias weather="curl https://wttr.in/"
 
-. ~/git-prompt.sh
+alias v='nvim'
+alias vi='nvim'
+alias vim='nvim'
+
+alias ":q"='exit'
+alias cs='clear; ls'
+
 export GIT_PS1_SHOWDIRTYSTATE=1
+
+
+export EDITOR="nvim"
 
 PS1="`tput setab 5; tput setaf 0;` \!  \W `tput setab 0;tput setaf 5``tput sgr0;` "
 
@@ -35,6 +40,16 @@ l() {
 	ls -goht --time-style="+%y-%m-%d %H:%M" "$@"; 
 }
 
+function backup() {
+  cp $1 ${1}.bak
+}
+
+function mkcd {
+	mkdir $1
+	cd $1
+}
+
+# Injected by node version manager
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
