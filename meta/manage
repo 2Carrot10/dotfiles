@@ -5,10 +5,11 @@ import os
 import json
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--install", help="Install all neccecary files", action="store_true")
-parser.add_argument("--health", help="Check health of installed filed", action="store_true")
-parser.add_argument("--add", help="Start tracking another file", action="store_true")
-parser.add_argument("filename", nargs='*', help="Name of file(s) to opperate upon.")
+parser.add_argument("-i", "--install", help="Install all neccecary files", action="store_true")
+parser.add_argument("-l", "--list", help="List all files", action="store_true")
+parser.add_argument("-c", "--health", help="Check health of installed filed", action="store_true")
+parser.add_argument("-a", "--add", help="Start tracking another file", action="store_true")
+parser.add_argument("filename", nargs='*', help="Name of file(s) to operate upon.")
 
 autoExcecute = True
 viewJson = False
@@ -60,10 +61,9 @@ def confirmCommand(command):
     else:
         print("Command will not be excecuted.")
 
-
 def healthCheckLinks(name):
     # Default status
-    status = "not added"
+    status = "not yet added"
     print(bcolors.FAIL, end='')
 
     locationConfPath = os.path.join(name, configFileName)
@@ -80,7 +80,9 @@ def healthCheckLinks(name):
                 status = "wrong symlink"
                 print(bcolors.FAIL, end='')
         elif os.path.isdir(endpoint_with_name):
-            status = "wrong directory"
+            status = "desired location contains incorrect directory"
+        elif os.path.isfile(endpoint_with_name):
+            status = "desired location contains incorrect file"
     print(os.path.basename(name) + ": " + status)
     print(bcolors.ENDC, end='')
 
@@ -152,6 +154,12 @@ def health():
             if os.path.isdir(fullName):
                 healthCheckLinks(fullName)
 
+def list():
+    for name in os.listdir(directory):
+        fullName = os.path.join(directory, name)
+        if (not useFileSelection) or name in files:
+            print(os.path.basename(fullName))
+
 def install():
     if friendlyMode:
         print("""              _       _    __ _ _                         _
@@ -162,13 +170,14 @@ def install():
           \\__,_|\\___/ \\__|_| |_|_|\\___||___/    |___/\\___|\\__|\\__,_| .__/
                                                                    | |
                                                                    |_|""")
-        print(f"""This is the setup program for my dotfiles. It will create dotfile
+        print(f"""You have started the installation prosses. This command will create dotfile
         symlinks for each program. {bcolors.WARNING}WARNING: this program has the
         ability to permenantly delete your files; be careful! {bcolors.ENDC}
 
         This command can either be run You have the ability to confirm or veto every
         command before it is executed. If you would like, you can pipe the `yes`
-        command into this command to automate the installation prosses!""")
+        command into this command to automate the installation prosses. Alternatively,
+        select which files you would like to install with the filename paramater.""")
 
         print(f"Locating all directories within {bcolors.OKBLUE}{directory}{bcolors.ENDC} for dotfiles")
         autoExcecute = not confirmResponse("Would you like to confirm each command before it is excecuted? (Y/N): ")
@@ -202,12 +211,17 @@ def install():
         print()
         print("Thank you for installing the dotfiles.")
 
-
-if args.install:
-    install()
-elif args.health:
-    health()
-elif args.add:
-    add()
-else:
-    parser.print_help()
+try:
+    if args.install:
+        install()
+    elif args.health:
+        health()
+    elif args.add:
+        add()
+    elif args.list:
+        list()
+    else:
+        parser.print_help()
+except KeyboardInterrupt:
+    print()
+    exit(1)
