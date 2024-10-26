@@ -14,13 +14,14 @@ parser.add_argument("filename", nargs='*', help="Name of file(s) to operate upon
 autoExcecute = True
 viewJson = False
 friendlyMode = True
-dirOfPythonScript = os.path.dirname(os.path.realpath(__file__))
-directory = os.path.normpath(os.path.join(dirOfPythonScript, "../dots/"))
-
 useFileSelection = True
 verbose = True
 
+dirOfPythonScript = os.path.dirname(os.path.realpath(__file__))
+directory = os.path.normpath(os.path.join(dirOfPythonScript, "../dots/"))
+
 args = parser.parse_args()
+
 if len(args.filename) == 0:
     useFileSelection = False
 else:
@@ -72,6 +73,7 @@ def healthCheckLinks(name):
         target_files = os.path.normpath(os.path.join(dirOfPythonScript, name, data["target_files"]))
         desired_endpoint = os.path.expanduser(data["desired_endpoint"])
         endpoint_with_name = os.path.join(desired_endpoint, os.path.basename(os.path.normpath(target_files)))
+
         if os.path.islink(endpoint_with_name):
             if os.path.realpath(endpoint_with_name) == target_files:
                 status = "correctly set up"
@@ -89,14 +91,17 @@ def healthCheckLinks(name):
 
 def linkFiles(name):
     locationConfPath = os.path.join(name, configFileName)
+
     if not os.path.isfile(locationConfPath):
         print(f"Configuration could not be found for {name}")
         return
+
     if verbose:
         print(f"{bcolors.BOLD}Located the following dotfiles: {bcolors.OKBLUE}{name}{bcolors.ENDC}")
     if not useFileSelection:
         if not confirmResponse("Would you like to add these dotfiles? (Y/N): "):
             return
+
     with open(locationConfPath) as locationFile:
         if viewJson and verbose:
             print(f"""Current dotfile settings from {bcolors.OKBLUE}{configFileName}{bcolors.ENDC}: """)
@@ -104,17 +109,21 @@ def linkFiles(name):
             if not confirmResponse("Would you like to go through with the linking prosses using these settings? (Y/N): "):
                 return
             locationFile.seek(0)
+
         data = json.load(locationFile)
         target_files = os.path.normpath(os.path.join(dirOfPythonScript, name, data["target_files"]))
         desired_endpoint = os.path.expanduser(data["desired_endpoint"])
         endpoint_with_name = os.path.join(desired_endpoint, os.path.basename(os.path.normpath(target_files)))
+
         if os.path.islink(endpoint_with_name):
             print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is a link to {bcolors.OKBLUE}{os.path.realpath(endpoint_with_name)}{bcolors.ENDC}")
             if os.path.realpath(endpoint_with_name) == target_files:
                 print("Already correctly linked. There is no more work to do.")
                 return
+
             if confirmResponse("Remove link? (Y/N): "):
                 runCommandWithPref(f"rm {endpoint_with_name}")
+
         elif os.path.isdir(endpoint_with_name) or os.path.isfile(endpoint_with_name):
             print(f"""{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} already exists!
 It must be removed before the new dotfiles can be added.""")
