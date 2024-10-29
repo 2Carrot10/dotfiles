@@ -6,6 +6,7 @@ import json
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--install", help="Install all neccecary files", action="store_true")
+parser.add_argument("-s", "--silent", help="Do not display any non-essential logs", action="store_true")
 parser.add_argument("-l", "--list", help="List all files", action="store_true")
 parser.add_argument("-c", "--health", help="Check health of installed filed", action="store_true")
 parser.add_argument("-a", "--add", help="Start tracking another file", action="store_true")
@@ -21,6 +22,8 @@ dirOfPythonScript = os.path.dirname(os.path.realpath(__file__))
 directory = os.path.normpath(os.path.join(dirOfPythonScript, "../dots/"))
 
 args = parser.parse_args()
+
+is_silent = args.silent
 
 if len(args.filename) == 0:
     useFileSelection = False
@@ -42,18 +45,20 @@ def confirmResponse(question):
         return confirmResponse(question)
 
 
-def excecuteCommand(command):
+def excecuteCommand(command, description):
     subprocess.run(command, shell=True)
 
 
-def runCommandWithPref(command):
+def runCommandWithPref(command, description):
     if autoExcecute:
-        excecuteCommand(command)
+        if not is_silent:
+            print(f"{description}: \n\t{bcolors.OKBLUE}{command}{bcolors.ENDC}")
+        excecuteCommand(command, description)
     else:
         confirmCommand(command)
 
 
-def confirmCommand(command):
+def confirmCommand(command, description):
     if confirmResponse(
         f"Would you like to excecute this command: '{command}' (Y/N): "
     ):
@@ -122,18 +127,18 @@ def linkFiles(name):
                 return
 
             if confirmResponse("Remove link? (Y/N): "):
-                runCommandWithPref(f"rm {endpoint_with_name}")
+                runCommandWithPref(f"rm {endpoint_with_name}", "Removing incorrect link")
 
         elif os.path.isdir(endpoint_with_name) or os.path.isfile(endpoint_with_name):
             print(f"""{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} already exists!
 It must be removed before the new dotfiles can be added.""")
             if confirmResponse("Remove files? (Y/N): "):
-                runCommandWithPref(f"rm -r {endpoint_with_name}")
+                runCommandWithPref(f"rm -r {endpoint_with_name}", "Removing misplaced dirrectory")
 
         if os.path.isdir(endpoint_with_name) or os.path.exists(endpoint_with_name):
             print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is full. No further opperations can be done on this file")
             return
-        if runCommandWithPref(f"ln -s {target_files} {desired_endpoint}"):
+        if runCommandWithPref(f"ln -s {target_files} {desired_endpoint}", "Linking dots to desired location"):
             print(f"Sucsessfuly added dotfiles from {bcolors.OKBLUE}{name}{bcolors.ENDC}!")
 
 
