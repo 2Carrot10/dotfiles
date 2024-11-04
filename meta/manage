@@ -5,12 +5,29 @@ import os
 import json
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("-i", "--install", help="Install all neccecary files", action="store_true")
-parser.add_argument("-s", "--silent", help="Do not display any non-essential logs", action="store_true")
-parser.add_argument("-l", "--list", help="List all files", action="store_true")
-parser.add_argument("-c", "--health", help="Check health of installed filed", action="store_true")
-parser.add_argument("-a", "--add", help="Start tracking another file", action="store_true")
-parser.add_argument("filename", nargs='*', help="Name of file(s) to operate upon.")
+
+parser.add_argument("-i", "--install",
+                    help="Install all neccecary files",
+                    action="store_true")
+
+parser.add_argument("-s", "--silent",
+                    help="Do not display any non-essential logs",
+                    action="store_true")
+
+parser.add_argument("-l", "--list",
+                    help="List all files",
+                    action="store_true")
+
+parser.add_argument("-c", "--health",
+                    help="Check health of installed filed",
+                    action="store_true")
+
+parser.add_argument("-a", "--add",
+                    help="Start tracking another file",
+                    action="store_true")
+
+parser.add_argument("filename", nargs='*',
+                    help="Name of file(s) to operate upon.")
 
 autoExcecute = True
 viewJson = False
@@ -52,7 +69,9 @@ def excecuteCommand(command, description):
 def runCommandWithPref(command, description):
     if autoExcecute:
         if not is_silent:
-            print(f"{description}: \n\t{bcolors.OKBLUE}{command}{bcolors.ENDC}")
+            print(
+                f"{description}: \n\t{bcolors.OKBLUE}{command}{bcolors.ENDC}"
+            )
         excecuteCommand(command, description)
     else:
         confirmCommand(command)
@@ -67,6 +86,7 @@ def confirmCommand(command, description):
     else:
         print("Command will not be excecuted.")
 
+
 def healthCheckLinks(name):
     # Default status
     status = "not yet added"
@@ -75,7 +95,9 @@ def healthCheckLinks(name):
     locationConfPath = os.path.join(name, configFileName)
     with open(locationConfPath) as locationFile:
         data = json.load(locationFile)
-        target_files = os.path.normpath(os.path.join(dirOfPythonScript, name, data["target_files"]))
+        target_files = os.path.normpath(
+            os.path.join(dirOfPythonScript, name, data["target_files"])
+        )
         desired_endpoint = os.path.expanduser(data["desired_endpoint"])
         endpoint_with_name = os.path.join(desired_endpoint, os.path.basename(os.path.normpath(target_files)))
 
@@ -168,11 +190,13 @@ def health():
             if os.path.isdir(fullName):
                 healthCheckLinks(fullName)
 
+
 def list():
     for name in os.listdir(directory):
         fullName = os.path.join(directory, name)
         if (not useFileSelection) or name in files:
             print(os.path.basename(fullName))
+
 
 def install():
     if friendlyMode:
@@ -224,6 +248,7 @@ def install():
         health()
         print()
         print("Thank you for installing the dotfiles.")
+
 
 try:
     if args.install:

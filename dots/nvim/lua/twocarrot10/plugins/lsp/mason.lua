@@ -27,8 +27,11 @@
       -- list of servers for mason to install
       ensure_installed = {
         "lua_ls",
+				"pylsp",
 				"clangd",
 				"glslls",
+			 "csharp_ls",
+				--"omnisharp",
 				--"cssls",
 				--"tailwindcss",--language-server",
 				"tsserver",--"typescript-language-server",
