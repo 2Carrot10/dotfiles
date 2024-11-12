@@ -14,6 +14,8 @@ alias cs='clear; ls'
 alias day="date +'%y-%m-%d'"
 alias nday="nvim $(day).norg"
 
+alias image="kitten icat"
+
 alias ".."="cd ../"
 alias "..."="cd ../../"
 alias "...."="cd ../../../"
@@ -45,6 +47,10 @@ function timer() {
 
 l() {
 	ls -goht --time-style="+%y-%m-%d %H:%M" "$@"; 
+}
+
+gitacp(){
+	git add . && git commit -m "$1" && git push
 }
 
 function bak() {
