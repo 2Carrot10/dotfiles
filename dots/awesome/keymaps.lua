@@ -263,8 +263,6 @@ client.connect_signal("request::default_keybindings", function()
     })
 end)
 
-
-
 awful.keyboard.append_global_keybindings({
 	awful.key({ modkey }, "`", function ()
 		for s in screen do

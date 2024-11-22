@@ -2,25 +2,31 @@
 [[ $- != *i* ]] && return
 set -o vi 
 
-set wildmode=longest,list,full
-set wildmenu
+#set wildmode=longest,list,full
+#set wildmenu
 
 alias ls='ls --color=auto'
+alias l='ls' 
 alias grep='grep --color=auto'
 alias scr="maim -sok 1 | xclip -selection clipboard -t image/png"
 alias weather="curl https://wttr.in/"
-
-alias cs='clear; ls'
 alias day="date +'%y-%m-%d'"
-alias nday="nvim $(day).norg"
+
+function nd() {
+	[[ $1 = "" ]] && nvim "$(day).norg" || nvim "$(day)-$1.norg"
+}
+
 
 alias image="kitten icat"
 
+#alias "~"="cd $HOME"
 alias ".."="cd ../"
 alias "..."="cd ../../"
 alias "...."="cd ../../../"
 alias "....."="cd ../../../../"
-
+alias ".p"="cd ~/Documents/programs/"
+alias ".s"="cd ~/Documents/school/"
+alias "~"="cd ~"
 alias ":q"='exit'
 alias v='nvim'
 alias vi='nvim'
@@ -34,18 +40,21 @@ else
 	PS1="\$(err=\$?;tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0; echo -n ' \W  \!';tput sgr0;tput setaf 5; [[ \$err == 0 ]] || tput setaf 1; echo -n ' ';tput sgr0)"
 fi
 
-#PS1="\$(err=\$?;tput setab 5; tput setaf 0; [[ \$err == 0 ]] || tput setab 1; echo -n \"  \! | \"; [[ \"\${PWD##/home/}\" != \"\${PWD}\" ]] && echo -n \"   \"; [[ \"\${PWD##/home/\$USER/Documents/school}\" != \"\${PWD}\" ]] && echo -n \"   \"; [[ \"\${PWD##/home/\$USER/Documents/programs}\" != \"\${PWD}\" ]] && echo -n \"   \"; git -C \$(pwd) rev-parse 2>/dev/null && echo -n \" \$(basename \$(git rev-parse --show-toplevel)) (\$(git rev-parse --abbrev-ref HEAD))  \";echo -n \" \W\"; tput sgr0; tput setaf 5; [[ \$err == 0 ]] || tput setaf 1) \$(tput sgr0;)" 
-
 c() {
 	cd "$1" || return 1
-  l
+  ls
 }
 
 function timer() {
 	for a in $(seq $1); do echo -ne "${a}s / ${1}s\r"; sleep 1; done; echo -ne "${1}s / ${1}s\n";
 }
 
-l() {
+function stopwatch() {
+	a=0;
+	while true; do echo -ne "${a}s\r"; sleep 1; a=$((a+1)); done;
+}
+
+la() {
 	ls -goht --time-style="+%y-%m-%d %H:%M" "$@"; 
 }
 

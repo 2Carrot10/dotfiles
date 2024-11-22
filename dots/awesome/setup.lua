@@ -22,12 +22,11 @@ local function run_once(cmd_arr)
     end
 end
 
-run_once({ "urxvtd", "unclutter -root" }) -- comma-separated entries
+run_once({ "urxvtd", "unclutter -root" })
 
 
 
--- This is used later as the default terminal and editor to run.
-Terminal = "kitty"
+Terminal = "wezterm"
 Browser = "firefox"
 Editor = os.getenv("EDITOR") or "nvim"
 Editor_cmd = Terminal .. " -e " .. Editor
@@ -56,8 +55,6 @@ tag.connect_signal("request::default_layouts", function()
 				]]--
     })
 end)
--- }}}
-
 
 lain.layout.termfair.nmaster           = 3
 lain.layout.termfair.ncol              = 1

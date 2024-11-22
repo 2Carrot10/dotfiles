@@ -50,7 +50,7 @@ The command will automatically download the repo (via SSH) and run the install s
 (I made this `archinstall` config for myself, not for general use.)
 Using a live USB, install most necessary software and setup most presets using `archinstall` by running the following code:
 ```sh
-archinstall --config https://raw.githubusercontent.com/2Carrot10/dotfiles/master/setup/archinstallConfig.json
+archinstall --config https://raw.githubusercontent.com/2Carrot10/dotfiles/master/meta/archinstallConfig.json
 ```
 # Installation Requirements
 - Bash
