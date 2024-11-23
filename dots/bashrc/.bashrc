@@ -37,7 +37,7 @@ export EDITOR="nvim"
 if [ $TERM = "linux" ]; then
 	PS1="\$(err=\$?;tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0; echo -n ' \W \! ';tput setab 0;tput setaf 5; [[ \$err == 0 ]] || tput setaf 1; echo -n ' ';tput sgr0)"
 else
-	PS1="\$(err=\$?;tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0; echo -n ' \W  \!';tput sgr0;tput setaf 5; [[ \$err == 0 ]] || tput setaf 1; echo -n ' ';tput sgr0)"
+	PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W  \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n ' '; echo -n '\['; tput sgr0)\]"
 fi
 
 c() {

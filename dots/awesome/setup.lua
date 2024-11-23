@@ -24,8 +24,6 @@ end
 
 run_once({ "urxvtd", "unclutter -root" })
 
-
-
 Terminal = "wezterm"
 Browser = "firefox"
 Editor = os.getenv("EDITOR") or "nvim"
