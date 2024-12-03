@@ -22,6 +22,23 @@ return {
     local keymap = vim.keymap -- for conciseness
 
 
+		lspconfig.pylsp.setup {
+			on_attach = on_attach,
+			flags = {
+				-- This will be the default in neovim 0.7+
+				debounce_text_changes = 150,
+			},
+			settings = {
+				-- configure plugins in pylsp
+				pylsp = {
+					plugins = {
+						pyflakes = {enabled = false},
+						pylint = {enabled = false},
+					},
+				},
+			},
+		}
+
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("UserLspConfig", {}),
       callback = function(ev)
@@ -104,6 +121,20 @@ return {
           end,
         })
       end,
+			["pylsp"] = function()
+				lspconfig["pylsp"].setup({
+					capabilities = capabilities,
+					settings = {
+						pylsp = {
+							plugins = {
+								pylint = { enabled = "false" },
+								pyflakes = { enabled = "false" },
+								pycodestyle = { enabled = "false" },
+							}
+						}
+					}
+				})
+				end,
       ["graphql"] = function()
         -- configure graphql language server
         lspconfig["graphql"].setup({

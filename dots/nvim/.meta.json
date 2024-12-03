@@ -1,5 +1,4 @@
 {
   "desired_endpoint": "~/.config/",
-  "target_files": "",
-	"packages": "neovim"
+  "target_files": "" 
 }

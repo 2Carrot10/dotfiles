@@ -33,7 +33,8 @@ parsers = {}
 
 subp = parser.add_subparsers(title="subcommands", dest="command")
 
-parsers["track"] = subp.add_parser("track", help="Start tracking a new file",)
+parsers["track"] = subp.add_parser("track", help="Start tracking a new file")
+parsers["help"] = subp.add_parser("help", help="Show this help message and exit")
 parsers["list"] = subp.add_parser("list", help="List all tracked files")
 parsers["info"] = subp.add_parser("info", help="Get all static tracking "
                                   + "information. (Stored in .meta.json)")
@@ -44,13 +45,21 @@ parsers["sync"] = subp.add_parser("sync", help="Sync tracked files and" +
                                   " current active files")
 
 parsers["info"].add_argument("-r", "--raw", help="display raw config" +
-                                    " file instead of formatted config",
-                                    action="store_true")
+                             " file instead of formatted config",
+                             action="store_true")
 
 parsers["sync"].add_argument("-t", "--tracked",
                              help="In the case of a conflict, replace active" +
                              " with tracked",
                              action="store_true")
+
+parsers["track"].add_argument("filename",
+                              help="Start tracking a new file",
+                              nargs="*")
+
+
+parsers["track"].add_argument("filename", nargs='*',
+                              help="Full path of file(s) to start tracking.")
 
 parsers["sync"].add_argument("-a", "--active",
                              help="In the case of a conflict, replace" +
@@ -69,7 +78,7 @@ dots = os.listdir(dots_dir)
 args = parser.parse_args()
 
 specified_files = []
-if args.filename is not None:
+if hasattr(args, "filename"):
     useFileSelection = len(args.filename) > 0
 
     if useFileSelection:
@@ -169,8 +178,6 @@ def link_files(name):
         print(f"Configuration could not be found for {name}")
         return
 
-    if not args.silent:
-        print(f"{bcolors.BOLD}Located the following dotfiles: {bcolors.OKBLUE}{name}{bcolors.ENDC}")
     if not useFileSelection:
         if not confirm_response("Would you like to add these dotfiles? (Y/N): "):
             return
@@ -185,11 +192,15 @@ def link_files(name):
         )
 
         if os.path.islink(endpoint_with_name):
-            print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is a link to {bcolors.OKBLUE}{os.path.realpath(endpoint_with_name)}{bcolors.ENDC}")
+
             if os.path.realpath(endpoint_with_name) == target_files:
-                print("Already correctly linked. There is no more work to do.")
+
+                if not args.silent:
+                    print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is a link to {bcolors.OKBLUE}{os.path.realpath(endpoint_with_name)}{bcolors.ENDC}")
+                    print("Already correctly linked. There is no more work to do.")
                 return
 
+            print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is a link to {bcolors.OKBLUE}{os.path.realpath(endpoint_with_name)}{bcolors.ENDC}")
             if confirm_response("Remove link? (Y/N): "):
                 run_commands_with_pref(f"rm {endpoint_with_name}")
 
@@ -202,10 +213,11 @@ def link_files(name):
                 run_commands_with_pref(f"rm -r {endpoint_with_name}")
 
         if os.path.isdir(endpoint_with_name) or os.path.exists(endpoint_with_name):
-            print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is full. No further opperations can be done on this file")
+            print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is full. No further opperations can be done on this file.")
             return
         if run_commands_with_pref(f"ln -s {target_files} {desired_endpoint}"):
-            print(f"Sucsessfuly added dotfiles from {bcolors.OKBLUE}{name}{bcolors.ENDC}!")
+            if not args.silent:
+                print(f"Sucsessfuly added dotfiles from {bcolors.OKBLUE}{name}{bcolors.ENDC}!")
 
 
 config_file_name = ".meta.json"
@@ -232,9 +244,11 @@ def forAllFiles(func, seperator = True, name = True, newLine = True):
 def list_files(file):
     print(file)
 
+def track():
+    pass
 
 try:
-    if args.command is None:
+    if args.command is None or args.command == "help":
         parser.print_help()
     else:
         if args.command == "status":
@@ -246,7 +260,7 @@ try:
         if args.command == "list":
             forAllFiles(list_files, False, False)
         if args.command == "track":
-            print("not done yet")
+            forAllFiles(track)
 except KeyboardInterrupt:
     print()
     sys.exit(1)

@@ -5,8 +5,6 @@ vim.g.mapleader = " "
 opt.relativenumber = true
 opt.number = true
 
---opt.cursorline = true
-
 opt.signcolumn = "yes"
 
 opt.tabstop = 2
@@ -55,7 +53,13 @@ vim.api.nvim_set_keymap("n", "<leader>lr", "<cmd>lua vim.lsp.buf.references()<CR
 
 vim.api.nvim_set_keymap("n", "<leader>li", "<cmd>=vim.lsp.buf<CR>", { desc = "See all lsp commands"})
 
-vim.keymap.set("n", "<leader>sv", "<C-w>v", { desc = "Split window vertically" }) -- split window vertically
-vim.keymap.set("n", "<leader>sh", "<C-w>s", { desc = "Split window horizontally" }) -- split window horizontally
-vim.keymap.set("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" }) -- make split windows equal width & height
-vim.keymap.set("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" }) -- close current split window
+vim.keymap.set("n", "<leader>sv", "<C-w>v", { desc = "Split window vertically" })
+vim.keymap.set("n", "<leader>sh", "<C-w>s", { desc = "Split window horizontally" })
+vim.keymap.set("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" })
+vim.keymap.set("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" })
+
+
+vim.api.nvim_set_keymap("n", "<leader>bh", "<cmd>set showtabline=1<CR>", { desc = "hide buffer"})
+vim.api.nvim_set_keymap("n", "<leader>bs", "<cmd>set showtabline=2<CR>", { desc = "show buffer"})
+
+vim.api.nvim_set_keymap("n", "<leader>bn", "<cmd>set number!<CR><cmd> set relativenumber!<CR>", { desc = "toggle lines"})

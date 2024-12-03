@@ -10,7 +10,7 @@
     -- import mason-lspconfig
     local mason_lspconfig = require("mason-lspconfig")
 
-    local mason_tool_installer = require("mason-tool-installer")
+    -- local mason_tool_installer = require("mason-tool-installer")
 
     -- enable mason and configure icons
     mason.setup({
@@ -31,14 +31,12 @@
 				"clangd",
 				"glslls",
 			 "csharp_ls",
+				"tsserver",
+				"jdtls"
+				--"css-lsp",
 				--"omnisharp",
 				--"cssls",
-				--"tailwindcss",--language-server",
-				"tsserver",--"typescript-language-server",
-				--"css-lsp",
-				--"pylsp",
-				--"java_language_server"
-				"jdtls"
+				--"tailwindcss",
       },
 				 automatic_installation = true,
     })

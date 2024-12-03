@@ -1,5 +1,4 @@
-require("twocarrot10.core")
-require("twocarrot10.lazy")
+require("core")
 vim.cmd [[
     augroup glsl
         autocmd!
