@@ -8,6 +8,7 @@ set -o vi
 alias ls='ls --color=auto'
 alias l='ls' 
 alias grep='grep --color=auto'
+alias g="grep"
 alias scr="maim -sok 1 | xclip -selection clipboard -t image/png"
 alias weather="curl https://wttr.in/"
 alias day="date +'%y-%m-%d'"
@@ -16,10 +17,9 @@ function nd() {
 	[[ $1 = "" ]] && nvim "$(day).norg" || nvim "$(day)-$1.norg"
 }
 
-
 alias image="kitten icat"
 
-#alias "~"="cd $HOME"
+alias "~"="cd $HOME"
 alias ".."="cd ../"
 alias "..."="cd ../../"
 alias "...."="cd ../../../"
@@ -35,7 +35,7 @@ export EDITOR="nvim"
 
 # Don't display IUA characters in the tty
 if [ $TERM = "linux" ]; then
-	PS1="\$(err=\$?;tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0; echo -n ' \W \! ';tput setab 0;tput setaf 5; [[ \$err == 0 ]] || tput setaf 1; echo -n ' ';tput sgr0)"
+	PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W ║ \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n '├ '; echo -n '\['; tput sgr0)\]"
 else
 	PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W  \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n ' '; echo -n '\['; tput sgr0)\]"
 fi
@@ -44,6 +44,8 @@ c() {
 	cd "$1" || return 1
   ls
 }
+
+alias g="grep"
 
 function timer() {
 	for a in $(seq $1); do echo -ne "${a}s / ${1}s\r"; sleep 1; done; echo -ne "${1}s / ${1}s\n";

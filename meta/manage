@@ -4,164 +4,7 @@ import re
 import os
 import json
 import argparse
-parser = argparse.ArgumentParser()
-
-parser.add_argument("-i", "--install",
-                    help="Install all neccecary files",
-                    action="store_true")
-
-parser.add_argument("-s", "--silent",
-                    help="Do not display any non-essential logs",
-                    action="store_true")
-
-parser.add_argument("-l", "--list",
-                    help="List all files",
-                    action="store_true")
-
-parser.add_argument("-c", "--health",
-                    help="Check health of installed filed",
-                    action="store_true")
-
-parser.add_argument("-a", "--add",
-                    help="Start tracking another file",
-                    action="store_true")
-
-parser.add_argument("filename", nargs='*',
-                    help="Name of file(s) to operate upon.")
-
-autoExcecute = True
-viewJson = False
-friendlyMode = True
-useFileSelection = True
-verbose = True
-
-dirOfPythonScript = os.path.dirname(os.path.realpath(__file__))
-directory = os.path.normpath(os.path.join(dirOfPythonScript, "../dots/"))
-
-args = parser.parse_args()
-
-is_silent = args.silent
-
-if len(args.filename) == 0:
-    useFileSelection = False
-else:
-    files = args.filename
-    friendlyMode = False
-    verbose = False
-
-yesRegEx = re.compile("y(es)?", re.IGNORECASE)
-noRegEx = re.compile("n(o)?", re.IGNORECASE)
-
-
-def confirmResponse(question):
-    response = input(question)
-    if yesRegEx.match(response):
-        return True
-    if not noRegEx.match(response):
-        print(f"Error! could not understand {response}")
-        return confirmResponse(question)
-
-
-def excecuteCommand(command, description):
-    subprocess.run(command, shell=True)
-
-
-def runCommandWithPref(command, description):
-    if autoExcecute:
-        if not is_silent:
-            print(
-                f"{description}: \n\t{bcolors.OKBLUE}{command}{bcolors.ENDC}"
-            )
-        excecuteCommand(command, description)
-    else:
-        confirmCommand(command)
-
-
-def confirmCommand(command, description):
-    if confirmResponse(
-        f"Would you like to excecute this command: '{command}' (Y/N): "
-    ):
-        print(f"Excecuting '{command}'...")
-        excecuteCommand(command)
-    else:
-        print("Command will not be excecuted.")
-
-
-def healthCheckLinks(name):
-    # Default status
-    status = "not yet added"
-    print(bcolors.FAIL, end='')
-
-    locationConfPath = os.path.join(name, configFileName)
-    with open(locationConfPath) as locationFile:
-        data = json.load(locationFile)
-        target_files = os.path.normpath(
-            os.path.join(dirOfPythonScript, name, data["target_files"])
-        )
-        desired_endpoint = os.path.expanduser(data["desired_endpoint"])
-        endpoint_with_name = os.path.join(desired_endpoint, os.path.basename(os.path.normpath(target_files)))
-
-        if os.path.islink(endpoint_with_name):
-            if os.path.realpath(endpoint_with_name) == target_files:
-                status = "correctly set up"
-                print(bcolors.OKGREEN, end='')
-            else:
-                status = "wrong symlink"
-                print(bcolors.FAIL, end='')
-        elif os.path.isdir(endpoint_with_name):
-            status = "desired location contains incorrect directory"
-        elif os.path.isfile(endpoint_with_name):
-            status = "desired location contains incorrect file"
-    print(os.path.basename(name) + ": " + status)
-    print(bcolors.ENDC, end='')
-
-
-def linkFiles(name):
-    locationConfPath = os.path.join(name, configFileName)
-
-    if not os.path.isfile(locationConfPath):
-        print(f"Configuration could not be found for {name}")
-        return
-
-    if verbose:
-        print(f"{bcolors.BOLD}Located the following dotfiles: {bcolors.OKBLUE}{name}{bcolors.ENDC}")
-    if not useFileSelection:
-        if not confirmResponse("Would you like to add these dotfiles? (Y/N): "):
-            return
-
-    with open(locationConfPath) as locationFile:
-        if viewJson and verbose:
-            print(f"""Current dotfile settings from {bcolors.OKBLUE}{configFileName}{bcolors.ENDC}: """)
-            print(locationFile.read())
-            if not confirmResponse("Would you like to go through with the linking prosses using these settings? (Y/N): "):
-                return
-            locationFile.seek(0)
-
-        data = json.load(locationFile)
-        target_files = os.path.normpath(os.path.join(dirOfPythonScript, name, data["target_files"]))
-        desired_endpoint = os.path.expanduser(data["desired_endpoint"])
-        endpoint_with_name = os.path.join(desired_endpoint, os.path.basename(os.path.normpath(target_files)))
-
-        if os.path.islink(endpoint_with_name):
-            print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is a link to {bcolors.OKBLUE}{os.path.realpath(endpoint_with_name)}{bcolors.ENDC}")
-            if os.path.realpath(endpoint_with_name) == target_files:
-                print("Already correctly linked. There is no more work to do.")
-                return
-
-            if confirmResponse("Remove link? (Y/N): "):
-                runCommandWithPref(f"rm {endpoint_with_name}", "Removing incorrect link")
-
-        elif os.path.isdir(endpoint_with_name) or os.path.isfile(endpoint_with_name):
-            print(f"""{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} already exists!
-It must be removed before the new dotfiles can be added.""")
-            if confirmResponse("Remove files? (Y/N): "):
-                runCommandWithPref(f"rm -r {endpoint_with_name}", "Removing misplaced dirrectory")
-
-        if os.path.isdir(endpoint_with_name) or os.path.exists(endpoint_with_name):
-            print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is full. No further opperations can be done on this file")
-            return
-        if runCommandWithPref(f"ln -s {target_files} {desired_endpoint}", "Linking dots to desired location"):
-            print(f"Sucsessfuly added dotfiles from {bcolors.OKBLUE}{name}{bcolors.ENDC}!")
+import sys
 
 
 class bcolors:
@@ -176,91 +19,234 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
-configFileName = ".location.json"
+parser = argparse.ArgumentParser()
+
+parser.add_argument("-s", "--silent",
+                    help="Do not display logs",
+                    action="store_true")
+
+parser.add_argument("-t", "--transparent",
+                    help="All shell commands must be aproved before running",
+                    action="store_true")
+
+parsers = {}
+
+subp = parser.add_subparsers(title="subcommands", dest="command")
+
+parsers["track"] = subp.add_parser("track", help="Start tracking a new file",)
+parsers["list"] = subp.add_parser("list", help="List all tracked files")
+parsers["info"] = subp.add_parser("info", help="Get all static tracking "
+                                  + "information. (Stored in .meta.json)")
+
+parsers["status"] = subp.add_parser("status", help="Get current loaded status of" +
+                                    " tracked files")
+parsers["sync"] = subp.add_parser("sync", help="Sync tracked files and" +
+                                  " current active files")
+
+parsers["info"].add_argument("-r", "--raw", help="display raw config" +
+                                    " file instead of formatted config",
+                                    action="store_true")
+
+parsers["sync"].add_argument("-t", "--tracked",
+                             help="In the case of a conflict, replace active" +
+                             " with tracked",
+                             action="store_true")
+
+parsers["sync"].add_argument("-a", "--active",
+                             help="In the case of a conflict, replace" +
+                             " tracked with active",
+                             action="store_true")
 
 
-def add():
-    print("add is currently work in progress")
+for n in ("track", "list", "status", "info", "sync"):
+    parsers[n].add_argument("filename", nargs='*',
+                            help="Name of file(s) to operate upon.")
+
+this_script_dir = os.path.dirname(os.path.realpath(__file__))
+dots_dir = os.path.normpath(os.path.join(this_script_dir, "../dots/"))
+dots = os.listdir(dots_dir)
+
+args = parser.parse_args()
+
+specified_files = []
+if args.filename is not None:
+    useFileSelection = len(args.filename) > 0
+
+    if useFileSelection:
+        file_args = args.filename
+        for file_arg in file_args:
+            if file_arg not in dots:
+                print(f"Error! {file_arg} does not exist.")
+            else:
+                specified_files.append(file_arg)
+    else:
+        specified_files = dots
 
 
-def health():
-    for name in os.listdir(directory):
-        fullName = os.path.join(directory, name)
-        if (not useFileSelection) or name in files:
-            if os.path.isdir(fullName):
-                healthCheckLinks(fullName)
+yesRegEx = re.compile("y(es)?", re.IGNORECASE)
+noRegEx = re.compile("n(o)?", re.IGNORECASE)
 
 
-def list():
-    for name in os.listdir(directory):
-        fullName = os.path.join(directory, name)
-        if (not useFileSelection) or name in files:
-            print(os.path.basename(fullName))
+def confirm_response(question):
+    response = input(question)
+    if yesRegEx.match(response):
+        return True
+    if noRegEx.match(response):
+        return False
+
+    print(f"Error! could not understand {response}")
+    return confirm_response(question)
 
 
-def install():
-    if friendlyMode:
-        print("""              _       _    __ _ _                         _
-             | |     | |  / _(_) |                       | |
-           __| | ___ | |_| |_ _| | ___  ___      ___  ___| |_ _   _ _ __
-          / _` |/ _ \\| __|  _| | |/ _ \\/ __|    / __|/ _ \\ __| | | | '_ \\
-         | (_| | (_) | |_| | | | |  __/\\__ \\    \\__ \\  __/ |_| |_| | |_) |
-          \\__,_|\\___/ \\__|_| |_|_|\\___||___/    |___/\\___|\\__|\\__,_| .__/
-                                                                   | |
-                                                                   |_|""")
-        print(f"""You have started the installation prosses. This command will create dotfile
-        symlinks for each program. {bcolors.WARNING}WARNING: this program has the
-        ability to permenantly delete your files; be careful! {bcolors.ENDC}
+def excecute_command(command):
+    subprocess.run(command, shell=True)
 
-        This command can either be run You have the ability to confirm or veto every
-        command before it is executed. If you would like, you can pipe the `yes`
-        command into this command to automate the installation prosses. Alternatively,
-        select which files you would like to install with the filename paramater.""")
 
-        print(f"Locating all directories within {bcolors.OKBLUE}{directory}{bcolors.ENDC} for dotfiles")
-        autoExcecute = not confirmResponse("Would you like to confirm each command before it is excecuted? (Y/N): ")
-        print(f"autoExcecute {autoExcecute}")
-        viewJson = confirmResponse("Would you like to view each file .location.json config before it is excecuted? (Y/N): ")
-        print()
-        print("Located a configuration for the following files:")
-        for name in os.listdir(directory):
-            fullName = os.path.join(directory, name)
-            if os.path.isdir(fullName):
-                print(name)
+def run_commands_with_pref(command):
+    confirm_command(command)
 
-        print(f"\n{bcolors.BOLD}{"━" * 50}{bcolors.ENDC}\n")
 
-    i = 0
-    for name in os.listdir(directory):
-        fullName = os.path.join(directory, name)
-        if (not useFileSelection) or name in files:
-            if os.path.isdir(fullName):
-                if i > 0:
-                    if verbose:
-                        print(f"\n{bcolors.BOLD}{"━" * 50}{bcolors.ENDC}\n")
-                    else:
-                        print()
-                linkFiles(fullName)
-                i = i + 1
-    if friendlyMode:
-        print(f"\n{bcolors.BOLD}{"━" * 50}{bcolors.ENDC}\n")
-        print("Installation complete! Here is the status of your dotfiles:")
-        health()
-        print()
-        print("Thank you for installing the dotfiles.")
+def confirm_command(command):
+    if confirm_response(
+        f"Would you like to excecute this command: '{command}' (Y/N): "
+    ):
+        print(f"Excecuting '{command}'...")
+        excecute_command(command)
+    else:
+        print("Command will not be excecuted.")
+
+
+def info(name):
+    config_path = os.path.join(dots_dir, name, config_file_name)
+    with open(config_path) as location_file:
+        if args.raw:
+            print(location_file.read())
+        else:
+            data = json.load(location_file)
+            for d in data:
+                print(f"{d}: {data[d]}")
+
+
+def status(name):
+    status_string = "not yet added"
+    print(bcolors.FAIL, end='')
+
+    config_path = os.path.join(dots_dir, name, config_file_name)
+    try:
+        with open(config_path) as location_file:
+            data = json.load(location_file)
+            target_files = os.path.normpath(
+                os.path.join(dots_dir, name, data["target_files"])
+            )
+            desired_endpoint = os.path.expanduser(data["desired_endpoint"])
+            endpoint_with_name = os.path.join(
+                desired_endpoint,
+                os.path.basename(os.path.normpath(target_files))
+            )
+
+            if os.path.islink(endpoint_with_name):
+                if os.path.realpath(endpoint_with_name) == target_files:
+                    status_string = "correctly set up"
+                    print(bcolors.OKGREEN, end='')
+                else:
+                    status_string = f"wrong symlink:{os.path.realpath(endpoint_with_name)} vs {target_files}"
+                    print(bcolors.FAIL, end='')
+            elif os.path.isdir(endpoint_with_name):
+                status_string = "desired location contains incorrect directory"
+            elif os.path.isfile(endpoint_with_name):
+                status_string = "desired location contains incorrect file"
+    except Exception as e:
+        print(bcolors.FAIL, end='')
+        status_string = f"failed to open config: {e}"
+    print(status_string)
+    print(bcolors.ENDC, end='')
+
+
+def link_files(name):
+    location_conf_path = os.path.join(dots_dir, name, config_file_name)
+
+    if not os.path.isfile(location_conf_path):
+        print(f"Configuration could not be found for {name}")
+        return
+
+    if not args.silent:
+        print(f"{bcolors.BOLD}Located the following dotfiles: {bcolors.OKBLUE}{name}{bcolors.ENDC}")
+    if not useFileSelection:
+        if not confirm_response("Would you like to add these dotfiles? (Y/N): "):
+            return
+
+    with open(location_conf_path) as location_file:
+        data = json.load(location_file)
+        target_files = os.path.normpath(os.path.join(dots_dir, name, data["target_files"]))
+        desired_endpoint = os.path.expanduser(data["desired_endpoint"])
+        endpoint_with_name = os.path.join(
+            desired_endpoint,
+            os.path.basename(os.path.normpath(target_files))
+        )
+
+        if os.path.islink(endpoint_with_name):
+            print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is a link to {bcolors.OKBLUE}{os.path.realpath(endpoint_with_name)}{bcolors.ENDC}")
+            if os.path.realpath(endpoint_with_name) == target_files:
+                print("Already correctly linked. There is no more work to do.")
+                return
+
+            if confirm_response("Remove link? (Y/N): "):
+                run_commands_with_pref(f"rm {endpoint_with_name}")
+
+        elif os.path.isdir(endpoint_with_name) or os.path.isfile(endpoint_with_name):
+            print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} already"
+                  + " exists! It must be removed before the new dotfiles can "
+                  + "be added."
+                  )
+            if confirm_response("Remove files? (Y/N): "):
+                run_commands_with_pref(f"rm -r {endpoint_with_name}")
+
+        if os.path.isdir(endpoint_with_name) or os.path.exists(endpoint_with_name):
+            print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is full. No further opperations can be done on this file")
+            return
+        if run_commands_with_pref(f"ln -s {target_files} {desired_endpoint}"):
+            print(f"Sucsessfuly added dotfiles from {bcolors.OKBLUE}{name}{bcolors.ENDC}!")
+
+
+config_file_name = ".meta.json"
+
+
+def forAllFiles(func, seperator = True, name = True, newLine = True):
+    if len(specified_files) == 0:
+        print("No files selected")
+    elif len(specified_files) == 1:
+        func(specified_files[0])
+    else:
+        i = 0
+        for file in specified_files:
+            if i > 0 and seperator:
+                print()#print(f"{bcolors.BOLD}{"━" * 50}{bcolors.ENDC}")
+            i += 1
+            if name:
+                if newLine:
+                    print("* ", end="")
+                print(file + ": ", end="\n" if newLine else "")
+            func(file)
+
+
+def list_files(file):
+    print(file)
 
 
 try:
-    if args.install:
-        install()
-    elif args.health:
-        health()
-    elif args.add:
-        add()
-    elif args.list:
-        list()
-    else:
+    if args.command is None:
         parser.print_help()
+    else:
+        if args.command == "status":
+            forAllFiles(status, False, True, False)
+        if args.command == "info":
+            forAllFiles(info, True, True, True)
+        if args.command == "sync":
+            forAllFiles(link_files, False, False)
+        if args.command == "list":
+            forAllFiles(list_files, False, False)
+        if args.command == "track":
+            print("not done yet")
 except KeyboardInterrupt:
     print()
-    exit(1)
+    sys.exit(1)
