@@ -393,59 +393,33 @@ awful.popup {
 	)
 
 
-	s.wibox =  awful.popup {-- wibox
+	s.wibox =  awful.popup {
 		position = "top",
 		width = 200,
-		border_width = 10,
-		border_color = theme.bg_normal,--theme.border_focus,
+		border_width = 1,
+		border_color = theme.border_focus,--theme.bg_normal,
 		--expand = "outside",
 		visible = true,
 		type = 'dock',
 		screen = s,
 		ontop = true,
-		minimum_height = 30,
-		maximum_height = 30,
+		minimum_height = 50,
+		maximum_height = 50,
+
 		placement = awful.placement.bottom,
 		shape = gears.shape.rectangle,
 		bg = beautiful.normal,
 		--shape  = gears.shape.partially_rounded_rect(cr, 70, 70),--gears.shape.rounded_bar,
 		--clock--widget = {nil,s.mytaglist,nil} --clock
-		widget = wibox.widget {
+		--
+widget = wibox.container.margin(
+		 wibox.widget {
 			mylauncher, separator, mytaglist, separator, clock,
 			layout  = wibox.layout.fixed.horizontal,
-			border_width = 100,
-			border_color = theme.bg_urgent,
+			--border_color = theme.bg_urgent,
 		}
+, 10, 10, 10, 10)
 	}
-
-	-- [[
-	--[[
- s.mywibox = awful.wibox {
-
-				--expand = "outside",
-				--position = "top",
-				screen   = s,
-	--shape    = gears.shape.rounded_bar,
-				height = 40,
-				--ontop    = true,
-				--stretch = true,
-
-	}
-	s.mywibox.widget = {
- layout = wibox.layout.align.horizontal,
-			-- [[
-widget = wibox.container.background,
-		shape_border_width = 30,
-				{ -- Left widgets
-						layout = wibox.layout.fixed.horizontal,
-						--spr,
-						s.mytaglist,
-						--s.mypromptbox,
-border_width = 20,
-						spr,
-				}
-		}
---]]
 end
 
 --s.mytasklist, -- Middle widget
