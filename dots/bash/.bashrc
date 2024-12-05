@@ -12,6 +12,7 @@ alias g="grep"
 alias scr="maim -sok 1 | xclip -selection clipboard -t image/png"
 alias weather="curl https://wttr.in/"
 alias day="date +'%y-%m-%d'"
+alias dt="date +'%y-%m-%d %R'"
 
 function nd() {
 	[[ $1 = "" ]] && nvim "$(day).norg" || nvim "$(day)-$1.norg"

@@ -25,10 +25,6 @@ parser.add_argument("-s", "--silent",
                     help="Do not display logs",
                     action="store_true")
 
-parser.add_argument("-t", "--transparent",
-                    help="All shell commands must be aproved before running",
-                    action="store_true")
-
 parsers = {}
 
 subp = parser.add_subparsers(title="subcommands", dest="command")
@@ -37,7 +33,7 @@ parsers["track"] = subp.add_parser("track", help="Start tracking a new file")
 parsers["help"] = subp.add_parser("help", help="Show this help message and exit")
 parsers["list"] = subp.add_parser("list", help="List all tracked files")
 parsers["info"] = subp.add_parser("info", help="Get all static tracking "
-                                  + "information. (Stored in .meta.json)")
+                                  + "information (stored in meta.json)")
 
 parsers["status"] = subp.add_parser("status", help="Get current loaded status of" +
                                     " tracked files")
@@ -61,13 +57,21 @@ parsers["track"].add_argument("filename",
 parsers["track"].add_argument("filename", nargs='*',
                               help="Full path of file(s) to start tracking.")
 
+
+parsers["track"].add_argument("-t", "--title",
+                              help="Dotfile title to use within tracking")
+
+
+parsers["track"].add_argument("-p", "--package",
+                              help="Package(s) that are required to run this configuration")
+
 parsers["sync"].add_argument("-a", "--active",
                              help="In the case of a conflict, replace" +
                              " tracked with active",
                              action="store_true")
 
 
-for n in ("track", "list", "status", "info", "sync"):
+for n in ("list", "status", "info", "sync"):
     parsers[n].add_argument("filename", nargs='*',
                             help="Name of file(s) to operate upon.")
 
@@ -158,7 +162,7 @@ def status(name):
                     status_string = "correctly set up"
                     print(bcolors.OKGREEN, end='')
                 else:
-                    status_string = f"wrong symlink:{os.path.realpath(endpoint_with_name)} vs {target_files}"
+                    status_string = "wrong symlink:" + os.path.realpath(endpoint_with_name) + " vs " + target_files
                     print(bcolors.FAIL, end='')
             elif os.path.isdir(endpoint_with_name):
                 status_string = "desired location contains incorrect directory"
@@ -177,10 +181,6 @@ def link_files(name):
     if not os.path.isfile(location_conf_path):
         print(f"Configuration could not be found for {name}")
         return
-
-    if not useFileSelection:
-        if not confirm_response("Would you like to add these dotfiles? (Y/N): "):
-            return
 
     with open(location_conf_path) as location_file:
         data = json.load(location_file)
@@ -220,7 +220,7 @@ def link_files(name):
                 print(f"Sucsessfuly added dotfiles from {bcolors.OKBLUE}{name}{bcolors.ENDC}!")
 
 
-config_file_name = ".meta.json"
+config_file_name = "meta.json"
 
 
 def forAllFiles(func, seperator = True, name = True, newLine = True):
@@ -232,11 +232,11 @@ def forAllFiles(func, seperator = True, name = True, newLine = True):
         i = 0
         for file in specified_files:
             if i > 0 and seperator:
-                print()#print(f"{bcolors.BOLD}{"━" * 50}{bcolors.ENDC}")
+                print()
             i += 1
             if name:
                 if newLine:
-                    print("* ", end="")
+                    print("-> ", end="")
                 print(file + ": ", end="\n" if newLine else "")
             func(file)
 
@@ -256,11 +256,12 @@ try:
         if args.command == "info":
             forAllFiles(info, True, True, True)
         if args.command == "sync":
-            forAllFiles(link_files, False, False)
+            forAllFiles(link_files, not args.silent, not args.silent, not args.silent)
         if args.command == "list":
             forAllFiles(list_files, False, False)
         if args.command == "track":
-            forAllFiles(track)
+            print("Not yet implemented")
+            # forAllFiles(track)
 except KeyboardInterrupt:
     print()
     sys.exit(1)

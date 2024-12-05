@@ -18,7 +18,7 @@ local theme                                     = {}
 local separators = lain.util.separators
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/theme"
 theme.wallpaper                                 = theme.dir .. "/forestWall.jpg"
-theme.font                                      = "Terminus 9"
+theme.font                                      = "JetBrains Mono 11"--"Terminus 9"
 -- foreground is just text
 theme.fg_normal                                 = "#FFFFFF"
 theme.fg_focus                                  = "#FFFFFF"
@@ -394,32 +394,55 @@ awful.popup {
 
 
 	s.wibox =  awful.popup {
-		position = "top",
+
+		-- One of the following will be used depending on popup and wibar
+		position = "bottom",
+ placement = function(c)
+        awful.placement.bottom(c, { margins = { bottom = dpi(3)} })
+    end,
+
+		ontop = true,
 		width = 200,
 		border_width = 1,
 		border_color = theme.border_focus,--theme.bg_normal,
-		--expand = "outside",
 		visible = true,
 		type = 'dock',
 		screen = s,
-		ontop = true,
 		minimum_height = 50,
 		maximum_height = 50,
 
-		placement = awful.placement.bottom,
 		shape = gears.shape.rectangle,
 		bg = beautiful.normal,
-		--shape  = gears.shape.partially_rounded_rect(cr, 70, 70),--gears.shape.rounded_bar,
-		--clock--widget = {nil,s.mytaglist,nil} --clock
-		--
 widget = wibox.container.margin(
 		 wibox.widget {
 			mylauncher, separator, mytaglist, separator, clock,
 			layout  = wibox.layout.fixed.horizontal,
-			--border_color = theme.bg_urgent,
 		}
 , 10, 10, 10, 10)
 	}
+
+--enable this later!
+--[[
+sysman = awful.popup {
+
+		border_width = 1,
+		border_color = theme.border_focus,--theme.bg_normal,
+ placement = function(c)
+        awful.placement.left(c, { margins = { left = dpi(3)} })
+    end,
+		widget = wibox.container.margin( wibox.widget{
+			clock,
+			wibox.widget {
+    date = os.date('*t'), -- Set the current date
+    font = theme.font, -- Set the font directly here
+    widget = wibox.widget.calendar.month
+},
+			layout  = wibox.layout.fixed.vertical
+		}, 10, 10, 10, 10),
+		ontop = true
+	}
+	]]--
+
 end
 
 --s.mytasklist, -- Middle widget
