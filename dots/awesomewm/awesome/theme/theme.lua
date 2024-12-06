@@ -421,12 +421,13 @@ widget = wibox.container.margin(
 , 10, 10, 10, 10)
 	}
 
---enable this later!
---[[
-sysman = awful.popup {
+s.sysinfo = awful.wibox {
 
 		border_width = 1,
-		border_color = theme.border_focus,--theme.bg_normal,
+		width = 200,
+
+		border_color = theme.border_focus,
+		position = "left",
  placement = function(c)
         awful.placement.left(c, { margins = { left = dpi(3)} })
     end,
@@ -439,9 +440,8 @@ sysman = awful.popup {
 },
 			layout  = wibox.layout.fixed.vertical
 		}, 10, 10, 10, 10),
-		ontop = true
+		 ontop = true
 	}
-	]]--
 
 end
 
