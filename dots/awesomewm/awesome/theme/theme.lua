@@ -420,7 +420,7 @@ widget = wibox.container.margin(
 		}
 , 10, 10, 10, 10)
 	}
-
+--[[
 s.sysinfo = awful.wibox {
 
 		border_width = 1,
@@ -442,6 +442,7 @@ s.sysinfo = awful.wibox {
 		}, 10, 10, 10, 10),
 		 ontop = true
 	}
+	]]--
 
 end
 

@@ -148,6 +148,12 @@ awful.keyboard.append_global_keybindings({
             end
         end,
     },
+	awful.key({ modkey }, "`", function ()
+		for s in screen do
+			s.wibox.visible = not s.wibox.visible
+		end
+	end
+	),
     awful.key {
         modifiers   = { modkey, "Control" },
         keygroup    = "numrow",
@@ -226,19 +232,6 @@ client.connect_signal("request::default_keybindings", function()
             end,
             {description = "toggle fullscreen", group = "client"}),
 
-	awful.key({ modkey }, "`", function ()
-		for s in screen do
-			s.wibox.visible = not s.wibox.visible
-		end
-	end
-	),
-
-	awful.key({ modkey }, "-", function ()
-		for s in screen do
-			s.sysinfo.visible = not s.sysinfo.visible
-		end
-	end
-	),
 
         awful.key({ modkey }, "q",      function (c) c:kill()                         end,
                 {description = "close", group = "client"}),

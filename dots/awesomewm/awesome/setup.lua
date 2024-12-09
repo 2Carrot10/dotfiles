@@ -5,6 +5,7 @@ local wibox = require("wibox")
 local naughty = require("naughty")
 local ruled = require("ruled")
 local menubar = require("menubar")
+local beautiful = require("beautiful")
 local fancytaglist = require("fancy-taglist")
 require("awful.hotkeys_popup.keys")
 local lain = require("lain")
@@ -161,19 +162,20 @@ ruled.notification.connect_signal('request::rules', function()
     -- All notifications will match this rule.
 ruled.notification.append_rule {
         rule       = { urgency = "critical" },
-        properties = { bg = "#ff0000", fg = "#ffffff", timeout = 0 }
+
+        properties = { bg = beautiful.fg_urgent, fg = beautiful.fg_urgent, timeout = 0 }
     }
 
     -- Or green background for normal ones.
     ruled.notification.append_rule {
         rule       = { urgency = "normal" },
-        properties = { bg      = "#00ff00", fg = "#000000"}
+        properties = { bg      = beautiful.bg_normal, fg = beautiful.fg_normal, timeout = 5 }
     }
 
 
     ruled.notification.append_rule {
         rule       = { urgency = "low" },
-        properties = { bg      = "#0000ff", fg = "#000000"}
+        properties = { bg      = beautiful.bg_normal, fg = beautiful.fg_normal, timeout = 5 }
     }
 	--[[
     ruled.notification.append_rule {

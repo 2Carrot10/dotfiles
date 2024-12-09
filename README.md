@@ -18,15 +18,19 @@ This repo contains the main dotfiles I use on Arch Linux with AwesomeWM, as well
 All programs use the same color scheme ([tokyo-night](https://github.com/tokyo-night/tokyo-night-vscode-theme)), font ([Jet Brains Mono](https://www.programmingfonts.org/#jetbrainsmono)), and keymaps ([VI](https://en.wikipedia.org/wiki/Vi_(text_editor))).
 
 ## Extensibility
-The final filepath locations of each configuration is not hardcoded. Instead, each configuration has a `.location.json` file. If you add your own dotfiles, they will be detected by the `manage` script.
+The final filepath locations of each configuration is not hardcoded. Instead, each configuration has a `.meta.json` file. If you add your own dotfiles, they will be detected by the `manage` script.
 
 You can check the install status of your dotfiles:
 ```sh
-manage --health
+manage status
 ```
-You can also install or check specific dotfiles by specifying parameters:
+You can check the ideal state of your dotfiles:
 ```sh
-manage --install nvim awesome kitty
+manage info
+```
+You can install or check specific dotfiles by specifying parameters:
+```sh
+manage sync nvim awesomewm kitty
 ```
 
 ## AwesomeWM (window manager)

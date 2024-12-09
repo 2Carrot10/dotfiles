@@ -1,6 +1,7 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 set -o vi 
+shopt -s autocd
 
 #set wildmode=longest,list,full
 #set wildmenu
@@ -9,6 +10,12 @@ alias ls='ls --color=auto'
 alias l='ls' 
 alias grep='grep --color=auto'
 alias g="grep"
+alias eg="grep -E"
+alias h="head"
+alias x="xargs -I {}"
+alias f="find -name"
+alias fs="grep -Irl"
+alias fr="find . -regextype sed -regex"
 alias scr="maim -sok 1 | xclip -selection clipboard -t image/png"
 alias weather="curl https://wttr.in/"
 alias day="date +'%y-%m-%d'"
@@ -46,6 +53,20 @@ c() {
   ls
 }
 
+# move
+m() {
+	while true; do
+		ls --color=force | cat -n
+		echo -n "->"
+		read -n 1 -s response
+		count=1
+		[[ $response = 0 ]] && echo "0" && cd .. || for i in `ls`;
+		do [[ $count = $response ]] && cd $i && echo $response && break
+			((count++))
+		done;
+	done;
+}
+
 alias g="grep"
 
 function timer() {
@@ -64,6 +85,8 @@ la() {
 gitacp(){
 	git add . && git commit -m "$1" && git push
 }
+
+
 
 function bak() {
   cp $1 ${1}.bak
