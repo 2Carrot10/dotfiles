@@ -7,9 +7,10 @@ opt.number = true
 
 opt.signcolumn = "yes"
 
-opt.tabstop = 2
-opt.shiftwidth = 2
-opt.autoindent = true
+vim.opt.expandtab = false
+opt.tabstop = 4
+opt.shiftwidth = 4
+-- opt.autoindent = true
 
 opt.termguicolors = true
 opt.background = "dark"

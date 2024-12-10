@@ -1,59 +1,40 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
+
 set -o vi 
 shopt -s autocd
+export EDITOR="nvim"
 
-#set wildmode=longest,list,full
-#set wildmenu
-
+# File hierarchy viewing
+alias la="ls -A"
+alias li='ls -goht --time-style="+%y-%m-%d %H:%M" "$@"'
+alias lia="li -A"
 alias ls='ls --color=auto'
 alias l='ls' 
-alias grep='grep --color=auto'
-alias g="grep"
-alias eg="grep -E"
-alias h="head"
-alias x="xargs -I {}"
-alias f="find -name"
-alias fs="grep -Irl"
-alias fr="find . -regextype sed -regex"
-alias scr="maim -sok 1 | xclip -selection clipboard -t image/png"
-alias weather="curl https://wttr.in/"
-alias day="date +'%y-%m-%d'"
-alias dt="date +'%y-%m-%d %R'"
 
-function nd() {
-	[[ $1 = "" ]] && nvim "$(day).norg" || nvim "$(day)-$1.norg"
-}
-
-alias image="kitten icat"
-
-alias "~"="cd $HOME"
+# Shortened cd
 alias ".."="cd ../"
 alias "..."="cd ../../"
 alias "...."="cd ../../../"
 alias "....."="cd ../../../../"
 alias ".p"="cd ~/Documents/programs/"
 alias ".s"="cd ~/Documents/school/"
-alias "~"="cd ~"
-alias ":q"='exit'
-alias v='nvim'
-alias vi='nvim'
-alias vim='nvim'
-export EDITOR="nvim"
-
-# Don't display IUA characters in the tty
-if [ $TERM = "linux" ]; then
-	PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W ║ \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n '├ '; echo -n '\['; tput sgr0)\]"
-else
-	PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W  \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n ' '; echo -n '\['; tput sgr0)\]"
-fi
 
 c() {
 	cd "$1" || return 1
-  ls
+	ls
 }
 
-# move
+function mkcd {
+	mkdir $1
+	cd $1
+}
+
+function bak() {
+  cp $1 ${1}.bak
+}
+
+# NOTE:Highly experimental
 m() {
 	while true; do
 		ls --color=force | cat -n
@@ -67,8 +48,45 @@ m() {
 	done;
 }
 
-alias g="grep"
+# Search
+alias grep='grep --color=auto'
+alias gr="grep"
+alias eg="grep -E" #egrep
+alias fsl="grep -Irl" # Find string, just list matching files
+alias fs="grep -Ir" # Find string
+alias f="find -name" # Find name
+alias fr="find . -regextype sed -regex" # Find regex
 
+# ETC
+alias h="head"
+alias x="xargs -I {}"
+
+alias day="date +'%y-%m-%d'"
+alias dt="date +'%y-%m-%d %R'"
+alias image="kitten icat"
+
+function nd() { # .norg file for day
+	[[ $1 = "" ]] && nvim "$(day).norg" || nvim "$(day)-$1.norg"
+}
+
+# vi
+alias ":q"='exit'
+alias v='nvim'
+alias vi='nvim'
+alias vim='nvim'
+
+# Safety
+alias rm="trash-put" # sudo -S trash-cli
+alias mv="mv -i"
+
+# Edit configurations
+alias dmanage="~/Documents/dotfiles/meta/dmanage"
+
+# Not in use
+alias scr="maim -sok 1 | xclip -selection clipboard -t image/png"
+alias weather="curl https://wttr.in/"
+
+# Time
 function timer() {
 	for a in $(seq $1); do echo -ne "${a}s / ${1}s\r"; sleep 1; done; echo -ne "${1}s / ${1}s\n";
 }
@@ -78,28 +96,31 @@ function stopwatch() {
 	while true; do echo -ne "${a}s\r"; sleep 1; a=$((a+1)); done;
 }
 
-la() {
-	ls -goht --time-style="+%y-%m-%d %H:%M" "$@"; 
-}
-
+# git
 gitacp(){
 	git add . && git commit -m "$1" && git push
 }
+alias g="git"
+alias ga="git add"
+alias gc="git commit -m"
+alias gp="git push"
+alias gst="git status"
 
-
-
-function bak() {
-  cp $1 ${1}.bak
+# python
+function venv() {
+source .venv/bin/activate
 }
 
-function mkcd {
-	mkdir $1
-	cd $1
-}
+# PS1 
+# Don't display IUA characters in the tty
+if [ $TERM = "linux" ]; then
+	PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W ║ \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n '├ '; echo -n '\['; tput sgr0)\]"
+else
+	PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W  \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n ' '; echo -n '\['; tput sgr0)\]"
+fi
+
 
 # Injected by node version manager
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-#source "/home/twocarrot10/deps/skia/third_party/externals/emsdk/emsdk_env.sh"

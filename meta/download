@@ -6,4 +6,4 @@ read -p "Continue download? (Y/N):" confirm && [[ $confirm == [yY][eE][sS] || $c
 read -p "Download via https (the alternetive is ssh)? (Y/N):" confirm && [[ $confirm == [yY][eE][sS] || $confirm == [yY] ]] && git clone "git@github.com:2Carrot10/dotfiles.git" || git clone "https://github.com/2Carrot10/dotfiles.git"
 printf "The repo has been downloaded."
 read -p "Proceed with setup? (Y/N):" confirm && [[ $confirm == [yY][eE][sS] || $confirm == [yY] ]] || exit
-./dotfiles/meta/manage sync 
+./dotfiles/meta/dmanage sync 

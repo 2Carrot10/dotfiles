@@ -1,5 +1,5 @@
 # About
-This repo contains the main dotfiles I use on Arch Linux with AwesomeWM, as well as an installer and a archinstall config file. The locations of all configuration folders can be set up automatically with the `meta/manage --install` script, although make sure you read the prompts carefully before approving each change so preexisting files do not get deleted. Instead of cloning each folder into the correct location, the `meta/manage --install` script creates symlinks so you can edit all your dotfiles from one folder. You will still need to install the software that uses each config. 
+This repo contains the main dotfiles I use on Arch Linux with AwesomeWM, as well as an installer and a archinstall config file. The locations of all configuration folders can be set up automatically with the `meta/dmanage --install` script, although make sure you read the prompts carefully before approving each change so preexisting files do not get deleted. Instead of cloning each folder into the correct location, the `meta/dmanage --install` script creates symlinks so you can edit all your dotfiles from one folder. You will still need to install the software that uses each config. 
 
 ![Example Screenshot](READMEAssets/example1.png?raw=true)
 ![Example Screenshot](READMEAssets/example2.png?raw=true)
@@ -18,19 +18,19 @@ This repo contains the main dotfiles I use on Arch Linux with AwesomeWM, as well
 All programs use the same color scheme ([tokyo-night](https://github.com/tokyo-night/tokyo-night-vscode-theme)), font ([Jet Brains Mono](https://www.programmingfonts.org/#jetbrainsmono)), and keymaps ([VI](https://en.wikipedia.org/wiki/Vi_(text_editor))).
 
 ## Extensibility
-The final filepath locations of each configuration is not hardcoded. Instead, each configuration has a `.meta.json` file. If you add your own dotfiles, they will be detected by the `manage` script.
+The final filepath locations of each configuration is not hardcoded. Instead, each configuration has a `.meta.json` file. If you add your own dotfiles, they will be detected by the `dmanage` script.
 
 You can check the install status of your dotfiles:
 ```sh
-manage status
+dmanage status
 ```
 You can check the ideal state of your dotfiles:
 ```sh
-manage info
+dmanage info
 ```
 You can install or check specific dotfiles by specifying parameters:
 ```sh
-manage sync nvim awesomewm kitty
+dmanage sync nvim awesomewm kitty
 ```
 
 ## AwesomeWM (window manager)
