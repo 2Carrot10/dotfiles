@@ -69,6 +69,32 @@ function nd() { # .norg file for day
 	[[ $1 = "" ]] && nvim "$(day).norg" || nvim "$(day)-$1.norg"
 }
 
+function tex() {
+	[[ ${1%*.} == "latex" ]] && pdflatex $1 -output-directory=/tmp/
+	[[ ${1%*.} == "tex" ]] && pdftex $1 -output-directory=/tmp/ 
+	echo /tmp/${1%.*}.pdf
+	# zathura /tmp/${1%.*}.pdf &
+}
+
+# Random man page
+
+function man-app() {
+	man $(find /usr/share/man/man1 -type f | shuf | head -1) # --random-source ~/manPages/random 
+}
+
+function man-file() {
+	man $(find /usr/share/man/man4 -type f | shuf | head -1)
+}
+
+function man-game() {
+	man $(find /usr/share/man/man6 -type f | shuf | head -1)
+}
+
+
+function man-format() {
+	man $(find /usr/share/man/man5 -type f | shuf | head -1)
+}
+
 # vi
 alias ":q"='exit'
 alias v='nvim'

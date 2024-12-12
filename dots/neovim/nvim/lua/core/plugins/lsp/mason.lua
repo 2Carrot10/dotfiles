@@ -27,7 +27,8 @@
       -- list of servers for mason to install
       ensure_installed = {
         "lua_ls",
-				"pylsp",
+				--"pylsp",
+				"pyright",
 				"clangd",
 				"glslls",
 			 "csharp_ls",

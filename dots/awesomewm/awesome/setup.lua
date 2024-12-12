@@ -163,29 +163,21 @@ ruled.notification.connect_signal('request::rules', function()
 ruled.notification.append_rule {
         rule       = { urgency = "critical" },
 
-        properties = { bg = beautiful.fg_urgent, fg = beautiful.fg_urgent, timeout = 0 }
+        properties = { bg = beautiful.bg_urgent, fg = beautiful.fg_urgent, timeout = 0 }
     }
 
     -- Or green background for normal ones.
     ruled.notification.append_rule {
         rule       = { urgency = "normal" },
-        properties = { bg      = beautiful.bg_normal, fg = beautiful.fg_normal, timeout = 5 }
+        properties = { bg      = beautiful.accent, fg = beautiful.fg_normal, timeout = 5 }
     }
 
 
     ruled.notification.append_rule {
         rule       = { urgency = "low" },
-        properties = { bg      = beautiful.bg_normal, fg = beautiful.fg_normal, timeout = 5 }
+        properties = { bg      = beautiful.bg_normal, fg = beautiful.fg_normal, timeout = 5,
+		}
     }
-	--[[
-    ruled.notification.append_rule {
-        rule       = { },
-        properties = {
-            screen           = awful.screen.preferred,
-            implicit_timeout = 5,
-        }
-    }
-	]]--
 end)
 
 naughty.connect_signal("request::display", function(n)

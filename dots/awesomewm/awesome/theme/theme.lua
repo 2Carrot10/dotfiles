@@ -26,7 +26,8 @@ theme.fg_urgent                                 = "#09090a"
 
 theme.bg_normal                                 = "#1a1b26"--"#202129"
 theme.bg_focus                                  = "#09090a"
-theme.bg_urgent                                 = "#D43B3B"
+theme.bg_urgent                                 = "#f7768e"
+theme.accent									= "#7aa2f7"
 theme.border_width                              = dpi(1)
 theme.border_normal                             = "#484755"
 theme.border_focus                              = "#b1bcd7"
@@ -261,113 +262,8 @@ local net = lain.widget.net({
 			markup("#46A8C3", " " .. string.format("%06.1f", net_now.sent) .. " ")))
 	end
 })
--- Separators
-local spr     = wibox.widget.textbox(' ')
-local arrl_dl = separators.arrow_left(theme.bg_focus, "alpha")
-local arrl_ld = separators.arrow_left("alpha", theme.bg_focus)
---
+
 function theme.at_screen_connect(s)
-	--[[  s.mywibox = awful.wibar({ position = "top", screen = s, height = dpi(18), bg = theme.bg_normal, fg = theme.fg_normal })
-
-
-		s.mywibox:setup {
-						layout = wibox.layout.align.horizontal,
-						{ -- Left widgets
-								layout = wibox.layout.fixed.horizontal,
-								s.mytaglist,
-								s.mypromptbox,
-						},
-						s.mytasklist, -- Middle widget
-						{ -- Right widgets
-								layout = wibox.layout.fixed.horizontal,
-								wibox.widget.systray(),
-								--myTextLayout,
-								s.mylayoutbox,
-						},
-		}
-	]]--
-	-- [[
-
-	--[[
-popupThing = awful.popup {
-		widget = awful.widget.tasklist {
-				screen   = screen[1],
-				filter   = awful.widget.tasklist.filter.allscreen,
-				buttons  = tasklist_buttons,
-				style    = {
-						shape = gears.shape.rounded_rect,
-				},
-				layout   = {
-						spacing = 5,
-						forced_num_rows = 2,
-						layout = wibox.layout.grid.horizontal
-				},
-				widget_template = {
-						{
-								{
-										id     = 'clienticon',
-										widget = awful.widget.clienticon,
-								},
-								margins = 4,
-								widget  = wibox.container.margin,
-						},
-						id              = 'background_role',
-						forced_width    = 48,
-						forced_height   = 48,
-						widget          = wibox.container.background,
-						create_callback = function(self, c, index, objects) --luacheck: no unused
-								self:get_children_by_id('clienticon')[1].client = c
-						end,
-				},
-		},
-		border_color = '#777777',
-		border_width = 2,
-		ontop        = true,
-		placement    = awful.placement.centered,
-		shape        = gears.shape.rounded_rect
-}
-]]--
-
---[[
-awful.popup {
-		widget = {
-				{
-						{
-								text   = 'foobar',
-								widget = wibox.widget.textbox
-						},
-						{
-								{
-										text   = 'foobar',
-										widget = wibox.widget.textbox
-								},
-								bg     = '#ff00ff',
-								clip   = true,
-								shape  = gears.shape.rounded_bar,
-								widget = wibox.widget.background
-						},
-						{
-								value         = 0.5,
-								forced_height = 30,
-								forced_width  = 100,
-								widget        = wibox.widget.progressbar
-						},
-						layout = wibox.layout.fixed.vertical,
-				},
-				margins = 10,
-				widget  = wibox.container.margin
-		},
-		border_color = '#00ff00',
-		border_width = 5,
-		placement    = awful.placement.top_left,
-		shape        = gears.shape.rounded_rect,
-		ontop        = true,
-		visible      = true,
-}
-]]--
-
-	-- {{{ Menu
-	-- Create a launcher widget and a main menu
 	myawesomemenu = {
 		{ "hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
 		{ "manual", Terminal .. " -e man awesome" },
@@ -397,7 +293,7 @@ awful.popup {
 
 		-- One of the following will be used depending on popup and wibar
 		position = "bottom",
- placement = function(c)
+		placement = function(c)
         awful.placement.bottom(c, { margins = { bottom = dpi(3)} })
     end,
 
@@ -415,11 +311,13 @@ awful.popup {
 		bg = beautiful.normal,
 widget = wibox.container.margin(
 		 wibox.widget {
-			mylauncher, separator, mytaglist, separator, clock,
+baticon, bat.widget, --[[launcher]]--
+			separator, mytaglist, separator, clock,
 			layout  = wibox.layout.fixed.horizontal,
 		}
 , 10, 10, 10, 10)
 	}
+-- Work in progress sysinfo widget
 --[[
 s.sysinfo = awful.wibox {
 
