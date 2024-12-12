@@ -6,11 +6,12 @@ shopt -s autocd
 export EDITOR="nvim"
 
 # File hierarchy viewing
-alias la="ls -A"
-alias li='ls -goht --time-style="+%y-%m-%d %H:%M" "$@"'
-alias lia="li -A"
-alias ls='ls --color=auto'
+alias ls="eza --sort time" #'ls --color=auto'
 alias l='ls' 
+alias li='ls -l --git --no-user --time-style="+%y-%m-%d %H:%M" "$@"' #for /bin/ls: 'ls -goht --time-style="+%y-%m-%d %H:%M" "$@"'
+alias la="ls -A"
+alias lia="li -A"
+alias lai="li -A"
 
 # Shortened cd
 alias ".."="cd ../"
@@ -77,9 +78,10 @@ function tex() {
 }
 
 # Random man page
-
 function man-app() {
-	man $(find /usr/share/man/man1 -type f | shuf | head -1) # --random-source ~/manPages/random 
+	a= sed "1q;d" "$HOME/manPages/count" | awk -F " " '{print $2}'
+	echo $a
+	man $(find /usr/share/man/man1 -type f | shuf --random-source $HOME/manPages/random | sed "${a}q;d") #  
 }
 
 function man-file() {
