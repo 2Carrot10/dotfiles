@@ -6,12 +6,16 @@ shopt -s autocd
 export EDITOR="nvim"
 
 # File hierarchy viewing
-alias ls="eza --sort time" #'ls --color=auto'
+alias eza="eza --sort time --icons auto" #'ls --color=auto'
+alias ls="eza" #'ls --color=auto'
 alias l='ls' 
-alias li='ls -l --git --no-user --time-style="+%y-%m-%d %H:%M" "$@"' #for /bin/ls: 'ls -goht --time-style="+%y-%m-%d %H:%M" "$@"'
+alias li='ls -lh --no-user --time-style="+%y-%m-%d %H:%M"' #for /bin/ls: 'ls -goht --time-style="+%y-%m-%d %H:%M" "$@"'
+
+# --git 
 alias la="ls -A"
 alias lia="li -A"
 alias lai="li -A"
+alias tree="ls --tree -L $1" # Make sure to add level (i.e. tree 2)
 
 # Shortened cd
 alias ".."="cd ../"
@@ -25,6 +29,16 @@ c() {
 	cd "$1" || return 1
 	ls
 }
+
+# grep help
+grelp() {
+$1 --help | grep --color=always ${@:2} 
+}
+
+hlp() {
+$1 --help
+}
+
 
 function mkcd {
 	mkdir $1
@@ -59,22 +73,29 @@ alias f="find -name" # Find name
 alias fr="find . -regextype sed -regex" # Find regex
 
 # ETC
+alias lessr="less -R" # less (raw)
 alias h="head"
+alias t="tail"
 alias x="xargs -I {}"
 
 alias day="date +'%y-%m-%d'"
 alias dt="date +'%y-%m-%d %R'"
 alias image="kitten icat"
 
+color() {
+$1 --color=always ${@:2}
+}
+
 function nd() { # .norg file for day
 	[[ $1 = "" ]] && nvim "$(day).norg" || nvim "$(day)-$1.norg"
 }
 
+# Nonfunctional
 function tex() {
-	[[ ${1%*.} == "latex" ]] && pdflatex $1 -output-directory=/tmp/
+	[[ ${1%*.} == "latex" ]] && lualatex $1 -output-directory=/tmp/
 	[[ ${1%*.} == "tex" ]] && pdftex $1 -output-directory=/tmp/ 
-	echo /tmp/${1%.*}.pdf
-	# zathura /tmp/${1%.*}.pdf &
+	# echo /tmp/${1%.*}.pdf
+	zathura /tmp/${1%.*}.pdf &
 }
 
 # Random man page
@@ -99,12 +120,13 @@ function man-format() {
 
 # vi
 alias ":q"='exit'
+alias nvim="nvim -p" # allows opening multiple files
 alias v='nvim'
 alias vi='nvim'
 alias vim='nvim'
 
 # Safety
-alias rm="trash-put" # sudo -S trash-cli
+alias rm="trash-put" # you could also use rm -i # sudo -S trash-cli
 alias mv="mv -i"
 
 # Edit configurations
@@ -140,11 +162,12 @@ source .venv/bin/activate
 }
 
 # PS1 
+PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W  \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n ' '; echo -n '\['; tput sgr0)\]"
 # Don't display IUA characters in the tty
 if [ $TERM = "linux" ]; then
-	PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W ║ \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n '├ '; echo -n '\['; tput sgr0)\]"
-else
-	PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W  \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n ' '; echo -n '\['; tput sgr0)\]"
+	PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W ║ \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n ' '; echo -n '\['; tput sgr0)\]"
+
+alias eza="eza --sort time --icons never" #'ls --color=auto'
 fi
 
 
