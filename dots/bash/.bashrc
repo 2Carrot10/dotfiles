@@ -6,12 +6,10 @@ shopt -s autocd
 export EDITOR="nvim"
 
 # File hierarchy viewing
-alias eza="eza --sort time --icons auto" #'ls --color=auto'
+alias eza="eza --sort time --icons auto --no-filesize" #'ls --color=auto'
 alias ls="eza" #'ls --color=auto'
 alias l='ls' 
 alias li='ls -lh --no-user --time-style="+%y-%m-%d %H:%M"' #for /bin/ls: 'ls -goht --time-style="+%y-%m-%d %H:%M" "$@"'
-
-# --git 
 alias la="ls -A"
 alias lia="li -A"
 alias lai="li -A"
@@ -30,23 +28,13 @@ c() {
 	ls
 }
 
-# grep help
+# Grep for help
 grelp() {
 $1 --help | grep --color=always ${@:2} 
 }
 
 hlp() {
 $1 --help
-}
-
-
-function mkcd {
-	mkdir $1
-	cd $1
-}
-
-function bak() {
-  cp $1 ${1}.bak
 }
 
 # NOTE:Highly experimental
@@ -63,10 +51,20 @@ m() {
 	done;
 }
 
+# File modification
+function mkcd() {
+	mkdir $1
+	cd $1
+}
+
+function bak() {
+  cp $1 ${1}.bak
+}
+
 # Search
 alias grep='grep --color=auto'
 alias gr="grep"
-alias eg="grep -E" #egrep
+alias eg="grep -E" # egrep
 alias fsl="grep -Irl" # Find string, just list matching files
 alias fs="grep -Ir" # Find string
 alias f="find -name" # Find name
@@ -118,7 +116,7 @@ function man-format() {
 	man $(find /usr/share/man/man5 -type f | shuf | head -1)
 }
 
-# vi
+# Vi
 alias ":q"='exit'
 alias nvim="nvim -p" # allows opening multiple files
 alias v='nvim'
@@ -146,7 +144,7 @@ function stopwatch() {
 	while true; do echo -ne "${a}s\r"; sleep 1; a=$((a+1)); done;
 }
 
-# git
+# Git
 gitacp(){
 	git add . && git commit -m "$1" && git push
 }
@@ -156,18 +154,19 @@ alias gc="git commit -m"
 alias gp="git push"
 alias gst="git status"
 
-# python
+# Python
 function venv() {
 source .venv/bin/activate
 }
 
 # PS1 
 PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W  \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n ' '; echo -n '\['; tput sgr0)\]"
+
 # Don't display IUA characters in the tty
 if [ $TERM = "linux" ]; then
 	PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W ║ \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n ' '; echo -n '\['; tput sgr0)\]"
 
-alias eza="eza --sort time --icons never" #'ls --color=auto'
+alias eza="eza --sort time --icons never --no-filesize"
 fi
 
 

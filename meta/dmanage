@@ -49,11 +49,6 @@ parsers["sync"].add_argument("-t", "--tracked",
                              " with tracked",
                              action="store_true")
 
-parsers["track"].add_argument("filename",
-                              help="Start tracking a new file",
-                              nargs="*")
-
-
 parsers["track"].add_argument("filename", nargs='*',
                               help="Full path of file(s) to start tracking.")
 
@@ -82,19 +77,25 @@ dots = os.listdir(dots_dir)
 args = parser.parse_args()
 
 specified_files = []
-if hasattr(args, "filename"):
-    useFileSelection = len(args.filename) > 0
-
-    if useFileSelection:
-        file_args = args.filename
-        for file_arg in file_args:
-            if file_arg not in dots:
-                print(f"Error! {file_arg} does not exist.")
-            else:
-                specified_files.append(file_arg)
+if args.command == "track":
+    if len(args.filename) == 0:
+        print("You must choose files to track!")
+        exit(1)
     else:
-        specified_files = dots
+        specified_files = args.filename
+else:
+    if hasattr(args, "filename"):
+        useFileSelection = len(args.filename) > 0
 
+        if useFileSelection:
+            file_args = args.filename
+            for file_arg in file_args:
+                if file_arg not in dots:
+                    print(f"Error! {file_arg} does not exist.")
+                else:
+                    specified_files.append(file_arg)
+        else:
+            specified_files = dots
 
 yesRegEx = re.compile("y(es)?", re.IGNORECASE)
 noRegEx = re.compile("n(o)?", re.IGNORECASE)
@@ -179,7 +180,7 @@ def link_files(name):
     location_conf_path = os.path.join(dots_dir, name, config_file_name)
 
     if not os.path.isfile(location_conf_path):
-        print(f"Configuration could not be found for {name}")
+        print(f"Configuration could not be found for {name} ({location_conf_path})")
         return
 
     with open(location_conf_path) as location_file:
@@ -244,8 +245,13 @@ def forAllFiles(func, seperator = True, name = True, newLine = True):
 def list_files(file):
     print(file)
 
-def track():
-    pass
+def track(file):
+    if args.title is None:
+        args.title = input("Title of new files: ")
+    confirm_command(f"mkdir {dots_dir}/{args.title}")
+    confirm_command(f"mv {file} {dots_dir}/{args.title}")
+    confirm_command("echo '{\n\"desired_endpoint\": " + file + ",\n \"target_files\": " + os.path.basename(file)+ "\n}\' > " + f"{dots_dir}/{args.title}/meta.json")
+    link_files(args.title)
 
 try:
     if args.command is None or args.command == "help":
@@ -260,8 +266,7 @@ try:
         if args.command == "list":
             forAllFiles(list_files, False, False)
         if args.command == "track":
-            print("Not yet implemented")
-            # forAllFiles(track)
+            forAllFiles(track)
 except KeyboardInterrupt:
     print()
     sys.exit(1)
