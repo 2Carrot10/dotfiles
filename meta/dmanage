@@ -56,10 +56,6 @@ parsers["track"].add_argument("filename", nargs='*',
 parsers["track"].add_argument("-t", "--title",
                               help="Dotfile title to use within tracking")
 
-
-parsers["track"].add_argument("-p", "--package",
-                              help="Package(s) that are required to run this configuration")
-
 parsers["sync"].add_argument("-a", "--active",
                              help="In the case of a conflict, replace" +
                              " tracked with active",
@@ -121,9 +117,11 @@ def run_commands_with_pref(command):
 
 
 def confirm_command(command):
-    if confirm_response(
-        f"Would you like to excecute this command: '{command}' (Y/N): "
-    ):
+    if "\n" in command:
+        question = f"Would you like to excecute this command:\n{command}\n(Y/N): "
+    else:
+        question = f"Would you like to excecute this command: '{command}' (Y/N): "
+    if confirm_response(question):
         print(f"Excecuting '{command}'...")
         excecute_command(command)
     else:
@@ -250,7 +248,9 @@ def track(file):
         args.title = input("Title of new files: ")
     confirm_command(f"mkdir {dots_dir}/{args.title}")
     confirm_command(f"mv {file} {dots_dir}/{args.title}")
-    confirm_command("echo '{\n\"desired_endpoint\": " + file + ",\n \"target_files\": " + os.path.basename(file)+ "\n}\' > " + f"{dots_dir}/{args.title}/meta.json")
+    confirm_command("echo '{\n\"desired_endpoint\": \"" + file + "\",\n \"target_files\": \"" + os.path.basename(file)+ "\"\n}\' > " + f"{dots_dir}/{args.title}/meta.json")
+    if not args.silent:
+        print("Starting relinking process:")
     link_files(args.title)
 
 try:

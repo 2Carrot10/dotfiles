@@ -6,10 +6,10 @@ shopt -s autocd
 export EDITOR="nvim"
 
 # File hierarchy viewing
-alias eza="eza --sort time --icons auto --no-filesize" #'ls --color=auto'
+alias eza="eza --sort time --icons auto --no-filesize" # or use 'ls --color=auto'
 alias ls="eza" #'ls --color=auto'
-alias l='ls' 
-alias li='ls -lh --no-user --time-style="+%y-%m-%d %H:%M"' #for /bin/ls: 'ls -goht --time-style="+%y-%m-%d %H:%M" "$@"'
+alias l="ls" 
+alias li="ls -lh --no-user --time-style='+%y-%m-%d %H:%M'" #for /bin/ls: 'ls -goht --time-style="+%y-%m-%d %H:%M" "$@"'
 alias la="ls -A"
 alias lia="li -A"
 alias lai="li -A"
@@ -33,7 +33,7 @@ grelp() {
 $1 --help | grep --color=always ${@:2} 
 }
 
-hlp() {
+hrelp() {
 $1 --help
 }
 
@@ -62,7 +62,7 @@ function bak() {
 }
 
 # Search
-alias grep='grep --color=auto'
+alias grep="grep --color=auto"
 alias gr="grep"
 alias eg="grep -E" # egrep
 alias fsl="grep -Irl" # Find string, just list matching files
@@ -88,7 +88,7 @@ function nd() { # .norg file for day
 	[[ $1 = "" ]] && nvim "$(day).norg" || nvim "$(day)-$1.norg"
 }
 
-# Nonfunctional
+# BUG: Nonfunctional
 function tex() {
 	[[ ${1%*.} == "latex" ]] && lualatex $1 -output-directory=/tmp/
 	[[ ${1%*.} == "tex" ]] && pdftex $1 -output-directory=/tmp/ 
@@ -97,8 +97,9 @@ function tex() {
 }
 
 # Random man page
+# BUG: Nonfunctional
 function man-app() {
-	a= sed "1q;d" "$HOME/manPages/count" | awk -F " " '{print $2}'
+	a=sed "1q;d" "$HOME/manPages/count" | awk -F " " '{print $2}'
 	echo $a
 	man $(find /usr/share/man/man1 -type f | shuf --random-source $HOME/manPages/random | sed "${a}q;d") #  
 }
@@ -117,11 +118,11 @@ function man-format() {
 }
 
 # Vi
-alias ":q"='exit'
+alias ":q"="exit"
 alias nvim="nvim -p" # allows opening multiple files
-alias v='nvim'
-alias vi='nvim'
-alias vim='nvim'
+alias v="nvim"
+alias vi="nvim"
+alias vim="nvim"
 
 # Safety
 alias rm="trash-put" # you could also use rm -i # sudo -S trash-cli
