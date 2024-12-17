@@ -6,7 +6,7 @@ import os
 import json
 import argparse
 import sys
-from filecmp import dircmp
+from filecmp import dircmp, cmp
 
 
 class col:
@@ -196,7 +196,10 @@ def status(name):
             else:
                 return Status.BAD_DIR
         elif os.path.isfile(endpoint_with_name):
-            return Status.BAD_FILES
+            if cmp(endpoint_with_name,target_files):
+                return Status.CLONED
+            else:
+                return Status.BAD_FILES
         else:
             return Status.NOT_ADDED
     except:
