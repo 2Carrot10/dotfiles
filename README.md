@@ -24,14 +24,19 @@ You can check the install status of your dotfiles:
 ```sh
 dmanage status
 ```
-You can check the ideal state of your dotfiles:
+You can load your tracked dotfiles using symlinks:
 ```sh
-dmanage info
+dmanage sync
 ```
-You can install or check specific dotfiles by specifying parameters:
+Or copy them into their desired directories:
+```sh
+dmanage sync --clone
+```
+You can specify which files to target with almost any subcommand -- by default, the commands opperate on all tracked files:
 ```sh
 dmanage sync nvim awesomewm kitty
 ```
+dmanage can do many more things; type `dmanage help` for more information.
 
 ## AwesomeWM (window manager)
 The window manager features a minimalist system tray that lays on top of all windows so the windows can be viewed at full resolution by default.
