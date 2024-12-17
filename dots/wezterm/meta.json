@@ -1,4 +1,1 @@
-{
-  "desired_endpoint": "~/.config/",
-  "target_files": "" 
-}
+{"desired_endpoint": "/home/twocarrot10/.config/", "target_files": "wezterm", "packages": null}

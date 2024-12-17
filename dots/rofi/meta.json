@@ -1,4 +1,5 @@
 {
   "desired_endpoint": "~/.config/",
-  "target_files": "" 
+  "target_files": "",
+  "packages": null
 }

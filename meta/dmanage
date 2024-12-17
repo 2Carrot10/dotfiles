@@ -1,23 +1,30 @@
 #!/bin/python
+from enum import Enum
 import subprocess
 import re
 import os
 import json
 import argparse
 import sys
+from filecmp import dircmp
 
 
-class bcolors:
+class col:
     HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
+    BLUE = '\033[94m'
+    CYAN = '\033[96m'
+    GREEN = '\033[92m'
+    WARN = '\033[93m'
     FAIL = '\033[91m'
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+
+yes_regex = re.compile("y(es)?", re.IGNORECASE)
+no_regex = re.compile("n(o)?", re.IGNORECASE)
+
+config_file_name = "meta.json"
 
 parser = argparse.ArgumentParser()
 
@@ -30,10 +37,11 @@ parsers = {}
 subp = parser.add_subparsers(title="subcommands", dest="command")
 
 parsers["track"] = subp.add_parser("track", help="Start tracking a new file")
+
 parsers["help"] = subp.add_parser("help", help="Show this help message and exit")
 parsers["list"] = subp.add_parser("list", help="List all tracked files")
 parsers["info"] = subp.add_parser("info", help="Get all static tracking "
-                                  + "information (stored in meta.json)")
+                                  + f"information (stored in {col.BLUE}{config_file_name}{col.ENDC})")
 
 parsers["status"] = subp.add_parser("status", help="Get current loaded status of" +
                                     " tracked files")
@@ -44,9 +52,8 @@ parsers["info"].add_argument("-r", "--raw", help="display raw config" +
                              " file instead of formatted config",
                              action="store_true")
 
-parsers["sync"].add_argument("-t", "--tracked",
-                             help="In the case of a conflict, replace active" +
-                             " with tracked",
+parsers["sync"].add_argument("-c", "--clone",
+                             help="Copy instead of creating symlinks",
                              action="store_true")
 
 parsers["track"].add_argument("filename", nargs='*',
@@ -56,11 +63,9 @@ parsers["track"].add_argument("filename", nargs='*',
 parsers["track"].add_argument("-t", "--title",
                               help="Dotfile title to use within tracking")
 
-parsers["sync"].add_argument("-a", "--active",
-                             help="In the case of a conflict, replace" +
-                             " tracked with active",
-                             action="store_true")
 
+parsers["track"].add_argument("-p", "--package", nargs="*",
+                              help="Package(s) required to use these dotfiles")
 
 for n in ("list", "status", "info", "sync"):
     parsers[n].add_argument("filename", nargs='*',
@@ -69,7 +74,6 @@ for n in ("list", "status", "info", "sync"):
 this_script_dir = os.path.dirname(os.path.realpath(__file__))
 dots_dir = os.path.normpath(os.path.join(this_script_dir, "../dots/"))
 dots = os.listdir(dots_dir)
-
 args = parser.parse_args()
 
 specified_files = []
@@ -87,24 +91,21 @@ else:
             file_args = args.filename
             for file_arg in file_args:
                 if file_arg not in dots:
-                    print(f"Error! {file_arg} does not exist.")
+                    print(f"{col.FAIL}{file_arg} does not exist{col.ENDC}")
                 else:
                     specified_files.append(file_arg)
         else:
             specified_files = dots
 
-yesRegEx = re.compile("y(es)?", re.IGNORECASE)
-noRegEx = re.compile("n(o)?", re.IGNORECASE)
-
 
 def confirm_response(question):
-    response = input(question)
-    if yesRegEx.match(response):
+    response = input(question + " (Y/N): ")
+    if yes_regex.match(response):
         return True
-    if noRegEx.match(response):
+    if no_regex.match(response):
         return False
 
-    print(f"Error! could not understand {response}")
+    print(f"{col.FAIL}Could not understand \"{response}\"{col.ENDC}")
     return confirm_response(question)
 
 
@@ -112,17 +113,14 @@ def excecute_command(command):
     subprocess.run(command, shell=True)
 
 
-def run_commands_with_pref(command):
-    confirm_command(command)
-
-
 def confirm_command(command):
     if "\n" in command:
-        question = f"Would you like to excecute this command:\n{command}\n(Y/N): "
+        question = f"Would you like to excecute this command:\n{col.BLUE}{command}{col.ENDC}\n"
     else:
-        question = f"Would you like to excecute this command: '{command}' (Y/N): "
+        question = f"Would you like to excecute this command: {col.BLUE}{command}{col.ENDC}"
+
     if confirm_response(question):
-        print(f"Excecuting '{command}'...")
+        print(f"Excecuting '{col.BLUE}{command}{col.ENDC}'...")
         excecute_command(command)
     else:
         print("Command will not be excecuted.")
@@ -138,52 +136,48 @@ def info(name):
             for d in data:
                 print(f"{d}: {data[d]}")
 
+class Status(Enum):
+    LINKED = 0
+    CLONED = 1 # not yet is use
+    NOT_ADDED = 2
+    BAD_FILES = 3
+    BAD_LINK = 3
+    BAD_DIR = 4
+    BROKEN_CONFIG = 5
+
+class Desired_Status(Enum):
+    LINK = Status.LINKED
+    CLONE = Status.CLONED
+
+# very messy code but not quite bad enough that I will fix it yet
+def print_status(name):
+    stat = status(name)
+    if stat is Status.LINKED:
+        print(col.GREEN + "correctly setup")
+    elif stat is Status.CLONED:
+        print(col.GREEN + "cloned")
+    else:
+        print(col.FAIL, end="")
+        if stat is Status.NOT_ADDED:
+            print("not yet added")
+        elif stat is Status.BAD_FILES:
+            print("desired location contains incorrect file")
+        elif stat is Status.BAD_LINK:
+            print("desired location contains incorrect link")
+        elif stat is Status.BAD_DIR:
+            print("desired location contains incorrect directory")
+        elif stat is Status.BROKEN_CONFIG:
+            print("failed to open config file")
+        else:
+            print("Unknown status. (If you see this, something had gone wrong with my code!)")
+    print(col.ENDC, end="")
 
 def status(name):
-    status_string = "not yet added"
-    print(bcolors.FAIL, end='')
-
-    config_path = os.path.join(dots_dir, name, config_file_name)
     try:
-        with open(config_path) as location_file:
-            data = json.load(location_file)
-            target_files = os.path.normpath(
-                os.path.join(dots_dir, name, data["target_files"])
-            )
-            desired_endpoint = os.path.expanduser(data["desired_endpoint"])
-            endpoint_with_name = os.path.join(
-                desired_endpoint,
-                os.path.basename(os.path.normpath(target_files))
-            )
-
-            if os.path.islink(endpoint_with_name):
-                if os.path.realpath(endpoint_with_name) == target_files:
-                    status_string = "correctly set up"
-                    print(bcolors.OKGREEN, end='')
-                else:
-                    status_string = "wrong symlink:" + os.path.realpath(endpoint_with_name) + " vs " + target_files
-                    print(bcolors.FAIL, end='')
-            elif os.path.isdir(endpoint_with_name):
-                status_string = "desired location contains incorrect directory"
-            elif os.path.isfile(endpoint_with_name):
-                status_string = "desired location contains incorrect file"
-    except Exception as e:
-        print(bcolors.FAIL, end='')
-        status_string = f"failed to open config: {e}"
-    print(status_string)
-    print(bcolors.ENDC, end='')
-
-
-def link_files(name):
-    location_conf_path = os.path.join(dots_dir, name, config_file_name)
-
-    if not os.path.isfile(location_conf_path):
-        print(f"Configuration could not be found for {name} ({location_conf_path})")
-        return
-
-    with open(location_conf_path) as location_file:
-        data = json.load(location_file)
-        target_files = os.path.normpath(os.path.join(dots_dir, name, data["target_files"]))
+        data = get_json_of_file(name)
+        target_files = os.path.normpath(
+            os.path.join(dots_dir, name, data["target_files"])
+        )
         desired_endpoint = os.path.expanduser(data["desired_endpoint"])
         endpoint_with_name = os.path.join(
             desired_endpoint,
@@ -191,82 +185,180 @@ def link_files(name):
         )
 
         if os.path.islink(endpoint_with_name):
-
             if os.path.realpath(endpoint_with_name) == target_files:
-
-                if not args.silent:
-                    print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is a link to {bcolors.OKBLUE}{os.path.realpath(endpoint_with_name)}{bcolors.ENDC}")
-                    print("Already correctly linked. There is no more work to do.")
-                return
-
-            print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is a link to {bcolors.OKBLUE}{os.path.realpath(endpoint_with_name)}{bcolors.ENDC}")
-            if confirm_response("Remove link? (Y/N): "):
-                run_commands_with_pref(f"rm {endpoint_with_name}")
-
-        elif os.path.isdir(endpoint_with_name) or os.path.isfile(endpoint_with_name):
-            print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} already"
-                  + " exists! It must be removed before the new dotfiles can "
-                  + "be added."
-                  )
-            if confirm_response("Remove files? (Y/N): "):
-                run_commands_with_pref(f"rm -r {endpoint_with_name}")
-
-        if os.path.isdir(endpoint_with_name) or os.path.exists(endpoint_with_name):
-            print(f"{bcolors.OKBLUE}{endpoint_with_name}{bcolors.ENDC} is full. No further opperations can be done on this file.")
-            return
-        if run_commands_with_pref(f"ln -s {target_files} {desired_endpoint}"):
-            if not args.silent:
-                print(f"Sucsessfuly added dotfiles from {bcolors.OKBLUE}{name}{bcolors.ENDC}!")
+                return Status.LINKED
+            else:
+                return Status.BAD_LINK
+        elif os.path.isdir(endpoint_with_name):
+            diff = dircmp(endpoint_with_name,target_files).diff_files
+            if len(diff) == 0:
+                return Status.CLONED
+            else:
+                return Status.BAD_DIR
+        elif os.path.isfile(endpoint_with_name):
+            return Status.BAD_FILES
+        else:
+            return Status.NOT_ADDED
+    except:
+        return Status.BROKEN_CONFIG
 
 
-config_file_name = "meta.json"
+def set_json(file, data):
+    json_data = json.dumps(data, indent=4)
+    with open(file, "w") as outfile:
+        outfile.write(json_data)
+
+
+def get_json(json_file):
+    with open(json_file) as json_data:
+        data = json.load(json_data)
+    return data
+
+
+def canonicalize_name(name):
+    return os.path.join(dots_dir, name)
+
+
+def get_json_of_file(name):
+   return get_json(os.path.join(canonicalize_name(name), config_file_name))
+
+
+def set_json_of_file(name, data):
+    set_json(canonicalize_name(name), data)
+
+def canonicalize_target_files(name, target_files):
+    return os.path.normpath(os.path.join(canonicalize_name(name), target_files))
+
+
+def sync(name):
+    desired_status = Desired_Status.CLONE if args.clone else Desired_Status.LINK
+    current_status = status(name)
+
+    if desired_status.value == current_status:
+        if not args.silent:
+            print(f"{name} is already {"cloned" if desired_status == Desired_Status.CLONE else "linked"}. There is no more work to do.")
+        return
+
+    data = get_json_of_file(name)
+    target_files = canonicalize_target_files(name, data["target_files"])
+    desired_endpoint = os.path.expanduser(data["desired_endpoint"])
+    endpoint_with_name = os.path.join(desired_endpoint, os.path.basename(target_files))
+
+    # Remove files and links
+    if os.path.islink(endpoint_with_name):
+        print(
+            f"{col.BLUE}{endpoint_with_name}{col.ENDC} is a link to"
+            + f"{col.BLUE}{os.path.realpath(endpoint_with_name)}{col.ENDC}."
+            + f" It should be linked to {col.BLUE}{target_files}{col.ENDC}"
+        )
+
+        if confirm_response("Remove link?"):
+            confirm_command(f"rm {endpoint_with_name}")
+
+    elif os.path.isdir(endpoint_with_name) or os.path.isfile(endpoint_with_name):
+        print(f"{col.BLUE}{endpoint_with_name}{col.ENDC} already"
+              + " exists! It must be removed before the new dotfiles can "
+              + "be added."
+        )
+
+        if confirm_response("Remove files/directories?"):
+            confirm_command(f"rm -r {endpoint_with_name}")
+
+    # Start linking
+    if os.path.isdir(endpoint_with_name) or os.path.exists(endpoint_with_name):
+        print(f"{col.BLUE}{endpoint_with_name}{col.ENDC} is full. No further opperations can be done on this file.")
+        return
+    tracking_command = "cp -r" if desired_status == Desired_Status.CLONE else "ln -s"
+    if confirm_command(f"{tracking_command} {target_files} {desired_endpoint}"):
+        if not args.silent:
+            print(f"Sucsessfuly added dotfiles from {col.BLUE}{name}{col.ENDC}!")
 
 
 def forAllFiles(func, seperator = True, name = True, newLine = True):
     if len(specified_files) == 0:
-        print("No files selected")
+        print("No valid files selected")
     elif len(specified_files) == 1:
         func(specified_files[0])
-    else:
-        i = 0
-        for file in specified_files:
-            if i > 0 and seperator:
-                print()
-            i += 1
-            if name:
-                if newLine:
-                    print("-> ", end="")
-                print(file + ": ", end="\n" if newLine else "")
+        return
+
+    i = 0
+    for file in specified_files:
+        if i > 0 and seperator:
+            print()
+        if name:
+            if newLine:
+                print("-> ", end="")
+            print(file + ": ", end="\n" if newLine else "")
+        try:
             func(file)
+        except Exception as err:
+            if err is KeyboardInterrupt:
+                print()
+                sys.exit(1)
+            else:
+                print(f"{col.FAIL}Error! {err.args}{col.ENDC}")
+        i += 1
 
 
-def list_files(file):
-    print(file)
+def modify(file):
+    json_in = get_json_of_file(file)
+    json_out = {}
+
+    for j in json_in:
+        in_data = input(f"Change {j}: {json_in[j]}? (Press return to skip)")
+        if in_data == "": 
+            json_out[j] = json_in[j]
+        else:
+            json_out[j] = in_data
+
+    set_json_of_file(file, json_out)
+
 
 def track(file):
-    if args.title is None:
+    if hasattr(args, "title"):
         args.title = input("Title of new files: ")
-    confirm_command(f"mkdir {dots_dir}/{args.title}")
-    confirm_command(f"mv {file} {dots_dir}/{args.title}")
-    confirm_command("echo '{\n\"desired_endpoint\": \"" + file + "\",\n \"target_files\": \"" + os.path.basename(file)+ "\"\n}\' > " + f"{dots_dir}/{args.title}/meta.json")
+
+    if os.path.islink(file):
+        if not args.silent:
+            print("Files is already a link.")
+        return
+
+    tracked_file_location = canonicalize_name(args.title)
+    if os.path.isdir(tracked_file_location):
+        if not args.silent:
+            print("Title already contains files")
+        if confirm_response(f"Remove tracked file {col.BLUE}{tracked_file_location}{col.ENDC}?"):
+            confirm_command(f"rm -r {tracked_file_location}")
+
+    confirm_command(f"mkdir {tracked_file_location}")
+    confirm_command(f"mv {file} {tracked_file_location}")
+
+    json_to_add = json.dumps(
+        {
+            "desired_endpoint": file,
+            "target_files": args.title,
+            "packages": args.package if args.package is None else [],
+        }
+    )
+    confirm_command(F"echo '{json_to_add}' > {os.path.join(canonicalize_name(args.title), config_file_name)}")
+
     if not args.silent:
-        print("Starting relinking process:")
-    link_files(args.title)
+        print("Starting resyncing process:")
+    sync(args.title)
 
 try:
     if args.command is None or args.command == "help":
         parser.print_help()
     else:
         if args.command == "status":
-            forAllFiles(status, False, True, False)
+            forAllFiles(print_status, False, True, False)
         if args.command == "info":
             forAllFiles(info, True, True, True)
         if args.command == "sync":
-            forAllFiles(link_files, not args.silent, not args.silent, not args.silent)
+            forAllFiles(sync, not args.silent, not args.silent, not args.silent)
         if args.command == "list":
-            forAllFiles(list_files, False, False)
+            forAllFiles(print, False, False)
         if args.command == "track":
             forAllFiles(track)
 except KeyboardInterrupt:
-    print()
-    sys.exit(1)
+    print('')
