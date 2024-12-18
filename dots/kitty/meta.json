@@ -1,4 +1,5 @@
 {
-  "desired_endpoint": "~/.config/",
-  "target_files": "kitty" 
+    "desired_endpoint": "/home/twocarrot10/.config/kitty",
+    "target_files": "kitty",
+    "packages": null
 }

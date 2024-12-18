@@ -33,10 +33,6 @@ grelp() {
 $1 --help | grep --color=always ${@:2} 
 }
 
-hrelp() {
-$1 --help
-}
-
 # NOTE:Highly experimental
 m() {
 	while true; do

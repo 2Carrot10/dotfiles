@@ -32,6 +32,15 @@ parser.add_argument("-s", "--silent",
                     help="Do not display logs",
                     action="store_true")
 
+
+parser.add_argument("-y", "--yes",
+                    help="Do not ask before excecuting commands (BE CAUTIOUS)",
+                    action="store_true")
+
+parser.add_argument("-r", "--remove",
+                    help="When files must be removed to procede, remove them without asking (BE CAUTIOUS)",
+                    action="store_true")
+
 parsers = {}
 
 subp = parser.add_subparsers(title="subcommands", dest="command")
@@ -54,6 +63,11 @@ parsers["info"].add_argument("-r", "--raw", help="display raw config" +
 
 parsers["sync"].add_argument("-c", "--clone",
                              help="Copy instead of creating symlinks",
+                             action="store_true")
+
+
+parsers["track"].add_argument("-c", "--clone",
+                             help="Maintain the loaded file as real files instead of replacing them with symlinks",
                              action="store_true")
 
 parsers["track"].add_argument("filename", nargs='*',
@@ -79,7 +93,7 @@ args = parser.parse_args()
 specified_files = []
 if args.command == "track":
     if len(args.filename) == 0:
-        print("You must choose files to track!")
+        print("You must choose files to track")
         exit(1)
     else:
         specified_files = args.filename
@@ -115,11 +129,12 @@ def excecute_command(command):
 
 def confirm_command(command):
     if "\n" in command:
-        question = f"Would you like to excecute this command:\n{col.BLUE}{command}{col.ENDC}\n"
+        question = f"Would you like to excecute this command? \n{col.BLUE}{command}{col.ENDC}\n"
     else:
-        question = f"Would you like to excecute this command: {col.BLUE}{command}{col.ENDC}"
+        question = f"Would you like to excecute this command? {col.BLUE}{command}{col.ENDC}"
 
-    if confirm_response(question):
+
+    if args.yes or confirm_response(question):
         print(f"Excecuting '{col.BLUE}{command}{col.ENDC}'...")
         excecute_command(command)
     else:
@@ -153,7 +168,7 @@ class Desired_Status(Enum):
 def print_status(name):
     stat = status(name)
     if stat is Status.LINKED:
-        print(col.GREEN + "correctly setup")
+        print(col.GREEN + "linked")
     elif stat is Status.CLONED:
         print(col.GREEN + "cloned")
     else:
@@ -255,7 +270,7 @@ def sync(name):
             + f" It should be linked to {col.BLUE}{target_files}{col.ENDC}"
         )
 
-        if confirm_response("Remove link?"):
+        if args.remove or confirm_response("Remove link?"):
             confirm_command(f"rm {endpoint_with_name}")
 
     elif os.path.isdir(endpoint_with_name) or os.path.isfile(endpoint_with_name):
@@ -264,7 +279,7 @@ def sync(name):
               + "be added."
         )
 
-        if confirm_response("Remove files/directories?"):
+        if args.remove or confirm_response("Remove files/directories?"):
             confirm_command(f"rm -r {endpoint_with_name}")
 
     # Start linking
@@ -341,12 +356,13 @@ def track(file):
             "desired_endpoint": file,
             "target_files": args.title,
             "packages": args.package if args.package is None else [],
-        }
+        }, indent=4
     )
     confirm_command(F"echo '{json_to_add}' > {os.path.join(canonicalize_name(args.title), config_file_name)}")
 
     if not args.silent:
         print("Starting resyncing process:")
+    # Patch: improve code!
     sync(args.title)
 
 try:
