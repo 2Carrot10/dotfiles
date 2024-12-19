@@ -33,15 +33,15 @@ grelp() {
 $1 --help | grep --color=always ${@:2} 
 }
 
-# NOTE:Highly experimental
+# NOTE:Highly experimental. Currently nonfunctional
 m() {
 	while true; do
-		ls --color=force | cat -n
-		echo -n "->"
-		read -n 1 -s response
+		ls --color=always | cat -n
+		echo -n "-> "
+		read -n 2 response
 		count=1
-		[[ $response = 0 ]] && echo "0" && cd .. || for i in `ls`;
-		do [[ $count = $response ]] && cd $i && echo $response && break
+		[[ $response = 00 ]] && echo && cd .. || for i in `ls`;
+		do [[ $count = $response ]] && cd $i && echo && break
 			((count++))
 		done;
 	done;

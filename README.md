@@ -15,7 +15,7 @@ This repo contains the main dotfiles I use on Arch Linux with AwesomeWM, as well
 
 # Notable Features
 ## Keybind and color consistency
-All programs use the same color scheme ([Tokyo-Night](https://github.com/tokyo-night/tokyo-night-vscode-theme)), font ([Jet Brains Mono](https://www.programmingfonts.org/#jetbrainsmono)), and keymaps ([Vi](https://en.wikipedia.org/wiki/Vi_(text_editor))).
+All programs use the same color scheme ([Tokyo Night](https://github.com/tokyo-night/tokyo-night-vscode-theme)), font ([Jet Brains Mono](https://www.programmingfonts.org/#jetbrainsmono)), and keymaps ([Vi](https://en.wikipedia.org/wiki/Vi_(text_editor))).
 
 ## Extensibility
 The final filepath locations of each configuration is not hardcoded. Instead, each config has a `meta.json` file. If you add your own dotfiles, they will be detected by the `dmanage` script.

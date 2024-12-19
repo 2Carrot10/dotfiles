@@ -45,17 +45,15 @@ parsers = {}
 
 subp = parser.add_subparsers(title="subcommands", dest="command")
 
-parsers["track"] = subp.add_parser("track", help="Start tracking a new file")
-
-parsers["help"] = subp.add_parser("help", help="Show this help message and exit")
-parsers["list"] = subp.add_parser("list", help="List all tracked files")
-parsers["info"] = subp.add_parser("info", help="Get all static tracking "
-                                  + f"information (stored in {col.BLUE}{config_file_name}{col.ENDC})")
-
-parsers["status"] = subp.add_parser("status", help="Get current loaded status of" +
-                                    " tracked files")
 parsers["sync"] = subp.add_parser("sync", help="Sync tracked files and" +
                                   " current active files")
+parsers["track"] = subp.add_parser("track", help="Start tracking a new file")
+parsers["status"] = subp.add_parser("status", help="Get current loaded status of" +
+                                    " tracked files")
+parsers["info"] = subp.add_parser("info", help="Get all static tracking "
+                                  + f"information (stored in {col.BLUE}{config_file_name}{col.ENDC})")
+parsers["list"] = subp.add_parser("list", help="List all tracked files")
+parsers["help"] = subp.add_parser("help", help="Show this help message and exit")
 
 parsers["info"].add_argument("-r", "--raw", help="display raw config" +
                              " file instead of formatted config",
@@ -354,15 +352,14 @@ def track(file):
     json_to_add = json.dumps(
         {
             "desired_endpoint": file,
-            "target_files": args.title,
+            "target_files": os.path.basename(file),
             "packages": args.package if args.package is None else [],
         }, indent=4
     )
-    confirm_command(F"echo '{json_to_add}' > {os.path.join(canonicalize_name(args.title), config_file_name)}")
+    confirm_command(F"echo \n'{json_to_add}'\n > {os.path.join(canonicalize_name(args.title), config_file_name)}")
 
     if not args.silent:
-        print("Starting resyncing process:")
-    # Patch: improve code!
+        print("Tracking complete. Starting resyncing process:")
     sync(args.title)
 
 try:
