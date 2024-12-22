@@ -1,5 +1,5 @@
 # About
-This repo contains the main dotfiles I use on Arch Linux with AwesomeWM, as well as an installer and an archinstall config file. The locations of all configuration folders can be set up automatically with the `meta/dmanage sync` script. By default, the `meta/dmanage sync` command creates symlinks so you can manage all your dotfiles from a single directory.
+This repo contains the main dotfiles I use on Arch Linux with AwesomeWM, as well as an installer and an archinstall config file. The locations of all configuration folders can be set up automatically with the `meta/dotctl sync` script. By default, the `meta/dotctl sync` command creates symlinks so you can manage all your dotfiles from a single directory.
 
 ![Example Screenshot](READMEAssets/example1.png?raw=true)
 ![Example Screenshot](READMEAssets/example2.png?raw=true)
@@ -18,29 +18,29 @@ This repo contains the main dotfiles I use on Arch Linux with AwesomeWM, as well
 All programs use the same color scheme ([Tokyo Night](https://github.com/tokyo-night/tokyo-night-vscode-theme)), font ([Jet Brains Mono](https://www.programmingfonts.org/#jetbrainsmono)), and keymaps ([Vi](https://en.wikipedia.org/wiki/Vi_(text_editor))).
 
 ## Extensibility
-The final filepath locations of each configuration is not hardcoded. Instead, each config has a `meta.json` file. If you add your own dotfiles, they will be detected by the `dmanage` script.
+The final filepath locations of each configuration is not hardcoded. Instead, each config has a `meta.json` file. If you add your own dotfiles, they will be detected by the `dotctl` script.
 
 You can link all tracked dotfiles into the desired location using this command:
 ```sh
-dmanage sync
+dotctl sync
 ```
 Or copy them into their desired directories:
 ```sh
-dmanage sync --clone
+dotctl sync --clone
 ```
 If you want to start tracking a new file, simply use this command:
 ```sh
-dmanage track /path/to/your/file
+dotctl track /path/to/your/file
 ```
 Check the install status of your dotfiles:
 ```sh
-dmanage status
+dotctl status
 ```
 You can specify which files to target with almost any subcommand -- by default, the commands operate on **all** tracked files:
 ```sh
-dmanage sync nvim awesomewm kitty
+dotctl sync nvim awesomewm kitty
 ```
-`dmanage` is able to do a lot more! Use `dmanage help` for more information.
+`dotctl` is able to do a lot more! Use `dotctl help` for more information.
 
 ## AwesomeWM (window manager)
 The window manager features a minimalist system tray that lays on top of all windows so the windows can be viewed at full resolution by default.

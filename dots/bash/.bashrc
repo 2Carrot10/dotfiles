@@ -125,7 +125,7 @@ alias rm="trash-put" # you could also use rm -i # sudo -S trash-cli
 alias mv="mv -i"
 
 # Edit configurations
-alias dmanage="~/Documents/dotfiles/meta/dmanage"
+alias dotctl="~/Documents/dotfiles/meta/dotctl"
 
 # Not in use
 alias scr="maim -sok 1 | xclip -selection clipboard -t image/png"
