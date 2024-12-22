@@ -5,7 +5,7 @@ set -o vi
 shopt -s autocd
 export EDITOR="nvim"
 
-# File hierarchy viewing
+### File hierarchy viewing ###
 alias eza="eza --sort time --icons auto --no-filesize" # or use 'ls --color=auto'
 alias ls="eza" #'ls --color=auto'
 alias l="ls" 
@@ -15,7 +15,7 @@ alias lia="li -A"
 alias lai="li -A"
 alias tree="ls --tree -L $1" # Make sure to add level (i.e. tree 2)
 
-# Shortened cd
+### Shortened cd ###
 alias ".."="cd ../"
 alias "..."="cd ../../"
 alias "...."="cd ../../../"
@@ -57,7 +57,7 @@ function bak() {
   cp $1 ${1}.bak
 }
 
-# Search
+### Search ###
 alias grep="grep --color=auto"
 alias gr="grep"
 alias eg="grep -E" # egrep
@@ -66,7 +66,7 @@ alias fs="grep -Ir" # Find string
 alias f="find -name" # Find name
 alias fr="find . -regextype sed -regex" # Find regex
 
-# ETC
+### ETC ###
 alias lessr="less -R" # less (raw)
 alias h="head"
 alias t="tail"
@@ -113,14 +113,14 @@ function man-format() {
 	man $(find /usr/share/man/man5 -type f | shuf | head -1)
 }
 
-# Vi
+### Vi ###
 alias ":q"="exit"
-alias nvim="nvim -p" # allows opening multiple files
+alias nvim="nvim -p" # allows opening multiple files with `nvim a.txt b.txt c.txt`
 alias v="nvim"
 alias vi="nvim"
 alias vim="nvim"
 
-# Safety
+### Safety ###
 alias rm="trash-put" # you could also use rm -i # sudo -S trash-cli
 alias mv="mv -i"
 
@@ -131,7 +131,7 @@ alias dmanage="~/Documents/dotfiles/meta/dmanage"
 alias scr="maim -sok 1 | xclip -selection clipboard -t image/png"
 alias weather="curl https://wttr.in/"
 
-# Time
+### Time ###
 function timer() {
 	for a in $(seq $1); do echo -ne "${a}s / ${1}s\r"; sleep 1; done; echo -ne "${1}s / ${1}s\n";
 }
@@ -141,10 +141,11 @@ function stopwatch() {
 	while true; do echo -ne "${a}s\r"; sleep 1; a=$((a+1)); done;
 }
 
-# Git
+### Git ###
 gitacp(){
 	git add . && git commit -m "$1" && git push
 }
+
 alias g="git"
 alias ga="git add"
 alias gc="git commit -m"
@@ -156,8 +157,11 @@ function venv() {
 source .venv/bin/activate
 }
 
-# PS1 
+### PS1 ### 
 PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W  \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n ' '; echo -n '\['; tput sgr0)\]"
+
+# Super minimalist PS1
+# PS1="\$(err=\$?; echo -n '\['; tput sgr0; echo -n '\e[1m'; tput setaf 5; [[ \$err == 0 ]] || tput setaf 1; echo -n '\]-> '; echo -n '\['; tput sgr0)\]"
 
 # Don't display IUA characters in the tty
 if [ $TERM = "linux" ]; then
