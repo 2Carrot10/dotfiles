@@ -23,6 +23,8 @@ awful.keyboard.append_global_keybindings({
               {description = "lua execute prompt", group = "awesome"}),
     awful.key({ modkey,           }, "Return", function () awful.spawn(Terminal) end,
               {description = "open a terminal", group = "launcher"}),
+    awful.key({ modkey,           }, "t", function () os.execute(string.format(Browser .. " --new-tab file://$HOME/Documents/programs/better-new-tab/docs/index.html")) end,
+              {description = "open better new tab (requires better-new-tab program)", group = "launcher"}),
     awful.key({ modkey,           }, "b", function () awful.spawn(Browser) end,
               {description = "open a browser", group = "launcher"}),
     awful.key({ modkey },            "r",     function () awful.screen.focused().mypromptbox:run() end,

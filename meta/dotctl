@@ -360,7 +360,7 @@ def track(file):
             "packages": args.package if args.package is None else [],
         }, indent=4
     )
-    confirm_command(F"echo \n'{json_to_add}'\n> {os.path.join(canonicalize_name(args.title), config_file_name)}")
+    confirm_command(F"echo '{json_to_add}' > {os.path.join(canonicalize_name(args.title), config_file_name)}")
 
     if not args.silent:
         print("Tracking complete. Starting resyncing process:")

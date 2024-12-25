@@ -113,7 +113,10 @@ function man-format() {
 	man $(find /usr/share/man/man5 -type f | shuf | head -1)
 }
 
-### Vi ###
+### Fast Fetch ###
+alias ff="clear; fastfetch"
+
+### vi ###
 alias ":q"="exit"
 alias nvim="nvim -p" # allows opening multiple files with `nvim a.txt b.txt c.txt`
 alias v="nvim"

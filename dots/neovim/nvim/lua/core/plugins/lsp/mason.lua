@@ -30,8 +30,9 @@
 				--"pylsp",
 				"pyright",
 				"clangd",
+			    -- "bacon",
 				"glslls",
-			 "csharp_ls",
+			    "csharp_ls",
 				"tsserver",
 				"jdtls"
 				--"css-lsp",
