@@ -3,8 +3,8 @@
 
 		"source": "~/Documents/dotfiles/logo/arch.png",
          "type": "kitty",
-         "width": 18,
-         "height": 9
+         "width": 22,
+         "height": 11
 	},
 	/*
     "logo": {
@@ -43,7 +43,7 @@
             "type": "custom"
         },
         {
-            "key": "║  distro ╟───◯",
+            "key": "║ {#36} distro{#keys} ╟───◯",
             "type": "os",
 			"format": "{3}"
         },
@@ -53,7 +53,7 @@
             "type": "custom"
         },
         {
-            "key": "║ $ shell  ╟───⬤",
+            "key": "║ {#32}$ shell{#keys}  ╟───⬤",
             "type": "shell",
 			"format": "{6}"
         },
@@ -63,7 +63,7 @@
         },
 		{
         "type": "terminalfont",
-        "key": "║  font   ╟───◯",
+        "key": "║ {#31} font{#keys}   ╟───◯",
         "format": "{name}"
       },
         {
@@ -71,7 +71,7 @@
             "type": "custom"
         },
         {
-            "key": "║  term   ╟───⬤",
+            "key": "║ {#33} term{#keys}   ╟───⬤",
             "type": "terminal",
 			"format": "{5}"
         },
@@ -80,23 +80,24 @@
             "type": "custom"
         },
 		{
-            "key": "║ 󰇄 wm     ╟───◯",
+            "key": "║ {#34}󰇄 wm{#keys}     ╟───◯",
             "type": "wm"
         },
         //{
             //"key": "╠══════════╣",
             //"type": "custom"
         //},
-
+/*
         {
             "key": "║          ║",
             "type": "custom"
         },
         {
-            "key": "║  colors ╟───⬤",
+            "key": "║ {#31} colors{#keys} ╟───⬤",
             "type": "colors",
             "symbol": "square"
         },
+		*/
         {
             "key": "╚══════════╝",
             "type": "custom"
