@@ -350,7 +350,6 @@ def modify(file):
 
 
 def install(filename):
-    print(filename)
     packages = ""
     for file in filename:
         addition = " ".join(get_packages(file))
