@@ -1,5 +1,5 @@
 {
-    "desired_endpoint": "/home/twocarrot10/.config/kitty",
-    "target_files": "kitty",
-    "packages": "neovim"
+  "desired_endpoint": "~/.config/",
+  "target_files": ".",
+  "packages": "kitty"
 }
