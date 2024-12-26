@@ -3,8 +3,8 @@
 
 		"source": "~/Documents/dotfiles/logo/arch.png",
          "type": "kitty",
-         "width": 22,
-         "height": 11
+         "width": 28,
+         "height": 14
 	},
 	/*
     "logo": {
