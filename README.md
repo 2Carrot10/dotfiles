@@ -70,7 +70,7 @@ To install the dotfiles, run this command in the desired location:
 ```sh
 bash <(curl -s https://raw.githubusercontent.com/2Carrot10/dotfiles/master/meta/download)
 ```
-The command will automatically download the repo and run the install script. If you want to set everything up with a single command, you can pipe `yes` into the command above.
+The command will automatically download the repo, place the dotfiles in the correct locations('sync'), and install necessary packages. If you want to set everything up with a single command, you can pipe `yes` into the command above.
 
 ## Archinstall config 
 (I made this `archinstall` config for myself. If you would like to use it, you will likely want to change some settings.)
