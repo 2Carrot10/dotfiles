@@ -1,5 +1,5 @@
 {
   "desired_endpoint": "~/.config/",
   "target_files": "",
-  "packages": null
+  "packages": "rofi" 
 }

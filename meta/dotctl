@@ -47,6 +47,8 @@ subp = parser.add_subparsers(title="subcommands", dest="command")
 
 parsers["sync"] = subp.add_parser("sync", help="Sync tracked files and" +
                                   " current active files")
+parsers["install"] = subp.add_parser("install", help="install using pacman (ARCH-based only)")
+parsers["packages"] = subp.add_parser("packages", help="list all neccecary packages")
 parsers["track"] = subp.add_parser("track", help="Start tracking a new file")
 parsers["status"] = subp.add_parser("status", help="Get current loaded status of" +
                                     " tracked files")
@@ -54,6 +56,12 @@ parsers["info"] = subp.add_parser("info", help="Get all static tracking "
                                   + f"information (stored in {col.BLUE}{config_file_name}{col.ENDC})")
 parsers["list"] = subp.add_parser("list", help="List all tracked files")
 parsers["help"] = subp.add_parser("help", help="Show this help message and exit")
+
+parsers["modify"] = subp.add_parser("modify", help=f"Modify the {col.BLUE}{config_file_name}{col.ENDC} file.")
+parsers["modify"].add_argument("filename", help="Tracked file to start editing")
+parsers["modify"].add_argument("--interminal","-in", help=f"Do not use a text editor, just edit it in the terminal", action="store_true")
+
+parsers["packages"].add_argument("--nolabel","-n", help="hide track file name in list (useful to pass into pacman)", action="store_true")
 
 parsers["info"].add_argument("-r", "--raw", help="display raw config" +
                              " file instead of formatted config",
@@ -68,8 +76,9 @@ parsers["track"].add_argument("-c", "--clone",
                              help="Maintain the loaded file as real files instead of replacing them with symlinks",
                              action="store_true")
 
-parsers["track"].add_argument("filename", nargs='*',
-                              help="Full path of file(s) to start tracking.")
+
+parsers["track"].add_argument("filename",
+                              help="Full path of file to start tracking.")
 
 
 parsers["track"].add_argument("-t", "--title",
@@ -79,7 +88,7 @@ parsers["track"].add_argument("-t", "--title",
 parsers["track"].add_argument("-p", "--package", nargs="*",
                               help="Package(s) required to use these dotfiles")
 
-for n in ("list", "status", "info", "sync"):
+for n in ("list", "status", "info", "sync", "install", "packages"):
     parsers[n].add_argument("filename", nargs='*',
                             help="Name of file(s) to operate upon.")
 
@@ -89,7 +98,7 @@ dots = os.listdir(dots_dir)
 args = parser.parse_args()
 
 specified_files = []
-if args.command == "track":
+if args.command == "track" or args.command == "modify":
     if len(args.filename) == 0:
         print("You must choose files to track")
         exit(1)
@@ -186,7 +195,7 @@ def print_status(name):
 
 def status(name):
     try:
-        data = get_json_of_file(name)
+        data = get_json_of_name(name)
         target_files = os.path.normpath(
             os.path.join(dots_dir, name, data["target_files"])
         )
@@ -237,13 +246,15 @@ def get_json_raw(json_file):
 def canonicalize_name(name):
     return os.path.join(dots_dir, name)
 
+def get_json_path_of_name(name):
+    return os.path.join(canonicalize_name(name), config_file_name)
 
-def get_json_of_file(name):
-   return get_json(os.path.join(canonicalize_name(name), config_file_name))
+def get_json_of_name(name):
+   return get_json(get_json_path_of_name(name))
 
 
 def set_json_of_file(name, data):
-    set_json(canonicalize_name(name), data)
+    set_json(get_json_path_of_name(name), data)
 
 
 def canonicalize_target_files(name, target_files):
@@ -259,7 +270,7 @@ def sync(name):
             print(f"{name} is already {"cloned" if desired_status == Desired_Status.CLONE else "linked"}. There is no more work to do.")
         return
 
-    data = get_json_of_file(name)
+    data = get_json_of_name(name)
     target_files = canonicalize_target_files(name, data["target_files"])
     desired_endpoint = os.path.expanduser(data["desired_endpoint"])
     endpoint_with_name = os.path.join(desired_endpoint, os.path.basename(target_files))
@@ -321,20 +332,45 @@ def forAllFiles(func, seperator = True, name = True, newLine = True):
 
 
 def modify(file):
-    json_in = get_json_of_file(file)
-    json_out = {}
+    if args.interminal:
+        json_in = get_json_of_name(file)
+        json_out = {}
 
-    for j in json_in:
-        in_data = input(f"Change {j}: {json_in[j]}? (Press return to skip)")
-        if in_data == "": 
-            json_out[j] = json_in[j]
-        else:
-            json_out[j] = in_data
+        for j in json_in:
+            in_data = input(f"Change {j}: {json_in[j]}? (Press return to skip) ")
+            if in_data == "": 
+                json_out[j] = json_in[j]
+            else:
+                json_out[j] = in_data
 
-    set_json_of_file(file, json_out)
+        set_json_of_file(file, json_out)
+    else:
+        json_location = get_json_path_of_name(file)
+        excecute_command(f"if [ -z \"$EDITOR\" ]; then vi {json_location}; else $EDITOR {json_location}; fi")
+
+
+def install(filename):
+    print(filename)
+    packages = ""
+    for file in filename:
+        addition = " ".join(get_packages(file))
+        packages = packages + (" " if packages != "" and addition != "" else "") + addition
+    confirm_command(f"sudo pacman -S --needed {packages}")
+
+
+def get_packages(file):
+    packages_raw = get_json_of_name(file)
+    if not "packages" in packages_raw:
+       return list() 
+    packages = packages_raw if isinstance(packages_raw, list) else list([packages_raw["packages"]]) 
+    return filter(lambda x: x is not None,packages)
 
 
 def track(file):
+    file = os.path.normpath(file)
+    if not os.path.isabs(file):
+        file = os.path.join(os.getcwd(),file)
+
     if os.path.islink(file):
         if not args.silent:
             print("Files is already a link.")
@@ -350,13 +386,18 @@ def track(file):
         if confirm_response(f"Remove tracked file {col.BLUE}{tracked_file_location}{col.ENDC}?"):
             confirm_command(f"rm -r {tracked_file_location}")
 
-    confirm_command(f"mkdir {tracked_file_location}")
-    confirm_command(f"mv {file} {tracked_file_location}")
-
+    if not os.path.isdir(tracked_file_location):
+        confirm_command(f"mkdir {tracked_file_location}")
+        confirm_command(f"mv {file} {tracked_file_location}")
+    split_file = file.split(os.path.sep) # WARNING: BAD CODE! This should be part of path library, not string parsing
+    target = split_file[len(split_file) - 1]
+    split_file.pop(-1)
+    first = "/".join(split_file)
+    split_file.pop(1)
     json_to_add = json.dumps(
         {
-            "desired_endpoint": file,
-            "target_files": os.path.basename(file),
+            "desired_endpoint": first,
+            "target_files": target,
             "packages": args.package if args.package is None else [],
         }, indent=4
     )
@@ -365,7 +406,6 @@ def track(file):
     if not args.silent:
         print("Tracking complete. Starting resyncing process:")
     sync(args.title)
-
 
 try:
     if args.command is None or args.command == "help":
@@ -380,6 +420,13 @@ try:
         if args.command == "list":
             forAllFiles(print, False, False)
         if args.command == "track":
-            forAllFiles(track)
+            track(args.filename)
+        if args.command == "install":
+            install(specified_files)
+        if args.command == "modify":
+            modify(args.filename)
+        if args.command == "packages":
+            label = not args.nolabel
+            forAllFiles(lambda file: [print(package, end="\n" if label else " ") for package in get_packages(file)], label, label, label)
 except KeyboardInterrupt:
     print('')

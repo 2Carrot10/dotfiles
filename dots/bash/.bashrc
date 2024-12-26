@@ -129,6 +129,7 @@ alias mv="mv -i"
 
 # Edit configurations
 alias dotctl="~/Documents/dotfiles/meta/dotctl"
+alias dc=dotctl
 
 # Not in use
 alias scr="maim -sok 1 | xclip -selection clipboard -t image/png"

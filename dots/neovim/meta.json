@@ -1,4 +1,5 @@
 {
-  "desired_endpoint": "~/.config/",
-  "target_files": "nvim" 
+    "desired_endpoint": "~/.config/",
+    "target_files": "nvim",
+    "packages": "neovim"
 }
