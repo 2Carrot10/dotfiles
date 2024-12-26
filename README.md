@@ -32,7 +32,6 @@ To install all packages to use the dotfiles, use the `install` command:
 ```sh
 dotctl install
 ```
-
 If you want to start tracking a new file, simply use this command:
 ```sh
 dotctl track /path/to/your/file
@@ -58,14 +57,14 @@ The window manager features a minimalist system tray that lays on top of all win
 
 # Installation
 ## Dotfiles
-To install these dotfiles, either clone this GitHub repo, or the download script.
-### Clone repo
+To install these dotfiles, either clone this GitHub repo or run the download script.
+### Option 1: Clone repo
 After cloning the repo, you will generally want to `sync` and `install`. You can choose which dotfiles to set up by specifying them as parameters into the following commands:
 ```sh
 ./dotctl sync & ./dotctl install
 ```
 
-### Download script
+### Option 2: Run download script
 To install the dotfiles, run this command in the desired location:
 ```sh
 bash <(curl -s https://raw.githubusercontent.com/2Carrot10/dotfiles/master/meta/download)
