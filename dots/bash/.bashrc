@@ -22,6 +22,7 @@ alias "...."="cd ../../../"
 alias "....."="cd ../../../../"
 alias ".p"="cd ~/Documents/programs/"
 alias ".s"="cd ~/Documents/school/"
+alias dif="git diff --name-only"
 
 c() {
 	cd "$1" || return 1
@@ -79,10 +80,8 @@ alias image="kitten icat"
 color() {
 $1 --color=always ${@:2}
 }
-
-function nd() { # .norg file for day
-	[[ $1 = "" ]] && nvim "$(day).norg" || nvim "$(day)-$1.norg"
-}
+# .norg file for day
+function nd() {	[[ $1 = "" ]] && nvim "$(day).norg" || nvim "$(day)-$1.norg"; }
 
 # BUG: Nonfunctional
 function tex() {

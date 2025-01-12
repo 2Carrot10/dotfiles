@@ -23,8 +23,12 @@ awful.keyboard.append_global_keybindings({
               {description = "lua execute prompt", group = "awesome"}),
     awful.key({ modkey,           }, "Return", function () awful.spawn(Terminal) end,
               {description = "open a terminal", group = "launcher"}),
+
+	--commented out for unknown awesomewm freeze when using this shortcut when no browser opened
+	--[[
     awful.key({ modkey,           }, "t", function () os.execute(string.format(Browser .. " --new-tab file://$HOME/Documents/programs/better-new-tab/docs/index.html")) end,
               {description = "open better new tab (requires better-new-tab program)", group = "launcher"}),
+	]]--
     awful.key({ modkey,           }, "b", function () awful.spawn(Browser) end,
               {description = "open a browser", group = "launcher"}),
     awful.key({ modkey },            "r",     function () awful.screen.focused().mypromptbox:run() end,
@@ -46,12 +50,12 @@ awful.keyboard.append_global_keybindings({
 
 		awful.key({ modkey, "Shift"}, "s",
 			function ()
-				os.execute("scrot -s -F ~/screenshots/selected-screenshot-`date +\"%Y-%m-%d:%H-%M:%S\"`.png")
+				os.execute("scrot -s -F ~/screenshots/`date +\"%Y-%m-%d_%H:%M:%S\"`-select.png")
 			end,
 		{description = "selected screenshot", group = "hotkeys"}),
 		awful.key({ modkey, "Shift", "Control"}, "s",
 			function ()
-				os.execute("scrot -F ~/screenshots/full-screenshot-`date +\"%Y-%m-%d:%H-%M:%S\"`.png")
+				os.execute("scrot -F ~/screenshots/`date +\"%Y-%m-%d_%H:%M:%S\"`-full.png")
 			end,
 		{description = "full screenshot", group = "hotkeys"}),
     --volume control

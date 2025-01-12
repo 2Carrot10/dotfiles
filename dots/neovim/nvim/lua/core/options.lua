@@ -7,9 +7,9 @@ opt.number = true
 
 opt.signcolumn = "yes"
 
-vim.opt.expandtab = false
-opt.tabstop = 4
-opt.shiftwidth = 4
+vim.opt.expandtab = true
+opt.tabstop = 2
+opt.shiftwidth = 2
 -- opt.autoindent = true
 
 opt.termguicolors = true
@@ -64,3 +64,6 @@ vim.api.nvim_set_keymap("n", "<leader>bh", "<cmd>set showtabline=1<CR>", { desc 
 vim.api.nvim_set_keymap("n", "<leader>bs", "<cmd>set showtabline=2<CR>", { desc = "show buffer"})
 
 vim.api.nvim_set_keymap("n", "<leader>bn", "<cmd>set number!<CR><cmd> set relativenumber!<CR>", { desc = "toggle lines"})
+
+vim.opt.cmdheight = 0
+vim.opt.laststatus = 0
