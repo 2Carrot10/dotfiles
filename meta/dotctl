@@ -47,7 +47,7 @@ subp = parser.add_subparsers(title="subcommands", dest="command")
 
 parsers["sync"] = subp.add_parser("sync", help="Sync tracked files and" +
                                   " current active files")
-parsers["install"] = subp.add_parser("install", help="install using pacman (ARCH-based only)")
+parsers["install"] = subp.add_parser("install", help="install using pacman (Arch Linux only)")
 parsers["packages"] = subp.add_parser("packages", help="list all neccecary packages")
 parsers["track"] = subp.add_parser("track", help="Start tracking a new file")
 parsers["status"] = subp.add_parser("status", help="Get current loaded status of" +
