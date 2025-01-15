@@ -6,11 +6,11 @@ shopt -s autocd
 export EDITOR="nvim"
 
 ### File hierarchy viewing ###
+alias ls="ls --color=auto"  # default to normal behavior when using ls instead of l
 alias eza="eza --sort time --icons auto --no-filesize" # or use 'ls --color=auto'
-alias ls="eza" #'ls --color=auto'
-alias l="ls" 
-alias li="ls -lh --no-user --time-style='+%y-%m-%d %H:%M'" #for /bin/ls: 'ls -goht --time-style="+%y-%m-%d %H:%M" "$@"'
-alias la="ls -A"
+alias l="eza" #'ls --color=auto'
+alias li="l -lh --no-user --time-style='+%y-%m-%d %H:%M'" #for /bin/ls: 'ls -goht --time-style="+%y-%m-%d %H:%M" "$@"'
+alias la="l -A"
 alias lia="li -A"
 alias lai="li -A"
 alias tree="ls --tree -L $1" # Make sure to add level (i.e. tree 2)
@@ -35,18 +35,18 @@ $1 --help | grep --color=always ${@:2}
 }
 
 # NOTE:Highly experimental. Currently nonfunctional
-m() {
-	while true; do
-		ls --color=always | cat -n
-		echo -n "-> "
-		read -n 2 response
-		count=1
-		[[ $response = 00 ]] && echo && cd .. || for i in `ls`;
-		do [[ $count = $response ]] && cd $i && echo && break
-			((count++))
-		done;
-	done;
-}
+# m() {
+# 	while true; do
+# 		ls --color=always | cat -n
+# 		echo -n "-> "
+# 		read -n 2 response
+# 		count=1
+# 		[[ $response = 00 ]] && echo && cd .. || for i in `ls`;
+# 		do [[ $count = $response ]] && cd $i && echo && break
+# 			((count++))
+# 		done;
+# 	done;
+# }
 
 # File modification
 function mkcd() {
@@ -80,27 +80,33 @@ alias image="kitten icat"
 color() {
 $1 --color=always ${@:2}
 }
+
 # .norg file for day
 function nd() {	[[ $1 = "" ]] && nvim "$(day).norg" || nvim "$(day)-$1.norg"; }
 
 # BUG: Nonfunctional
-function tex() {
-	[[ ${1%*.} == "latex" ]] && lualatex $1 -output-directory=/tmp/
-	[[ ${1%*.} == "tex" ]] && pdftex $1 -output-directory=/tmp/ 
-	# echo /tmp/${1%.*}.pdf
-	zathura /tmp/${1%.*}.pdf &
-}
+# function tex() {
+# 	[[ ${1%*.} == "latex" ]] && lualatex $1 -output-directory=/tmp/
+# 	[[ ${1%*.} == "tex" ]] && pdftex $1 -output-directory=/tmp/ 
+# 	# echo /tmp/${1%.*}.pdf
+# 	zathura /tmp/${1%.*}.pdf &
+# }
 
 # Random man page
 # BUG: Nonfunctional
-function man-app() {
-	a=sed "1q;d" "$HOME/manPages/count" | awk -F " " '{print $2}'
-	echo $a
-	man $(find /usr/share/man/man1 -type f | shuf --random-source $HOME/manPages/random | sed "${a}q;d") #  
-}
+# function man-app() {
+# a=sed "1q;d" "$HOME/manPages/count" | awk -F " " '{print $2}'
+# echo $a
+# man $(find /usr/share/man/man1 -type f | shuf --random-source $HOME/manPages/random | sed "${a}q;d") #  
+# }
 
 function man-file() {
 	man $(find /usr/share/man/man4 -type f | shuf | head -1)
+}
+
+
+function man-app() {
+	man $(find /usr/share/man/man1 -type f | shuf | head -1)
 }
 
 function man-game() {
