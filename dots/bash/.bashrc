@@ -7,13 +7,13 @@ export EDITOR="nvim"
 
 ### File hierarchy viewing ###
 alias ls="ls --color=auto"  # default to normal behavior when using ls instead of l
-alias eza="eza --sort time --icons auto --no-filesize" # or use 'ls --color=auto'
+alias eza="eza --sort time --icons always --color always --no-filesize" # or use 'ls --color=auto'
 alias l="eza" #'ls --color=auto'
 alias li="l -lh --no-user --time-style='+%y-%m-%d %H:%M'" #for /bin/ls: 'ls -goht --time-style="+%y-%m-%d %H:%M" "$@"'
 alias la="l -A"
 alias lia="li -A"
 alias lai="li -A"
-alias tree="ls --tree -L $1" # Make sure to add level (i.e. tree 2)
+alias tree="l --tree -L $1" # Make sure to add level (i.e. tree 2)
 
 ### Shortened cd ###
 alias ".."="cd ../"
