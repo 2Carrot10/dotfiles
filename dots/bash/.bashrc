@@ -123,7 +123,7 @@ alias ff="clear; fastfetch"
 
 ### vi ###
 alias ":q"="exit"
-alias nvim="nvim -p" # allows opening multiple files with `nvim a.txt b.txt c.txt`
+alias np="nvim -p" # allows opening multiple files with `nvim a.txt b.txt c.txt`
 alias v="nvim"
 alias vi="nvim"
 alias vim="nvim"
@@ -151,6 +151,7 @@ function stopwatch() {
 }
 
 ### Git ###
+# acp = add, commit, push
 gitacp(){
 	git add . && git commit -m "$1" && git push
 }
@@ -167,16 +168,17 @@ source .venv/bin/activate
 }
 
 ### PS1 ### 
-PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W  \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n ' '; echo -n '\['; tput sgr0)\]"
+# Somewhat complicated PS1
+# PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W  \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n ' '; echo -n '\['; tput sgr0)\]"
 
 # Super minimalist PS1
-# PS1="\$(err=\$?; echo -n '\['; tput sgr0; echo -n '\e[1m'; tput setaf 5; [[ \$err == 0 ]] || tput setaf 1; echo -n '\]-> '; echo -n '\['; tput sgr0)\]"
+PS1="\$(err=\$?; echo -n '\['; tput sgr0; tput setaf 5; [[ \$err == 0 ]] || tput setaf 1; echo -n '\e[1m\]> '; echo -ne '\['; tput sgr0)\]"
 
 # Don't display IUA characters in the tty
 if [ $TERM = "linux" ]; then
-	PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W ║ \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n ' '; echo -n '\['; tput sgr0)\]"
+	# PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W ║ \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n ' '; echo -n '\['; tput sgr0)\]"
 
-alias eza="eza --sort time --icons never --no-filesize"
+  alias eza="eza --sort time --icons never --no-filesize"
 fi
 
 
