@@ -2,6 +2,7 @@
 from enum import Enum
 import subprocess
 import re
+import glob
 import os
 import json
 import argparse
@@ -199,7 +200,7 @@ def status(name):
         target_files = os.path.normpath(
             os.path.join(dots_dir, name, data["target_files"])
         )
-        desired_endpoint = os.path.expanduser(data["desired_endpoint"])
+        desired_endpoint = calculate_desired_endpoint(data["desired_endpoint"])
         endpoint_with_name = os.path.join(
             desired_endpoint,
             os.path.basename(os.path.normpath(target_files))
@@ -260,6 +261,15 @@ def set_json_of_file(name, data):
 def canonicalize_target_files(name, target_files):
     return os.path.normpath(os.path.join(canonicalize_name(name), target_files))
 
+def calculate_desired_endpoint(endpoint):
+    endpoint_group = glob.glob(os.path.expanduser(endpoint)) 
+    if len(endpoint_group) == 0:
+        raise ValueError(f"There are no files that match the pattern {col.BLUE}{endpoint_group}{endpoint_group}{col.ENDC}!")
+    elif len(endpoint_group) > 1:
+        raise ValueError(f"There are mutliple files that match the pattern {col.BLUE}{endpoint}{col.ENDC}: {col.BLUE}{endpoint_group}{col.ENDC}!" +
+              "Multiple file syncing not yet added.")
+    else:
+        return endpoint_group[0]
 
 def sync(name):
     desired_status = Desired_Status.CLONE if args.clone else Desired_Status.LINK
@@ -272,13 +282,14 @@ def sync(name):
 
     data = get_json_of_name(name)
     target_files = canonicalize_target_files(name, data["target_files"])
-    desired_endpoint = os.path.expanduser(data["desired_endpoint"])
+
+    desired_endpoint = calculate_desired_endpoint(data["desired_endpoint"])
     endpoint_with_name = os.path.join(desired_endpoint, os.path.basename(target_files))
 
     # Remove files and links
     if os.path.islink(endpoint_with_name):
         print(
-            f"{col.BLUE}{endpoint_with_name}{col.ENDC} is a link to"
+            f"{col.BLUE}{endpoint_with_name}{col.ENDC} is a link to "
             + f"{col.BLUE}{os.path.realpath(endpoint_with_name)}{col.ENDC}."
             + f" It should be linked to {col.BLUE}{target_files}{col.ENDC}"
         )
@@ -302,10 +313,10 @@ def sync(name):
     tracking_command = "cp -r" if desired_status == Desired_Status.CLONE else "ln -s"
     if confirm_command(f"{tracking_command} {target_files} {desired_endpoint}"):
         if not args.silent:
-            print(f"Sucsessfuly added dotfiles from {col.BLUE}{name}{col.ENDC}!")
+            print(f"Sucsessfully added dotfiles from {col.BLUE}{name}{col.ENDC}!")
 
 
-def forAllFiles(func, seperator = True, name = True, newLine = True):
+def for_all_files(func, seperator = True, name = True, newLine = True):
     if len(specified_files) == 0:
         print("No valid files selected")
     elif len(specified_files) == 1:
@@ -411,13 +422,13 @@ try:
         parser.print_help()
     else:
         if args.command == "status":
-            forAllFiles(print_status, False, True, False)
+            for_all_files(print_status, False, True, False)
         if args.command == "info":
-            forAllFiles(info, True, True, True)
+            for_all_files(info, True, True, True)
         if args.command == "sync":
-            forAllFiles(sync, not args.silent, not args.silent, not args.silent)
+            for_all_files(sync, not args.silent, not args.silent, not args.silent)
         if args.command == "list":
-            forAllFiles(print, False, False)
+            for_all_files(print, False, False)
         if args.command == "track":
             track(args.filename)
         if args.command == "install":
@@ -426,6 +437,6 @@ try:
             modify(args.filename)
         if args.command == "packages":
             label = not args.nolabel
-            forAllFiles(lambda file: [print(package, end="\n" if label else " ") for package in get_packages(file)], label, label, label)
+            for_all_files(lambda file: [print(package, end="\n" if label else " ") for package in get_packages(file)], label, label, label)
 except KeyboardInterrupt:
     print('')

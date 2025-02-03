@@ -1,0 +1,5 @@
+{
+    "desired_endpoint": "/home/twocarrot10/.mozilla/firefox/*.default-release",
+    "target_files": "chrome",
+    "packages": null
+}

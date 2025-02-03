@@ -140,16 +140,6 @@ alias dc=dotctl
 alias scr="maim -sok 1 | xclip -selection clipboard -t image/png"
 alias weather="curl https://wttr.in/"
 
-### Time ###
-function timer() {
-	for a in $(seq $1); do echo -ne "${a}s / ${1}s\r"; sleep 1; done; echo -ne "${1}s / ${1}s\n";
-}
-
-function stopwatch() {
-	a=0;
-	while true; do echo -ne "${a}s\r"; sleep 1; a=$((a+1)); done;
-}
-
 ### Git ###
 # acp = add, commit, push
 gitacp(){
@@ -167,17 +157,10 @@ function venv() {
 source .venv/bin/activate
 }
 
-### PS1 ### 
-# Somewhat complicated PS1
-# PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W  \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n ' '; echo -n '\['; tput sgr0)\]"
-
-# Super minimalist PS1
-PS1="\$(err=\$?; echo -n '\['; tput sgr0; tput setaf 5; [[ \$err == 0 ]] || tput setaf 1; echo -n '\e[1m\]> '; echo -ne '\['; tput sgr0)\]"
+PS1="\$(err=\$?; echo -n '\['; tput sgr0; tput setaf 5; [[ \$err == 0 ]] || tput setaf 1; echo -n '\e[1m\]-> '; echo -ne '\['; tput sgr0)\]"
 
 # Don't display IUA characters in the tty
 if [ $TERM = "linux" ]; then
-	# PS1="\$(err=\$?;echo -n '\['; tput setab 5; [[ \$err == 0 ]] || tput setab 1; tput setaf 0;echo -n '\]'; echo -n ' \W ║ \! \['; tput sgr0;tput setaf 5; echo -n '\['; [[ \$err == 0 ]] || tput setaf 1;echo -n '\]'; echo -n ' '; echo -n '\['; tput sgr0)\]"
-
   alias eza="eza --sort time --icons never --no-filesize"
 fi
 
