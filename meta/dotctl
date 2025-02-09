@@ -189,7 +189,7 @@ def print_status(name):
         elif stat is Status.BAD_DIR:
             print("desired location contains incorrect directory")
         elif stat is Status.BROKEN_CONFIG:
-            print("failed to open config file")
+            print("invalid config file")
         else:
             print("Unknown status.")
     print(col.ENDC, end="")
@@ -225,6 +225,7 @@ def status(name):
         else:
             return Status.NOT_ADDED
     except:
+        # TODO: add more information than that it is just a broken config.
         return Status.BROKEN_CONFIG
 
 
