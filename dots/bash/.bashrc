@@ -24,9 +24,15 @@ alias ".p"="cd ~/Documents/programs/"
 alias ".s"="cd ~/Documents/school/"
 alias dif="git diff --name-only"
 
+alias logall="ls | xargs -I {} bash -c 'echo -e "\\\\e[32m*{}\\\\e[00m"; cat {}'"
+
 c() {
 	cd "$1" || return 1
 	ls
+}
+
+function peekmd() {
+  pandoc $1 --from=markdown --to=pdf -o - | zathura - 2>/dev/null
 }
 
 # Grep for help
