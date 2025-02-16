@@ -163,7 +163,7 @@ ruled.notification.connect_signal('request::rules', function()
 ruled.notification.append_rule {
         rule       = { urgency = "critical" },
 
-        properties = { bg = beautiful.bg_urgent, fg = beautiful.fg_urgent, timeout = 0 }
+        properties = { bg = beautiful.bg_urgent, fg = beautiful.fg_urgent, timeout = 10 }
     }
 
     -- Or green background for normal ones.
