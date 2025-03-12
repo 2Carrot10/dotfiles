@@ -53,6 +53,14 @@ awful.keyboard.append_global_keybindings({
 				os.execute("scrot -s -F ~/screenshots/`date +\"%Y-%m-%d_%H:%M:%S\"`-select.png")
 			end,
 		{description = "selected screenshot", group = "hotkeys"}),
+
+
+		awful.key({ modkey, "Shift", altkey}, "s",
+			function ()
+				os.execute("scrot -s -u -F ~/screenshots/`date +\"%Y-%m-%d_%H:%M:%S\"`-select.png")
+			end,
+		{description = "selected screenshot", group = "hotkeys"}),
+
 		awful.key({ modkey, "Shift", "Control"}, "s",
 			function ()
 				os.execute("scrot -F ~/screenshots/`date +\"%Y-%m-%d_%H:%M:%S\"`-full.png")

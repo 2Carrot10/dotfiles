@@ -13,7 +13,7 @@ alias li="l -lh --no-user --time-style='+%y-%m-%d %H:%M'" #for /bin/ls: 'ls -goh
 alias la="l -A"
 alias lia="li -A"
 alias lai="li -A"
-alias tree="l --tree -L $1" # Make sure to add level (i.e. tree 2)
+alias ltree="l --tree -L $1" # Make sure to add level (i.e. tree 2)
 
 ### Shortened cd ###
 alias ".."="cd ../"
@@ -33,6 +33,10 @@ c() {
 
 function peekmd() {
   pandoc $1 --from=markdown --to=pdf -o - | zathura - 2>/dev/null
+}
+
+function peekweb() {
+  curl -s $1 | pandoc - --from=html --to=markdown -o - | zathura - 2>/dev/null
 }
 
 # Grep for help
@@ -88,7 +92,15 @@ $1 --color=always ${@:2}
 }
 
 # .norg file for day
-function nd() {	[[ $1 = "" ]] && nvim "$(day).norg" || nvim "$(day)-$1.norg"; }
+# Automatically handles adding a name to the file
+# If not given a name and today's file already exists, use that one.
+function nd() {
+  if [[ $1 = "" ]]; then
+    ls | grep "$(day).*\.norg" && nvim $(day)*.norg || nvim "$(day).norg" 
+  else
+    nvim "$(day)-$1.norg"
+  fi
+}
 
 # BUG: Nonfunctional
 # function tex() {
