@@ -1,7 +1,7 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-set -o vi 
+set -o vi
 shopt -s autocd
 export EDITOR="nvim"
 
@@ -13,7 +13,7 @@ alias li="l -lh --no-user --time-style='+%y-%m-%d %H:%M'" #for /bin/ls: 'ls -goh
 alias la="l -A"
 alias lia="li -A"
 alias lai="li -A"
-alias ltree="l --tree -L $1" # Make sure to add level (i.e. tree 2)
+alias ltree="l --tree -L $1" # Make sure to add level (i.e. treel 2)
 
 ### Shortened cd ###
 alias ".."="cd ../"
@@ -22,13 +22,46 @@ alias "...."="cd ../../../"
 alias "....."="cd ../../../../"
 alias ".p"="cd ~/Documents/programs/"
 alias ".s"="cd ~/Documents/school/"
-alias dif="git diff --name-only"
 
-alias logall="ls | xargs -I {} bash -c 'echo -e "\\\\e[32m*{}\\\\e[00m"; cat {}'"
+alias sourceb=". ~/.bashrc"
+
+alias iwdget="iwctl station wlan0 get-networks"
+alias iwdoff="iwctl device wlan0 set-property Powered off"
+alias iwdon="iwctl device wlan0 set-property Powered on"
+alias iwdcon="iwctl station wlan0 connect $1" # Con stands for connect
+alias fzf="fzf --ansi --prompt='-> ' --pointer='⚫'"
+
+# ripgrep->fzf->vim [QUERY]
+rfv() (
+  RELOAD='reload:rg --column --color=always --smart-case {q} || :'
+  OPENER='if [[ $FZF_SELECT_COUNT -eq 0 ]]; then
+            nvim {1} +{2}     # No selection. Open the current line in Vim.
+          else
+            nvim +cw -q {+f}  # Build quickfix list for the selected items.
+          fi'
+  fzf --ansi --multi \
+      --bind "start:$RELOAD" --bind "change:$RELOAD" \
+      --bind "enter:become:$OPENER" \
+      --bind "ctrl-o:execute:$OPENER" \
+      --bind 'alt-a:select-all,alt-d:deselect-all,ctrl-/:toggle-preview' \
+      --delimiter : \
+      --preview 'bat --color=always --highlight-line {2} {1}' \
+      --preview-window '~4,+{2}+4/3,<80(up)' \
+      --query "$*"
+)
+
+### Bindings ###
+# bind -x '"\C-r":rifle $(ls | fzf --height 20 --border)'
+
+### fzf ###
+
+function logall() {
+  ls | xargs -I {} bash -c "echo -e \"\\\\e[32m*{}\\\\e[00m\"; cat {}"
+}
 
 c() {
 	cd "$1" || return 1
-	ls
+	l
 }
 
 function peekmd() {
@@ -96,7 +129,7 @@ $1 --color=always ${@:2}
 # If not given a name and today's file already exists, use that one.
 function nd() {
   if [[ $1 = "" ]]; then
-    ls | grep "$(day).*\.norg" && nvim $(day)*.norg || nvim "$(day).norg" 
+    ls | grep "$(day).*\.norg" > /dev/null && nvim -p $(day)*.norg || nvim "$(day).norg" 
   else
     nvim "$(day)-$1.norg"
   fi
@@ -165,14 +198,16 @@ gitacp(){
 }
 
 alias g="git"
+alias gb="git branch --column"
 alias ga="git add"
 alias gc="git commit -m"
 alias gp="git push"
 alias gst="git status"
+alias gdif="git diff --name-only"
 
 # Python
 function venv() {
-source .venv/bin/activate
+  source .venv/bin/activate
 }
 
 PS1="\$(err=\$?; echo -n '\['; tput sgr0; tput setaf 5; [[ \$err == 0 ]] || tput setaf 1; echo -n '\e[1m\]-> '; echo -ne '\['; tput sgr0)\]"
@@ -182,8 +217,12 @@ if [ $TERM = "linux" ]; then
   alias eza="eza --sort time --icons never --no-filesize"
 fi
 
+source /etc/bash_completion.d/000_bash_completion_compat.bash
+eval "$(fzf --bash)"
 
 # Injected by node version manager
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
