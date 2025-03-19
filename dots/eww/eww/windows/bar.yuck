@@ -1,0 +1,250 @@
+; utf    󰕿 󰝝  󰖁  󰕾 
+; ○ ●
+;  
+
+(defvar eww "/usr/local/bin/eww")
+
+(deflisten mode
+  :initial "default"
+  `swaymsg -mt subscribe "['mode']" | jq --unbuffered -r ".change"`
+)
+
+; Very much not performant. Make slower so that it does not update multiple times when you open a window
+(deflisten workspaceJson
+  `swaymsg -mt subscribe "['window']" | while a= read -r line; do swaymsg -t get_tree | jq -c '[.nodes[].nodes[] | select(.name != "__i3_scratch") | . + {windowFocused: ([.. | .focused? == true]) | contains([true])}]'; done`
+)
+
+; in ID
+(defvar hoverFocus "0")
+
+(defpoll formatedDate :interval "1s" 'date +"%y%n%m%n%d%n%H%n%M%n"')
+
+(defwindow bar
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "10px"
+                      :y "0%"
+                      :width "10%"
+                      :height "80%"
+                      :anchor "center right"
+            )
+  :reserve (struts :side "top" :distance "4%")
+  (bar)
+)
+
+(defwidget bar []
+(box
+  :class "bar"
+  (barInner)
+  )
+)
+(defvar viewWindow false)
+(defwidget barInner []
+  (box :class "barInner"
+  :width 10
+  :halign "end"
+  :orientation "v"
+    ;;; 1 ;;;
+      (box :space-evenly false :valign "start" :orientation "v"
+        (revealer 
+          :transition "slidedown" 
+          :reveal {!viewWindow}
+          :duration "0200ms"
+          (workspaces)
+        )
+
+        (revealer :transition "slidedown" 
+          :reveal viewWindow
+          :duration "0200ms"
+          (workspaces2)
+        )
+      )
+
+    ;;; 2 ;;;
+    (box
+      formatedDate
+    )
+
+    ;;; 3 ;;;
+    (box :valign "end" (deviceStatus))
+  )
+)
+
+(defvar val false)
+(defwidget workspaces []
+  (box :class "workspaces" :orientation "v"
+    (for a in workspaceJson 
+      (box :orientation "v" :class "tab ${a.windowFocused ? 'high' : ''}"
+        (button 
+          :onclick 'swaymsg workspace ${a.name}'
+          :onrightclick "eww update hoverFocus=${a.id}"
+          {a.name}
+        )
+      )
+    )
+  )
+)
+
+(defwidget workspaces2 []
+  (box :class "workspaces" :orientation "v"
+    (for b in {jq(workspaceJson, "[.[].nodes[]]")}
+      (revealer :transition "slidedown" 
+        :reveal true
+        :duration "0000ms"
+        (button :class 
+          "tab ${b.focused ? 'high' : ''}" 
+
+          :onclick 'swaymsg [pid=${b.pid}] focus'
+          ""
+        )
+      )
+    )
+  )
+)
+
+(defwidget deviceStatus []
+(box :orientation "v"
+  (button "⏾")
+  ; (button "")
+  (button "󰕾")
+  (button "⚙")
+  ; (button "󰖩")
+  (button "⏼")
+  (button "")
+)
+)
+
+(defwidget music []
+  (box :class "music"
+       :orientation "v"
+       :space-evenly false
+       :halign "center"
+    {music != "" ? "🎵${music}" : ""}))
+
+
+(defwidget metric [label value onchange]
+  (box :orientation "v"
+       :class "metric"
+       :space-evenly false
+    (box :class "label" label)
+    (scale :min 0
+           :max 101
+           :active {onchange != ""}
+           :value 30
+           :onchange onchange)))
+
+
+
+(deflisten music :initial ""
+  "playerctl --follow metadata --format '{{ artist }} - {{ title }}' || true")
+
+(defpoll volume :interval "1s"
+  "scripts/getvol")
+
+(defpoll time :interval "10s"
+  "date '+%H:%M %b %d, %Y'")
+
+;; Clock Widgets ;;
+(defwidget time []
+
+	(box	:orientation "v" 
+			:class "time" 
+			:valign "end"
+	(button	:onclick "scripts/popup calendar"	
+			:class "time-hour" hour)
+	(button	:onclick "scripts/popup calendar"	
+			:class "time-min"  min)
+
+
+(circular-progress :min 0 :class "progress" :draw-value true :max 100 :value 70 :thickness 5 :tooltip "text" :marks true)
+(circular-progress :min 0 :class "progress" :draw-value true :max 100 :value 70 :thickness 5 :tooltip "text" :marks true)
+(circular-progress :min 0 :class "progress" :draw-value true :max 100 :value 70 :thickness 5 :tooltip "text" :marks true)
+
+      ))
+
+;; Calendar Widgets ;;
+(defwidget cal []
+	(box :class "cal-box" 
+		 :orientation "v"
+	(box :class "cal-inner-box"
+	(calendar :class "cal" 
+			  :day calendar_day 
+			  :month calendar_month 
+			  :year calendar_year))))
+
+
+; Not used
+
+(defwindow dashboard
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "50%"
+                      :y "50%"
+                      :width "70%"
+                      :height "70%"
+                      :anchor "center center")
+  :reserve (struts :side "top" :distance "4%")
+  (bar))
+
+
+
+(defwidget workspacesOld []
+(eventbox	:onhover "${eww} update val=true"	
+				:onhoverlost "${eww} update val=false"
+    (revealer :transition "slideup" 
+              :reveal {mode=="default"}     
+              :duration "250ms"
+  (box :class "workspaces"
+       :orientation "v"
+       :space-evenly true
+       :halign "middle"
+       :spacing 10
+    (button :onclick "wmctrl -s 0" "🔊")
+    (button :onclick "wmctrl -s 5" 6)
+
+    (button :onclick "wmctrl -s 6" 7)
+    (button :onclick "wmctrl -s 7" 8)
+
+    (progress :value 40)
+  ) 
+  )
+)
+)
+
+
+;; time ;;
+(defpoll hour	:interval "1s"	"date '+%H'")
+(defpoll min	:interval "1s"	"date '+%M'")
+(defpoll calendar_day :interval "10h"
+    "date '+%d'")
+(defpoll calendar_month :interval "10h"
+    "scripts/calendar")
+(defpoll calendar_year :interval "10h"
+    "date '+%Y'")
+
+(defwidget sidestuff []
+  (box :class "sidestuff" :orientation "v" :space-evenly false :halign "end"
+
+    (metric :label "🔊"
+            :value volume
+            :onchange "amixer -D pulse sset Master {}%")
+    (metric :label "a"
+            :value {EWW_RAM.used_mem_perc}
+            :onchange "")
+    (metric :label "💾"
+            :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
+            :onchange "")
+            (color-button)
+    time)
+
+
+    )
+
+;; Calendar Windows ;;
+(defwindow calendar
+  :monitor 0
+	:geometry (geometry :x "70px" 
+						:y "75%" 
+						:width "270px" 
+						:height "60px")
+(cal))

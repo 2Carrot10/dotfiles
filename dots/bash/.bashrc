@@ -50,18 +50,12 @@ rfv() (
       --query "$*"
 )
 
-### Bindings ###
-# bind -x '"\C-r":rifle $(ls | fzf --height 20 --border)'
-
-### fzf ###
-
 function logall() {
   ls | xargs -I {} bash -c "echo -e \"\\\\e[32m*{}\\\\e[00m\"; cat {}"
 }
 
 c() {
-	cd "$1" || return 1
-	l
+	cd "$1" &&	l
 }
 
 function peekmd() {
@@ -220,9 +214,21 @@ fi
 source /etc/bash_completion.d/000_bash_completion_compat.bash
 eval "$(fzf --bash)"
 
+### Bindings ###
+# bind -x '"\C-r":rifle $(ls | fzf --height 20 --border)'
+
+FZF_HEIGHT=10
+# TODO: put the query first so that it does not need to jump down.
+__get_file__() {
+  READLINE_LINE="${READLINE_LINE}$(fzf --print-query --header="a" --height=$FZF_HEIGHT)"
+  READLINE_POINT=0x7fffffff
+}
+bind -x '"\C-r":__get_file__'
+
+### fzf ###
+
+
 # Injected by node version manager
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-
