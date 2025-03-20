@@ -45,21 +45,9 @@
   :halign "end"
   :orientation "v"
     ;;; 1 ;;;
-      (box :space-evenly false :valign "start" :orientation "v"
-        (revealer 
-          :transition "slidedown" 
-          :reveal {!viewWindow}
-          :duration "0200ms"
-          (workspaces)
-        )
-
-        (revealer :transition "slidedown" 
-          :reveal viewWindow
-          :duration "0200ms"
-          (workspaces2)
-        )
-      )
-
+    (box :valign "start"
+    (workspaces)
+    )
     ;;; 2 ;;;
     (box
       formatedDate
@@ -72,30 +60,27 @@
 
 (defvar val false)
 (defwidget workspaces []
-  (box :class "workspaces" :orientation "v"
+  (box :class "workspaces" :orientation "v" :space-evenly false
     (for a in workspaceJson 
-      (box :orientation "v" :class "tab ${a.windowFocused ? 'high' : ''}"
+      (box :orientation "v" :space-evenly false :class "tab ${a.windowFocused ? 'high' : ''}"
+
         (button 
           :onclick 'swaymsg workspace ${a.name}'
           :onrightclick "eww update hoverFocus=${a.id}"
           {a.name}
         )
-      )
-    )
-  )
-)
 
-(defwidget workspaces2 []
-  (box :class "workspaces" :orientation "v"
-    (for b in {jq(workspaceJson, "[.[].nodes[]]")}
-      (revealer :transition "slidedown" 
-        :reveal true
-        :duration "0000ms"
-        (button :class 
-          "tab ${b.focused ? 'high' : ''}" 
-
-          :onclick 'swaymsg [pid=${b.pid}] focus'
-          ""
+        (revealer 
+          :transition "slidedown" 
+          :reveal {a.windowFocused}
+          (box :orientation "v" :space-evenly false
+            (for b in {a.nodes}
+              (button :class "tab ${b.focused ? 'low' : ''}" 
+                :onclick 'swaymsg [pid=${b.pid}] focus'
+                ""
+              )
+            )
+          )
         )
       )
     )
@@ -185,31 +170,6 @@
                       :anchor "center center")
   :reserve (struts :side "top" :distance "4%")
   (bar))
-
-
-
-(defwidget workspacesOld []
-(eventbox	:onhover "${eww} update val=true"	
-				:onhoverlost "${eww} update val=false"
-    (revealer :transition "slideup" 
-              :reveal {mode=="default"}     
-              :duration "250ms"
-  (box :class "workspaces"
-       :orientation "v"
-       :space-evenly true
-       :halign "middle"
-       :spacing 10
-    (button :onclick "wmctrl -s 0" "🔊")
-    (button :onclick "wmctrl -s 5" 6)
-
-    (button :onclick "wmctrl -s 6" 7)
-    (button :onclick "wmctrl -s 7" 8)
-
-    (progress :value 40)
-  ) 
-  )
-)
-)
 
 
 ;; time ;;

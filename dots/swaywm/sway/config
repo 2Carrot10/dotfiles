@@ -239,6 +239,7 @@ default_border none
 gaps inner 10
 exec eww daemon
 exec eww open bar
+exec eww open switcher
 exec dunst
 # bar {
 #     position top
