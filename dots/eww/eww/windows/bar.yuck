@@ -60,6 +60,7 @@
 
 (defvar val false)
 (defwidget workspaces []
+
   (box :class "workspaces" :orientation "v" :space-evenly false
     (for a in workspaceJson 
       (box :orientation "v" :space-evenly false :class "tab ${a.windowFocused ? 'high' : ''}"
@@ -74,7 +75,7 @@
           :transition "slidedown" 
           :reveal {a.windowFocused}
           (box :orientation "v" :space-evenly false
-            (for b in {a.nodes}
+            (for b in {jq(a.nodes, '[.. | select(.type? == "con")]')}
               (button :class "tab ${b.focused ? 'low' : ''}" 
                 :onclick 'swaymsg [pid=${b.pid}] focus'
                 ""
