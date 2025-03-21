@@ -69,7 +69,6 @@ output * bg ~/.config/sway/forestWall.jpg fill
     # Start your launcher
     bindsym $mod+d exec $menu -show run
 
-    # bindsym $mod+grave workspace number 2
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -86,8 +85,6 @@ output * bg ~/.config/sway/forestWall.jpg fill
 #
 # Moving around:
 #
-    bindsym $mod+tab exec eww update switchingWindow="true"
-    bindsym --release $mod+tab exec eww update switchingWindow="false"
     # Move your focus around
     bindsym $mod+$left focus left
     bindsym $mod+$down focus down
@@ -241,6 +238,14 @@ exec eww daemon
 exec eww open bar
 exec eww open switcher
 exec dunst
+
+
+# TOGGLES
+
+bindsym $mod+grave exec ~/.config/eww/scripts/toggleBoolean barVisible
+bindsym $mod+o exec ~/.config/eww/scripts/toggleBoolean windowsBarVisible
+bindsym $mod+tab exec ~/.config/eww/scripts/toggleBoolean switchingWindow
+
 # bar {
 #     position top
 # 

@@ -4,6 +4,9 @@
 
 (defvar eww "/usr/local/bin/eww")
 
+(defvar barVisible true)
+(defvar windowsBarVisible false)
+
 (deflisten mode
   :initial "default"
   `swaymsg -mt subscribe "['mode']" | jq --unbuffered -r ".change"`
@@ -34,6 +37,8 @@
 
 (defwidget bar []
 (box
+
+  :visible barVisible
   :class "bar"
   (barInner)
   )
@@ -62,6 +67,7 @@
 (defwidget workspaces []
 
   (box :class "workspaces" :orientation "v" :space-evenly false
+    ; problem is that the whole workspaceJson is getting REMADE! That's why there is no smooth anim!
     (for a in workspaceJson 
       (box :orientation "v" :space-evenly false :class "tab ${a.windowFocused ? 'high' : ''}"
 
@@ -73,9 +79,9 @@
 
         (revealer 
           :transition "slidedown" 
-          :reveal {a.windowFocused}
+          :reveal {windowsBarVisible} ; Add back in boolean a.windowFocused
           (box :orientation "v" :space-evenly false
-            (for b in {jq(a.nodes, '[.. | select(.type? == "con")]')}
+            (for b in {jq(a.nodes, '[.. | has(name)]')}
               (button :class "tab ${b.focused ? 'low' : ''}" 
                 :onclick 'swaymsg [pid=${b.pid}] focus'
                 ""
