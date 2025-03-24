@@ -1,69 +1,41 @@
-; utf    󰕿 󰝝  󰖁  󰕾 
-; ○ ●
-;  
-
-(defvar eww "/usr/local/bin/eww")
-
-(defvar barVisible true)
-(defvar windowsBarVisible false)
-
-(deflisten mode
-  :initial "default"
-  `swaymsg -mt subscribe "['mode']" | jq --unbuffered -r ".change"`
-)
-
-; Very much not performant. Make slower so that it does not update multiple times when you open a window
-(deflisten workspaceJson
-  `swaymsg -mt subscribe "['window']" | while a= read -r line; do swaymsg -t get_tree | jq -c '[.nodes[].nodes[] | select(.name != "__i3_scratch") | . + {windowFocused: ([.. | .focused? == true]) | contains([true])}]'; done`
-)
-
-; in ID
-(defvar hoverFocus "0")
-
-(defpoll formatedDate :interval "1s" 'date +"%y%n%m%n%d%n%H%n%M%n"')
-
 (defwindow bar
   :monitor 0
   :windowtype "dock"
-  :geometry (geometry :x "10px"
-                      :y "0%"
-                      :width "10%"
-                      :height "80%"
-                      :anchor "center right"
-            )
+  :geometry (geometry 
+    :x "0px"
+    :y "0%"
+    ; Note github.com/elenapan/dotfiles: Setting width and height
+    ; here causes certain animations to not display properly.
+    ; Instead, we set width and height in *.scss or in the 
+    ; upppermost inner widget.
+    :anchor "center right"
+  )
+  :exclusive false
   :reserve (struts :side "top" :distance "4%")
-  (bar)
+
+  (revealer
+    :reveal barVisible
+    :transition "slideleft"
+    :duration "150ms"
+    (bar)
+  )
 )
 
 (defwidget bar []
-(box
-
-  :visible barVisible
+  (box
   :class "bar"
-  (barInner)
-  )
-)
-(defvar viewWindow false)
-(defwidget barInner []
   (box :class "barInner"
   :width 10
   :halign "end"
   :orientation "v"
-    ;;; 1 ;;;
-    (box :valign "start"
-    (workspaces)
-    )
-    ;;; 2 ;;;
-    (box
-      formatedDate
-    )
+    (box :valign "start" (workspaces))
+    formatedDate
 
-    ;;; 3 ;;;
     (box :valign "end" (deviceStatus))
+  )
   )
 )
 
-(defvar val false)
 (defwidget workspaces []
 
   (box :class "workspaces" :orientation "v" :space-evenly false
@@ -165,20 +137,6 @@
 			  :year calendar_year))))
 
 
-; Not used
-
-(defwindow dashboard
-  :monitor 0
-  :windowtype "dock"
-  :geometry (geometry :x "50%"
-                      :y "50%"
-                      :width "70%"
-                      :height "70%"
-                      :anchor "center center")
-  :reserve (struts :side "top" :distance "4%")
-  (bar))
-
-
 ;; time ;;
 (defpoll hour	:interval "1s"	"date '+%H'")
 (defpoll min	:interval "1s"	"date '+%M'")
@@ -215,3 +173,20 @@
 						:width "270px" 
 						:height "60px")
 (cal))
+
+
+(defvar barVisible true)
+(defvar windowsBarVisible false)
+
+(deflisten mode
+  :initial "default"
+  `swaymsg -mt subscribe "['mode']" | jq --unbuffered -r ".change"`
+)
+
+; Very much not performant. Make slower so that it does not update multiple times when you open a window
+(deflisten workspaceJson
+  `swaymsg -mt subscribe "['window']" | while a= read -r line; do swaymsg -t get_tree | jq -c '[.nodes[].nodes[] | select(.name != "__i3_scratch") | . + {windowFocused: ([.. | .focused? == true]) | contains([true])}]'; done`
+)
+
+(defpoll formatedDate :interval "1s" 'date +"%y%n%m%n%d%n%H%n%M%n"')
+(defvar viewWindow false)
