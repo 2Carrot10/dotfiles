@@ -1,0 +1,9 @@
+(defwidget systemPanel []
+  (box
+  :class "panel"
+  (box
+  :class "main-window"
+"bot"
+  )
+  )
+)

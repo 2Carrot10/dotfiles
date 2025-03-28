@@ -1,8 +1,6 @@
+(defvar barVisible true)
 (include "windows/bar.yuck")
-(include "windows/systemPanel.yuck")
-(include "windows/timePanel.yuck")
-(include "windows/workspacePanel.yuck")
-(include "windows/switcher.yuck")
 
-; Constants
-(defvar PANEL_OFFSET_PX 20)
+(include "windows/panels.yuck")
+
+(include "windows/switcher.yuck")

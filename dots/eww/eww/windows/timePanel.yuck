@@ -1,29 +1,9 @@
-(defwindow timePanel
-  :monitor 0
-  :windowtype "dock"
-  :geometry (geometry 
-    :x "60px"
-    :y "0%"
-    ; Note github.com/elenapan/dotfiles: Setting width and height
-    ; here causes certain animations to not display properly.
-    ; Instead, we set width and height in *.scss or in the 
-    ; upppermost inner widget.
-    :anchor "center right"
-  )
-  :exclusive false
-  :reserve (struts :side "top" :distance "4%")
-
-  (revealer
-    :reveal barVisible
-    :transition "slideleft"
-    :duration "150ms"
-    (timePanel)
-  )
-)
-
 (defwidget timePanel []
   (box
-  :class "main-window panel"
-  "test"
+  :class "panel"
+  (box
+  :class "main-window"
+"mid"
+  )
   )
 )

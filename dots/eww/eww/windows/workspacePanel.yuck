@@ -1,0 +1,9 @@
+(defwidget workspacePanel []
+  (box
+  :class "panel"
+  (box
+  :class "main-window"
+"top"
+  )
+  )
+)

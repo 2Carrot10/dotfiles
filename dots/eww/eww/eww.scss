@@ -44,13 +44,8 @@
 
 $full-height: 1000px;
 .bar {
-  // TODO: figure out how to make this value based on precent of the screen
+  // TODO: figure out how to make this value based on present of the screen
   min-height: $full-height;
-}
-
-.panel {
-  // TODO: figure out how to make this value based on precent of the screen
-  min-height: $full-height/3;
 }
 
 
@@ -64,6 +59,10 @@ $full-height: 1000px;
   border-color: #22aa7f;
 
   padding: 30px; 
+}
+
+.panel {
+  padding: 10px; 
 }
 
 // Styles on classes (see eww.yuck for more information)

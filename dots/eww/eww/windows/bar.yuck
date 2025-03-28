@@ -174,7 +174,6 @@
 (cal))
 
 
-(defvar barVisible true)
 (defvar windowsBarVisible false)
 
 (deflisten mode
