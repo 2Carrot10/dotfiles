@@ -4,3 +4,38 @@
 (include "windows/panels.yuck")
 
 (include "windows/switcher.yuck")
+
+(defwindow ui
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry 
+    :x "0px"
+    :y "0%"
+    ; Note github.com/elenapan/dotfiles: Setting width and height
+    ; here causes certain animations to not display properly.
+    ; Instead, we set width and height in *.scss or in the 
+    ; upppermost inner widget.
+    :anchor "center right"
+  )
+  :exclusive false
+  :reserve (struts :side "top" :distance "4%")
+
+  (centerbox
+  (box
+  :orientation "v"
+
+
+  (workspacePanel)
+  (timePanel) 
+  (systemPanel)
+  )
+  ""
+  (revealer
+    :reveal barVisible
+    :transition "slideleft"
+    :duration "150ms"
+    (bar)
+  )
+  )
+)
+
