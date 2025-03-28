@@ -23,8 +23,7 @@
 
 (defwidget bar []
   (box
-  :class "bar"
-  (box :class "barInner"
+  (box :class "main-window bar"
   :width 10
   :halign "end"
   :orientation "v"

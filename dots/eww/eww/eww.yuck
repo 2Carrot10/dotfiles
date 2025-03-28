@@ -1,4 +1,8 @@
 (include "windows/bar.yuck")
+(include "windows/systemPanel.yuck")
+(include "windows/timePanel.yuck")
+(include "windows/workspacePanel.yuck")
 (include "windows/switcher.yuck")
-; (include "windows/dashboard.yuck")
-; (include "windows/bar.yuck")
+
+; Constants
+(defvar PANEL_OFFSET_PX 20)

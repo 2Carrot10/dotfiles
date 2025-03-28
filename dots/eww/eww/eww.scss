@@ -2,7 +2,7 @@
   all: unset; // Unsets everything so you can style everything from scratch
 }
 
-.barInner {
+.main-window {
   background-color: #201a0a;
   color: #b0b4bc;
   border-style: solid;
@@ -42,9 +42,15 @@
   // color: #aa00aa;
 }
 
+$full-height: 1000px;
 .bar {
   // TODO: figure out how to make this value based on precent of the screen
-  min-height: 1000px;
+  min-height: $full-height;
+}
+
+.panel {
+  // TODO: figure out how to make this value based on precent of the screen
+  min-height: $full-height/3;
 }
 
 
