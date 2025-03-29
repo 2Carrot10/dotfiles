@@ -1,6 +1,7 @@
 * {
   all: unset; // Unsets everything so you can style everything from scratch
 }
+// Cool looking color: #fa0450
 
 .main-window {
   background-color: #201a0a;
@@ -98,14 +99,6 @@ scale trough {
   margin-right: 20px;
 }
 
-.temp {
-  background-color: #333333;
-  border-radius: 5px;
-}
-
-.tempout {
-  padding: 2px;
-}
 
 button {
   border: 2px;
@@ -125,12 +118,35 @@ button:hover {
   border-radius: 5px;
 }
 
-.tab {
-  padding-right: 4px; 
-  padding-left: 4px; 
+
+.padding-slim {
+  padding-right: 2px; 
+  padding-left: 2px; 
   padding-top: 2px; 
   padding-bottom: 2px; 
 }
+
+.tab {
+  padding-right: 4px; 
+  padding-left: 4px; 
+  padding-top: 4px; 
+  padding-bottom: 4px; 
+}
+
+.switcherTab {
+  padding-right: 8px; 
+  padding-left: 8px; 
+  padding-top: 6px; 
+  padding-bottom: 6px; 
+}
+
+.largeTab {
+  padding-right: 14px; 
+  padding-left: 14px; 
+  padding-top: 14px; 
+  padding-bottom: 14px; 
+}
+
 .low {
   background-color: #201a0a;
   color: #bbbbbb;

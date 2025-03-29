@@ -3,8 +3,8 @@
   :windowtype "dock"
   :geometry (geometry :x "10px"
                       :y "0%"
-                      :width "20%"
-                      :height "20%"
+                      ;:width "20%"
+                      ;:height "20%"
                       :anchor "center center"
             )
   :reserve (struts :side "top" :distance "4%")
@@ -12,14 +12,17 @@
 
 (defvar switchingWindow false)
 (defwidget switcher []
-(box :class "barInner" :visible switchingWindow
+(box :visible switchingWindow
 
-    (box :class "workspaces" :orientation "h"
+    (box :class "" :orientation "h"
       (for a in workspaceJson 
-        (box :orientation "v" :class "tempout"
-          (box :orientation "v" :class {a.windowFocused ? "high" : ""}
-            (button :valign "start" :onclick 'swaymsg workspace ${a.name}' {a.name})
-            (for b in "${a.nodes}" (button :class {b.focused ? "low" : ""} :onclick 'swaymsg [pid=${b.pid}] focus' {b.app_id=="kitty" ? "" : "o"}))
+        (box :orientation "v" :space-evenly false :class ""
+          (box
+          :class "main-window padding-slim"
+          (box :orientation "v" :class 'padding-slim ${a.windowFocused ? "high" : ""}'
+            (button :class "tab" :valign "start" :onclick 'swaymsg workspace ${a.name}' {a.name})
+            (for b in "${a.nodes}" (button :class 'largeTab ${b.focused ? "low" : ""}' :onclick 'swaymsg [pid=${b.pid}] focus' {b.app_id=="kitty" ? "" : "o"}))
+            )
         )
       )
     )

@@ -15,7 +15,6 @@
 (defwidget workspaces []
 
   (box :class "workspaces" :orientation "v" :space-evenly false
-    ; problem is that the whole workspaceJson is getting REMADE! That's why there is no smooth anim!
     (for a in workspaceJson 
       (box :orientation "v" :space-evenly false :class "tab ${a.windowFocused ? 'high' : ''}"
 
@@ -41,6 +40,36 @@
     )
   )
 )
+
+(defwidget applications []
+
+  (box :class "workspaces" :orientation "v" :space-evenly false
+    (for a in workspaceJson 
+      (box :orientation "v" :space-evenly false :class "tab ${a.windowFocused ? 'high' : ''}"
+
+        (button 
+          :onclick 'swaymsg workspace ${a.name}'
+          :onrightclick "eww update hoverFocus=${a.id}"
+          {a.name}
+        )
+
+        (revealer 
+          :transition "slidedown" 
+          :reveal {windowsBarVisible} ; Add back in boolean a.windowFocused
+          (box :orientation "v" :space-evenly false
+            (for b in {jq(a.nodes, '[.. | has(name)]')}
+              (button :class "tab ${b.focused ? 'low' : ''}" 
+                :onclick 'swaymsg [pid=${b.pid}] focus'
+                ""
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)
+
 
 (defwidget deviceStatus []
 (box :orientation "v"
