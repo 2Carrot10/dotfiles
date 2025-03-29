@@ -1,0 +1,2 @@
+#!/bin/bash
+eww get $1 | jq ".${2}" -r

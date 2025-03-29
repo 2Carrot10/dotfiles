@@ -1,14 +1,12 @@
 (defwidget bar []
-  (box
-  (box :class "main-window bar"
-  :width 10
-  :halign "end"
-  :orientation "v"
+  (centerbox :class "main-window bar"
+    :width 10
+    :halign "end"
+    :orientation "v"
     (box :valign "start" (workspaces))
-    formatedDate
+    (selector :variable "clock" formatedDate)
 
     (box :valign "end" (deviceStatus))
-  )
   )
 )
 
@@ -47,11 +45,11 @@
 
 (defwidget deviceStatus []
 (box :orientation "v"
-  (systemSelector :name "a" "⏾")
-  (systemSelector :name "volume" "󰕾")
-  (systemSelector :name "settings" "⚙")
-  (systemSelector :name "b" "⏼")
-  (systemSelector :name "notifications" "")
+  (selector :variable "system" :name "a" "⏾")
+  (selector :variable "system" :name "volume" "󰕾")
+  (selector :variable "system" :name "settings" "⚙")
+  (selector :variable "system" :name "b" "⏼")
+  (selector :variable "system" :name "notifications" "")
   (button "󰖩")
   ; (button "")
 )
@@ -103,3 +101,4 @@
 
 (defpoll formatedDate :interval "1s" 'date +"%y%n%m%n%d%n%H%n%M%n"')
 (defvar viewWindow false)
+(defvar SCRIPTS "~/.config/eww/scripts")

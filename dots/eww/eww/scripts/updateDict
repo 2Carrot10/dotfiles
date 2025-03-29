@@ -1,0 +1,3 @@
+#!/bin/bash
+VAL="`eww get ${1} | jq ".${2} |= \\\"${3}\\\""`"
+eww update ${1}="$VAL"

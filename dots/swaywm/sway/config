@@ -235,7 +235,7 @@ mode "battery" {
 default_border none
 gaps inner 10
 exec eww daemon
-exec eww open bar
+exec eww open ui
 exec eww open switcher
 exec dunst
 

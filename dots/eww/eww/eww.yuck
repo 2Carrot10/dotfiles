@@ -31,12 +31,12 @@
   :reserve (struts :side "top" :distance "4%")
 
   (centerbox
-    (centerbox
+    (box
       :orientation "v"
 
       (panel :reveal workspacePanelVisible (workspaceWidget))
-      (panel :reveal timePanelVisible (calanderWidget)) 
-      (revealer :halign "end" :reveal systemPanelVisible (systemWidget))
+      (box :halign "end" (selection :variable "clock" (panel (calanderWidget))))
+      (box :halign "end" (systemWidget))
     )
 
     "";

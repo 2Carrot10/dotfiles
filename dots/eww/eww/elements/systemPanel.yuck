@@ -1,8 +1,9 @@
 (defwidget systemWidget []
-(box :orientation "h"
-  (systemSelection :name "volume" (batteryWidget))
+  (box :orientation "h"
+    (selection :variable "system" :name "volume" (batteryWidget))
+  )
 )
-)
+
 (defwidget batteryWidget []
 
   (box :class "tab" :orientation "v" :space-evenly false
@@ -17,19 +18,22 @@
   )
 )
 
-(defvar systemSelectionName "")
-(defwidget systemSelector [name]
+(defvar selectionNames `{}`)
+
+(defwidget selector [?name variable ]
   (eventbox
-  :class { systemSelectionName == name ? "bright-highlight" : ""}
-  :onclick '[ "`${EWW_CMD} get systemSelectionName`" = "${name}" ] && ${EWW_CMD} update systemSelectionName=none || ${EWW_CMD} update systemSelectionName=${name}'
+  :cursor "pointer"
+  :class { selectionNames[variable] == (name?:"on") ? "bright-highlight" : ""}
+
+  :onclick '[ "`${SCRIPTS}/getDict selectionNames ${variable}`" = "${name?:"on"}" ] && ${SCRIPTS}/updateDict selectionNames ${variable} none || ${SCRIPTS}/updateDict selectionNames ${variable} ${name?:"on"}'
     (children)
   )
 )
 
-(defwidget systemSelection [name]
+(defwidget selection [?name variable]
   (revealer
   :transition "slideleft"
-  :reveal {name == systemSelectionName}
+  :reveal {selectionNames[variable] == (name?:"on")}
     (children)
   )
 )
