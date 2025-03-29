@@ -1,9 +1,23 @@
+; Very much not performant. Make slower so that it does not update multiple times when you open a window
+(deflisten workspaceJson
+  `swaymsg -mt subscribe "['window']" | while a= read -r line; do swaymsg -t get_tree | jq -c '[.nodes[].nodes[] | select(.name != "__i3_scratch") | . + {windowFocused: ([.. | .focused? == true]) | contains([true])}]'; done`
+)
+
+
+
 (defvar barVisible true)
-(include "windows/bar.yuck")
+(include "elements/bar.yuck")
 
-(include "windows/panels.yuck")
+(defvar systemPanelVisible true)
+(include "elements/systemPanel.yuck")
 
-(include "windows/switcher.yuck")
+(defvar timePanelVisible true)
+(include "elements/timePanel.yuck")
+
+(defvar workspacePanelVisible true)
+(include "elements/workspacePanel.yuck")
+
+(include "elements/switcher.yuck")
 
 (defwindow ui
   :monitor 0
@@ -21,15 +35,19 @@
   :reserve (struts :side "top" :distance "4%")
 
   (centerbox
+
   (box
+
   :orientation "v"
 
 
   (workspacePanel)
-  (timePanel) 
-  (systemPanel)
+  "";(timePanel) 
+  "";(systemPanel)
+  "";
+  "";
   )
-  ""
+  "" ; HACK
   (revealer
     :reveal barVisible
     :transition "slideleft"
@@ -38,4 +56,6 @@
   )
   )
 )
+
+
 

@@ -158,10 +158,5 @@
   `swaymsg -mt subscribe "['mode']" | jq --unbuffered -r ".change"`
 )
 
-; Very much not performant. Make slower so that it does not update multiple times when you open a window
-(deflisten workspaceJson
-  `swaymsg -mt subscribe "['window']" | while a= read -r line; do swaymsg -t get_tree | jq -c '[.nodes[].nodes[] | select(.name != "__i3_scratch") | . + {windowFocused: ([.. | .focused? == true]) | contains([true])}]'; done`
-)
-
 (defpoll formatedDate :interval "1s" 'date +"%y%n%m%n%d%n%H%n%M%n"')
 (defvar viewWindow false)

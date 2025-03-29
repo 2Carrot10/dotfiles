@@ -1,0 +1,17 @@
+(defwidget workspacePanel []
+  (box
+   :space-evenly false
+   :halign "end"
+
+  :class "panel"
+  (box
+    :class "main-window"
+    :orientation "v"
+    (label
+      :text {jq(workspaceJson, "[.. | select(.focused? == true)] | first").name}
+    )
+    "test"
+  )
+  )
+)
+; workspaceJson
