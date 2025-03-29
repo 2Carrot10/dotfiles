@@ -1,3 +1,35 @@
 (defwidget systemWidget []
-  "bottom"
+  (box :orientation "h"
+    (systemSelection :name "volume" (batteryWidget))
+  )
+)
+
+(defwidget batteryWidget []
+  (box :class "tab" :orientation "v" :space-evenly false
+    "00"
+    (box :class "outside-progress main-window-inner" :vexpand true :halign "center" :hexpand true
+      (progress :halign "center" :hexpand true
+        :flipped "true"
+        :value 60
+        :orientation "v"
+      )
+    )
+  )
+)
+
+(defvar systemSelectionName "")
+(defwidget systemSelector [name]
+  (eventbox
+  :class { systemSelectionName == name ? "bright-highlight" : ""}
+  :onclick "${EWW_CMD} update systemSelectionName=${name}"
+    (children)
+  )
+)
+
+(defwidget systemSelection [name]
+  (revealer
+  :transition "slideleft"
+  :reveal {name == systemSelectionName}
+    (children)
+  )
 )

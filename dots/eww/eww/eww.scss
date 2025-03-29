@@ -8,7 +8,6 @@
 .main-window-inner {
   background-color: #201a0a;
   color: #b0b4bc;
-  border-style: solid;
   border: 2px;
   border-radius: 0px;
   border-style: solid;
@@ -42,16 +41,23 @@ circular-progress {
   color: #a0f000;
   border-radius: 10px;
 }
- circular-progress {
-  all: unset;
-  background-color: #a3aD6E;
-  color: #a0f000;
-  border-radius: 10px;
+
+progress {
+  background-color: $off-white;
+  color: #fa0450;
+}
+
+.outside-progress {
+  // background-color: #f3182e;
+  border-color: $off-white;
+  padding: 3px;
+  border: 2px;
+  border-radius: 0px;
+  border-style: solid;
 }
 
 
 scale trough {
-  all: unset;
   background-color: #4e4e4e;
   border-radius: 50px;
   min-height: 30px;
@@ -65,12 +71,6 @@ button {
   border: 2px;
   border-radius: 5px;
 }
-/*
-button:hover {
-  border-color: #bbbbbb;
-  border-style: solid;
-}
-*/
 
 
 .padding-slim {

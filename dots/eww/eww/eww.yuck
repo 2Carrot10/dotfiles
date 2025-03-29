@@ -36,7 +36,7 @@
 
       (panel :reveal workspacePanelVisible (workspaceWidget))
       (panel :reveal timePanelVisible (calanderWidget)) 
-      (panel :reveal systemPanelVisible (systemWidget))
+      (revealer :halign "end" :reveal systemPanelVisible (systemWidget))
     )
 
     "";
