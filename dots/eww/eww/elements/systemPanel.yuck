@@ -1,10 +1,10 @@
 (defwidget systemWidget []
-  (box :orientation "h"
-    (systemSelection :name "volume" (batteryWidget))
-  )
+(box :orientation "h"
+  (systemSelection :name "volume" (batteryWidget))
 )
-
+)
 (defwidget batteryWidget []
+
   (box :class "tab" :orientation "v" :space-evenly false
     "00"
     (box :class "outside-progress main-window-inner" :vexpand true :halign "center" :hexpand true
@@ -21,7 +21,7 @@
 (defwidget systemSelector [name]
   (eventbox
   :class { systemSelectionName == name ? "bright-highlight" : ""}
-  :onclick "${EWW_CMD} update systemSelectionName=${name}"
+  :onclick '[ "`${EWW_CMD} get systemSelectionName`" = "${name}" ] && ${EWW_CMD} update systemSelectionName=none || ${EWW_CMD} update systemSelectionName=${name}'
     (children)
   )
 )
