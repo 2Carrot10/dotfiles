@@ -1,74 +1,35 @@
+@import "constants/colors.scss";
+
 * {
   all: unset; // Unsets everything so you can style everything from scratch
 }
 // Cool looking color: #fa0450
 
-.main-window {
+.main-window-inner {
   background-color: #201a0a;
   color: #b0b4bc;
   border-style: solid;
   border: 2px;
   border-radius: 0px;
   border-style: solid;
-  border-color: #e2eaef;
+  border-color: $off-white;
 
-  padding: 4px;
+  padding: 0px;
 
   font-family: "Jet Brains Mono";
   font-size: 30;
 }
 
-.state-inner {
-  // color: #00b4bc;
-  border-style: solid;
-  border: 2px;
-  border-radius: 8px;
-  border-color: #a2aa7f;
-
-  padding:  5px; 
-  background-color: #aaaa3a;
-  color: #aa00aa;
-}
-
-.state {
-  /*
-  border-style: solid;
-  border: 2px;
-  border-radius: 0px;
-  border-style: solid;
-  border-color: #a2aa7f;
-  */
-
-  // padding:  8px; 
-  // color: #aa00aa;
-}
-
-$full-height: 1100px;
 .bar {
-  // TODO: figure out how to make this value based on present of the screen
-  min-height: $full-height;
+  min-height: 1100px;
 }
-
-
-.dashboard {
-  background-color: #1a2a3a;
-  color: #b0b4bc;
-  border-style: solid;
-  border: 2px;
-  border-radius: 0px;
-  border-style: solid;
-  border-color: #22aa7f;
-
-  padding: 30px; 
-}
-
-.panel {
-  padding: 10px; 
+.main-window {
+  padding: 5px; 
 }
 
 // Styles on classes (see eww.yuck for more information)
 
-scale trough highlight {
+scale trough bright-highlightlight {
   all: unset;
   background-color: #a3aD6E;
   color: #a0f000;
@@ -111,26 +72,13 @@ button:hover {
 }
 */
 
-.high {
-  background-color: #bbbbbb;
-  color: #333333;
-  border: 2px;
-  border-radius: 5px;
-}
-
 
 .padding-slim {
-  padding-right: 2px; 
-  padding-left: 2px; 
-  padding-top: 2px; 
-  padding-bottom: 2px; 
+  padding: 2px; 
 }
 
 .tab {
-  padding-right: 4px; 
-  padding-left: 4px; 
-  padding-top: 4px; 
-  padding-bottom: 4px; 
+  padding: 4px; 
 }
 
 .side-tab {
@@ -151,7 +99,22 @@ button:hover {
   padding-bottom: 14px; 
 }
 
-.low {
+.dark-highlight {
   background-color: #201a0a;
-  color: #bbbbbb;
+  color: $off-white;
+  border: 2px;
+  border-radius: 5px;
+}
+
+.bright-highlight {
+  background-color: $off-white;
+  color: #333333;
+  border: 2px;
+  border-radius: 5px;
+}
+
+.angled-bright-highlight {
+  background-color: #bbbbbb;
+  color: #333333;
+  border: 2px;
 }

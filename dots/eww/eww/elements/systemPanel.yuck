@@ -1,12 +1,3 @@
-(defwidget systemPanel []
-  (box
-
-   :space-evenly false
-   :halign "end"
-  :class "panel"
-  (box
-  :class "main-window"
-"bottom"
-  )
-  )
+(defwidget systemWidget []
+  "bottom"
 )

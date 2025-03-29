@@ -1,31 +1,35 @@
 (defwindow switcher
   :monitor 0
   :windowtype "dock"
-  :geometry (geometry :x "10px"
-                      :y "0%"
-                      ;:width "20%"
-                      ;:height "20%"
-                      :anchor "center center"
-            )
+  :geometry (geometry 
+    :x "10px"
+    :y "0%"
+    ;:width "20%"
+    ;:height "20%"
+    :anchor "center center"
+  )
+
   :reserve (struts :side "top" :distance "4%")
-  (switcher))
-
-(defvar switchingWindow false)
+  (switcher)
+)
 (defwidget switcher []
-(box :visible switchingWindow
-
+  (box :visible switcherVisible
     (box :class "" :orientation "h"
       (for a in workspaceJson 
         (box :orientation "v" :space-evenly false :class ""
-          (box
-          :class "main-window padding-slim"
-          (box :orientation "v" :class 'padding-slim ${a.windowFocused ? "high" : ""}'
-            (button :class "tab" :valign "start" :onclick 'swaymsg workspace ${a.name}' {a.name})
-            (for b in "${a.nodes}" (button :class 'largeTab ${b.focused ? "low" : ""}' :onclick 'swaymsg [pid=${b.pid}] focus' {b.app_id=="kitty" ? "" : "o"}))
+          (box :class "main-window-inner padding-slim"
+            (box :orientation "v" :class 'padding-slim ${a.windowFocused ? "angled-bright-highlight" : ""}'
+              (button :class "tab" :valign "start" :onclick 'swaymsg workspace ${a.name}' {a.name})
+              (for b in "${a.nodes}"
+                (button
+                  :class 'largeTab ${b.focused ? "dark-highlight" : ""}' 
+                  :onclick 'swaymsg [pid=${b.pid}] focus' {b.app_id=="kitty" ? "" : "o"}
+                )
+              )
             )
+          )
         )
       )
     )
   )
-)
 )

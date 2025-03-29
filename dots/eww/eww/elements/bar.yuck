@@ -16,7 +16,7 @@
 
   (box :class "workspaces" :orientation "v" :space-evenly false
     (for a in workspaceJson 
-      (box :orientation "v" :space-evenly false :class "tab ${a.windowFocused ? 'high' : ''}"
+      (box :orientation "v" :space-evenly false :class "tab ${a.windowFocused ? 'bright-highlight' : ''}"
 
         (button 
           :onclick 'swaymsg workspace ${a.name}'
@@ -29,7 +29,7 @@
           :reveal {windowsBarVisible} ; Add back in boolean a.windowFocused
           (box :orientation "v" :space-evenly false
             (for b in {jq(a.nodes, '[.. | has(name)]')}
-              (button :class "side-tab ${b.focused ? 'low' : ''}" 
+              (button :class "side-tab ${b.focused ? 'dark-highlight' : ''}" 
                 :onclick 'swaymsg [pid=${b.pid}] focus'
                 (label
                 :justify "left"
@@ -45,36 +45,6 @@
   )
 )
 
-(defwidget applications []
-
-  (box :class "workspaces" :orientation "v" :space-evenly false
-    (for a in workspaceJson 
-      (box :orientation "v" :space-evenly false :class "tab ${a.windowFocused ? 'high' : ''}"
-
-        (button 
-          :onclick 'swaymsg workspace ${a.name}'
-          :onrightclick "eww update hoverFocus=${a.id}"
-          {a.name}
-        )
-
-        (revealer 
-          :transition "slidedown" 
-          :reveal {windowsBarVisible} ; Add back in boolean a.windowFocused
-          (box :orientation "v" :space-evenly false
-            (for b in {jq(a.nodes, '[.. | has(name)]')}
-              (button :class "tab ${b.focused ? 'low' : ''}" 
-                :onclick 'swaymsg [pid=${b.pid}] focus'
-                ""
-              )
-            )
-          )
-        )
-      )
-    )
-  )
-)
-
-
 (defwidget deviceStatus []
 (box :orientation "v"
   (button "⏾")
@@ -86,14 +56,6 @@
   (button "")
 )
 )
-
-(defwidget music []
-  (box :class "music"
-       :orientation "v"
-       :space-evenly false
-       :halign "center"
-    {music != "" ? "🎵${music}" : ""}))
-
 
 (defwidget metric [label value onchange]
   (box :orientation "v"
@@ -109,7 +71,7 @@
 
 
 (deflisten music :initial ""
-  "playerctl --follow metadata --format '{{ artist }} - {{ title }}' || true")
+  "playerctl --foldark-highlight metadata --format '{{ artist }} - {{ title }}' || true")
 
 (defpoll volume :interval "1s"
   "scripts/getvol")
@@ -117,62 +79,15 @@
 (defpoll time :interval "10s"
   "date '+%H:%M %b %d, %Y'")
 
-;; Clock Widgets ;;
-(defwidget time []
-
-	(box	:orientation "v" 
-			:class "time" 
-			:valign "end"
-	(button	:onclick "scripts/popup calendar"	
-			:class "time-hour" hour)
-	(button	:onclick "scripts/popup calendar"	
-			:class "time-min"  min)
-
-
-(circular-progress :min 0 :class "progress" :draw-value true :max 100 :value 70 :thickness 5 :tooltip "text" :marks true)
-(circular-progress :min 0 :class "progress" :draw-value true :max 100 :value 70 :thickness 5 :tooltip "text" :marks true)
-(circular-progress :min 0 :class "progress" :draw-value true :max 100 :value 70 :thickness 5 :tooltip "text" :marks true)
-
-      ))
-
-;; Calendar Widgets ;;
-(defwidget cal []
-	(box :class "cal-box" 
-		 :orientation "v"
-	(box :class "cal-inner-box"
-	(calendar :class "cal" 
-			  :day calendar_day 
-			  :month calendar_month 
-			  :year calendar_year))))
-
-
 ;; time ;;
 (defpoll hour	:interval "1s"	"date '+%H'")
 (defpoll min	:interval "1s"	"date '+%M'")
 (defpoll calendar_day :interval "10h"
     "date '+%d'")
 (defpoll calendar_month :interval "10h"
-    "scripts/calendar")
+    "date '+%m'")
 (defpoll calendar_year :interval "10h"
     "date '+%Y'")
-
-(defwidget sidestuff []
-  (box :class "sidestuff" :orientation "v" :space-evenly false :halign "end"
-
-    (metric :label "🔊"
-            :value volume
-            :onchange "amixer -D pulse sset Master {}%")
-    (metric :label "a"
-            :value {EWW_RAM.used_mem_perc}
-            :onchange "")
-    (metric :label "💾"
-            :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
-            :onchange "")
-            (color-button)
-    time)
-
-
-    )
 
 ;; Calendar Windows ;;
 (defwindow calendar
@@ -185,11 +100,6 @@
 
 
 (defvar windowsBarVisible false)
-
-(deflisten mode
-  :initial "default"
-  `swaymsg -mt subscribe "['mode']" | jq --unbuffered -r ".change"`
-)
 
 (defpoll formatedDate :interval "1s" 'date +"%y%n%m%n%d%n%H%n%M%n"')
 (defvar viewWindow false)

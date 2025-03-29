@@ -1,10 +1,3 @@
-; Very much not performant. Make slower so that it does not update multiple times when you open a window
-(deflisten workspaceJson
-  `swaymsg -mt subscribe "['window']" | while a= read -r line; do swaymsg -t get_tree | jq -c '[.nodes[].nodes[] | select(.name != "__i3_scratch") | . + {windowFocused: ([.. | .focused? == true]) | contains([true])}]'; done`
-)
-
-
-
 (defvar barVisible true)
 (include "elements/bar.yuck")
 
@@ -17,14 +10,17 @@
 (defvar workspacePanelVisible true)
 (include "elements/workspacePanel.yuck")
 
+(defvar switcherVisible false)
 (include "elements/switcher.yuck")
+
+(include "elements/notifications.yuck")
 
 (defwindow ui
   :monitor 0
   :windowtype "dock"
   :geometry (geometry 
     :x "0px"
-    :y "0%"
+    :y "0px"
     ; Note github.com/elenapan/dotfiles: Setting width and height
     ; here causes certain animations to not display properly.
     ; Instead, we set width and height in *.scss or in the 
@@ -35,27 +31,39 @@
   :reserve (struts :side "top" :distance "4%")
 
   (centerbox
+    (centerbox
+      :orientation "v"
 
-  (box
+      (panel :reveal workspacePanelVisible (workspaceWidget))
+      (panel :reveal timePanelVisible (calanderWidget)) 
+      (panel :reveal systemPanelVisible (systemWidget))
+    )
 
-  :orientation "v"
+    "";
 
-
-  (workspacePanel)
-  "";(timePanel) 
-  "";(systemPanel)
-  "";
-  "";
-  )
-  "" ; HACK
-  (revealer
-    :reveal barVisible
-    :transition "slideleft"
-    :duration "150ms"
-    (bar)
-  )
+    (panel :reveal barVisible (bar))
   )
 )
 
+(defwidget panel [?reveal]
+  (revealer
+    :transition "slideleft"
+    :reveal {reveal ?: true}
+    :duration "150ms"
 
+    (box :space-evenly false :halign "end" :class "main-window"
+      (box :class "main-window-inner"
+        (children)
+      )
+    )
+  )
+)
 
+(deflisten mode
+  :initial "default"
+  `swaymsg -mt subscribe "['mode']" | jq --unbuffered -r ".change"`
+)
+
+(deflisten workspaceJson
+  `swaymsg -mt subscribe "['window']" | while read -r line; do swaymsg -t get_tree | jq -c '[.nodes[].nodes[] | select(.name != "__i3_scratch") | . + {windowFocused: ([.. | .focused? == true]) | contains([true])}]'; done`
+)

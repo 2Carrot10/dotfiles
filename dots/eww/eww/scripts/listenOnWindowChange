@@ -1,0 +1,10 @@
+#!/bin/bash
+# Untested
+swaymsg -mt subscribe "['window']" | while read -r line; do
+  STATE=swaymsg -t get_tree | jq -c '[.nodes[].nodes[] | select(.name != "__i3_scratch") | . + {windowFocused: ([.. | .focused? == true]) | contains([true])}]
+  FOCUSED=echo "STATE" | jq ".. | select(.focused? == true)" 
+  FOCUSED_DATA= ...
+
+  eww update workspaceJson=$STATE
+  eww update focusedWindow=$FOCUSED
+  eww update focusedWindowData=$FOCUSED_DATA

@@ -1,0 +1,14 @@
+(defwindow notifications
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "30%"
+                      :y "10"
+                      ;:width "20%"
+                      ;:height "20%"
+                      :anchor "top center"
+            )
+  :reserve (struts :side "top" :distance "4%")
+  (panel
+  "notifications"
+  )
+)

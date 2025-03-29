@@ -1,11 +1,11 @@
-(defwidget timePanel []
-  (box
-   :space-evenly false
-   :halign "end"
-  :class "panel"
-  (box
-  :class "main-window"
-  (cal)
-  )
+;; Calendar Widgets ;;
+(defwidget calanderWidget []
+	(calendar
+    :day calendar_day 
+    :month calendar_month 
+    :show-day-names false
+    :year calendar_year
   )
 )
+
+
