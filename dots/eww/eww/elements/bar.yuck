@@ -29,9 +29,13 @@
           :reveal {windowsBarVisible} ; Add back in boolean a.windowFocused
           (box :orientation "v" :space-evenly false
             (for b in {jq(a.nodes, '[.. | has(name)]')}
-              (button :class "tab ${b.focused ? 'low' : ''}" 
+              (button :class "side-tab ${b.focused ? 'low' : ''}" 
                 :onclick 'swaymsg [pid=${b.pid}] focus'
-                ""
+                (label
+                :justify "left"
+                :text ""
+                )
+                ;""
               )
             )
           )
