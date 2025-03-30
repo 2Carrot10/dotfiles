@@ -232,13 +232,29 @@ mode "battery" {
 # Status Bar:
 #
 # Read `man 5 sway-bar` for more information about this section.
-default_border none
-gaps inner 10
+gaps inner 12
 exec eww daemon
 exec eww open ui
 exec eww open switcher
 exec dunst
 
+default_border pixel 9
+client.focused #bbbbbb #bbbbbb #bbbbbb #bbbbbb
+client.unfocused #201a0a #201a0a #201a0a #201a0a
+
+
+# Gestures
+bindgesture swipe:3:right workspace prev
+bindgesture swipe:3:left workspace next
+
+
+bindgesture swipe:4:right move right
+bindgesture swipe:4:left move left
+bindgesture swipe:4:up move up
+bindgesture swipe:4:down move down
+
+bindgesture pinch:2:inward floating enable 
+bindgesture pinch:2:outward floating disable 
 
 # TOGGLES
 
@@ -261,3 +277,10 @@ bindsym $mod+tab exec ~/.config/eww/scripts/toggleBoolean switcherVisible
 # }
 # 
 # include /etc/sway/config.d/*
+
+
+
+# swayfx
+blur enable
+blur_xray enable
+corner_radius 20
