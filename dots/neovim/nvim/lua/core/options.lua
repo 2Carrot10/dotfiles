@@ -28,6 +28,8 @@ opt.spell = true
 
 vim.opt.backupcopy = "yes"
 
+vim.wo.fillchars="eob: "
+
 --[[
 vim.api.nvim_set_keymap('v','jk','<Esc>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v','kj','<Esc>', { noremap = true, silent = true })
@@ -60,10 +62,19 @@ vim.keymap.set("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" })
 vim.keymap.set("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" })
 
 
-vim.api.nvim_set_keymap("n", "<leader>bh", "<cmd>set showtabline=1<CR>", { desc = "hide buffer"})
+vim.api.nvim_set_keymap("n", "<leader>bh", "<cmd>set showtabline=0<CR>", { desc = "hide buffer"})
 vim.api.nvim_set_keymap("n", "<leader>bs", "<cmd>set showtabline=2<CR>", { desc = "show buffer"})
 
 vim.api.nvim_set_keymap("n", "<leader>bn", "<cmd>set number!<CR><cmd> set relativenumber!<CR>", { desc = "toggle lines"})
 
 vim.opt.cmdheight = 0
 vim.opt.laststatus = 0
+opt.showtabline = 0
+
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "json", "jsonc" },
+  callback = function()
+    opt.conceallevel = 0
+  end
+})

@@ -238,7 +238,7 @@ exec eww open ui
 exec eww open switcher
 exec dunst
 
-default_border pixel 9
+default_border pixel 3
 client.focused #bbbbbb #bbbbbb #bbbbbb #bbbbbb
 client.unfocused #201a0a #201a0a #201a0a #201a0a
 
