@@ -31,10 +31,10 @@
   :reserve (struts :side "top" :distance "4%")
 
   (centerbox
-    (box
+    (centerbox
       :orientation "v"
 
-      (panel :reveal workspacePanelVisible (workspaceWidget))
+      "";(box :space-evenly false :orientation "v" (panel :reveal workspacePanelVisible (workspaceWidget)))
       (box :halign "end" (selection :variable "clock" (panel (calanderWidget))))
       (box :halign "end" (systemWidget))
     )
@@ -46,12 +46,12 @@
 )
 
 (defwidget panel [?reveal]
-  (revealer
+  (revealer :halign "fill"
     :transition "slideleft"
     :reveal {reveal ?: true}
     :duration "150ms"
 
-    (box :space-evenly false :halign "end" :class "main-window"
+    (box :space-evenly false :halign "fill" :class "main-window"
       (box :class "main-window-inner"
         (children)
       )

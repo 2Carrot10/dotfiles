@@ -6,7 +6,7 @@
 // Cool looking color: #fa0450
 
 .main-window-inner {
-  background-color: #201a0a;
+  background-color: $bg;
   color: #b0b4bc;
   border: 2px;
   border-radius: 0px;
@@ -15,7 +15,10 @@
 
   padding: 0px;
 
-  font-family: "Jet Brains Mono";
+  font-family: "JetBrains Mono", monospace;
+
+  // font-variant-ligatures: none;
+
   font-size: 30;
 }
 
@@ -28,11 +31,18 @@
 
 // Styles on classes (see eww.yuck for more information)
 
-scale trough bright-highlightlight {
+scale trough highlight {
   all: unset;
-  background-color: #a3aD6E;
-  color: #a0f000;
-  border-radius: 10px;
+  background-color: $off-white;
+  color: #a0f0f0;
+  border-radius: 0px;
+}
+
+scale trough {
+  background-color: $bg;
+  border-radius: 50px;
+  min-height: 30px;
+  min-width: 30px;
 }
 
 circular-progress {
@@ -43,35 +53,43 @@ circular-progress {
 }
 
 progress {
+min-width: 30px;
+}
+
+trough {
+min-width: 30px;
+}
+
+.battery-depleting-progress progress {
   background-color: $off-white;
-  color: #fa0450;
+}
+
+.battery-charging-progress progress {
+  background-color: #20c220;
+}
+
+.battery-low-progress progress {
+  background-color: #e08220;
+}
+
+.battery-dire-progress progress {
+  background-color: #e04220;
 }
 
 .outside-progress {
-  // background-color: #f3182e;
-  border-color: $off-white;
-  padding: 3px;
-  border: 2px;
-  border-radius: 0px;
-  border-style: solid;
+  min-width: 80px;
+  background-color: #ff0000;
 }
 
+.inside {
 
-scale trough {
-  background-color: #4e4e4e;
-  border-radius: 50px;
-  min-height: 30px;
-  min-width: 50px;
-  margin-left: 10px;
-  margin-right: 20px;
+  background-color: #0000ff;
 }
-
 
 button {
   border: 2px;
   border-radius: 5px;
 }
-
 
 .padding-slim {
   padding: 2px; 

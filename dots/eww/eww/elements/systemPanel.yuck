@@ -1,24 +1,88 @@
 (defwidget systemWidget []
-  (box :orientation "h"
-    (selection :variable "system" :name "volume" (batteryWidget))
+  (revealer
+  :transition "slideleft"
+  :reveal {selectionNames["system"] != "none"}
+  :duration "100ms"
+    (stack
+    :transition "slideleft"
+    :same-size false
+    :selected {selectionNames["system"]}
+      (volumeWidget)
+      (batteryWidget)
+      (powerWidget)
+    )
   )
 )
 
 (defwidget batteryWidget []
+(box :orientation "v" :space-evenly false
+    (panel
+    {EWW_BATTERY.BAT0.capacity}
+    )
+    (box :vexpand true :halign "center"
+    (overlay
+    (panel :valign "center"
+      (progress
 
-  (box :class "tab" :orientation "v" :space-evenly false
-    "00"
-    (box :class "outside-progress main-window-inner" :vexpand true :halign "center" :hexpand true
-      (progress :halign "center" :hexpand true
+      :vexpand true
         :flipped "true"
-        :value 60
+        :value {EWW_BATTERY.BAT0.capacity}
         :orientation "v"
+
+        :class "${
+          EWW_BATTERY.BAT0.status == 'Discharging'
+            ? (EWW_BATTERY.BAT0.capacity > 30 
+              ? 'battery-depleting-progress'
+              : (EWW_BATTERY.BAT0.capacity > 15
+                  ? 'battery-low-progress'
+                  : 'battery-dire-progress'
+                )
+              )
+            : 'battery-charging-progress'
+        }"
+      )
+      )
+
+  (label
+  :text "󱐋"
+  )
+      )
+  )
+  )
+)
+
+(defpoll currentVolume :interval "1m"
+  :initial "0"
+  :runWhile {selectionNames["system"] == 1}
+  `pamixer --get-volume`
+)
+
+(defwidget volumeWidget []
+  (box :vexpand true :halign "center"
+    (panel
+      (scale
+        :orientation "v"
+        :flipped true
+        :min 0
+        :max 10
+        :value currentVolume
+        :onchange `pamixer --set-volume {}`
       )
     )
   )
 )
 
-(defvar selectionNames `{}`)
+(defwidget powerWidget []
+(panel
+(box :orientation "v"
+"poweroff"
+"suspend"
+"restart"
+)
+)
+)
+
+(defvar selectionNames `{"system":"none"}`)
 
 (defwidget selector [?name variable ]
   (eventbox

@@ -1,8 +1,8 @@
 (defwidget workspaceWidget []
 
-    (box
+    (box :space-evenly false
 (for curr in {jq(workspaceJson, "[.. | select(.focused? == true)]")}
-  (box :orientation "v" :space-evenly "false"
+  (box :orientation "v" :space-evenly false
     (box :class "switcherTab"
       (label
         :class "bright-highlight"

@@ -244,7 +244,7 @@ exec dunst
 
 bindsym $mod+grave exec ~/.config/eww/scripts/toggleBoolean barVisible
 bindsym $mod+o exec ~/.config/eww/scripts/toggleBoolean windowsBarVisible
-bindsym $mod+tab exec ~/.config/eww/scripts/toggleBoolean switchingWindow
+bindsym $mod+tab exec ~/.config/eww/scripts/toggleBoolean switcherVisible
 
 # bar {
 #     position top

@@ -45,12 +45,15 @@
 
 (defwidget deviceStatus []
 (box :orientation "v"
-  (selector :variable "system" :name "a" "⏾")
-  (selector :variable "system" :name "volume" "󰕾")
-  (selector :variable "system" :name "settings" "⚙")
-  (selector :variable "system" :name "b" "⏼")
-  (selector :variable "system" :name "notifications" "")
-  (button "󰖩")
+  (selector :variable "system" :name "0" "󰕾")
+  (selector :variable "system" :name "1" "⚙")
+  (selector :variable "system" :name "2" "⏼")
+  ; (selector :variable "system" :name "2" "☀")
+ 
+  
+;  (selector :variable "system" :name "a" "⏾")
+;  (selector :variable "system" :name "notifications" "")
+;  (button "󰖩")
   ; (button "")
 )
 )
