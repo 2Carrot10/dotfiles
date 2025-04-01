@@ -166,6 +166,7 @@ output * bg ~/.config/sway/forestWall.jpg fill
 
     # Move the currently focused window to the scratchpad
     bindsym $mod+Shift+minus move scratchpad
+    bindsym $mod+n move workspace 1
 
     # Show the next scratchpad window or hide the focused scratchpad window.
     # If there are multiple scratchpad windows, this command cycles through them.
@@ -244,8 +245,8 @@ client.unfocused #201a0a #201a0a #201a0a #201a0a
 
 
 # Gestures
-bindgesture swipe:3:right workspace prev
-bindgesture swipe:3:left workspace next
+bindgesture swipe:3:up workspace prev
+bindgesture swipe:3:down workspace next
 
 
 bindgesture swipe:4:right move right

@@ -16,12 +16,12 @@ alias lai="li -A"
 alias ltree="l --tree -L $1" # Make sure to add level (i.e. treel 2)
 
 ### Shortened cd ###
-alias ".."="cd ../"
-alias "..."="cd ../../"
-alias "...."="cd ../../../"
-alias "....."="cd ../../../../"
-alias ".p"="cd ~/Documents/programs/"
-alias ".s"="cd ~/Documents/school/"
+alias ".."="z ../"
+alias "..."="z ../../"
+alias "...."="z ../../../"
+alias "....."="z ../../../../"
+alias ".p"="z ~/Documents/programs/"
+alias ".s"="z ~/Documents/school/"
 
 alias sourceb=". ~/.bashrc"
 
@@ -55,7 +55,7 @@ function logall() {
 }
 
 c() {
-	cd "$1" &&	l
+  z "$1" && l
 }
 
 function peekmd() {
@@ -227,6 +227,7 @@ bind -x '"\C-r":__get_file__'
 
 ### fzf ###
 
+eval "$(zoxide init bash)"
 
 # Injected by node version manager
 export NVM_DIR="$HOME/.nvm"
