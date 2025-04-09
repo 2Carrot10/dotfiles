@@ -2,7 +2,6 @@
 [[ $- != *i* ]] && return
 
 set -o vi
-shopt -s autocd
 export EDITOR="nvim"
 
 ### File hierarchy viewing ###
@@ -13,7 +12,7 @@ alias li="l -lh --no-user --time-style='+%y-%m-%d %H:%M'" #for /bin/ls: 'ls -goh
 alias la="l -A"
 alias lia="li -A"
 alias lai="li -A"
-alias ltree="l --tree -L $1" # Make sure to add level (i.e. treel 2)
+alias ltree="l --tree -L $1" # Make sure to add level (i.e. ltree 2)
 
 ### Shortened cd ###
 alias ".."="z ../"
@@ -55,7 +54,7 @@ function logall() {
 }
 
 c() {
-  z "$1" && l
+  z "$1" && pwd && l
 }
 
 function peekmd() {
@@ -88,7 +87,7 @@ $1 --help | grep --color=always ${@:2}
 # File modification
 function mkcd() {
 	mkdir $1
-	cd $1
+	c $1
 }
 
 function bak() {
@@ -168,7 +167,7 @@ alias ff="clear; fastfetch"
 
 ### vi ###
 alias ":q"="exit"
-alias np="nvim -p" # allows opening multiple files with `nvim a.txt b.txt c.txt`
+alias np="nvim -p" # allows opening multiple files with `np a.txt b.txt c.txt`
 alias v="nvim"
 alias vi="nvim"
 alias vim="nvim"
