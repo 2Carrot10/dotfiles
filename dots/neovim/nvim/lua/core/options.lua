@@ -42,8 +42,12 @@ vim.keymap.set("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" })
 vim.keymap.set("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" })
 
 
-vim.keymap.set("n", "<leader>bh", "<cmd>set showtabline=0<CR>", { desc = "hide buffer"})
-vim.keymap.set("n", "<leader>bs", "<cmd>set showtabline=2<CR>", { desc = "show buffer"})
+vim.keymap.set("n", "<leader>bt",
+  function()
+    opt.showtabline = (opt.showtabline:get() == 0) and 2 or 0
+  end,
+  { desc = "toggle buffer" }
+)
 
 vim.keymap.set("n", "<leader>bn", "<cmd>set number!<CR><cmd> set relativenumber!<CR>", { desc = "toggle lines"})
 
