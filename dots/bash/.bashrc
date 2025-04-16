@@ -61,28 +61,11 @@ function peekmd() {
   pandoc $1 --from=markdown --to=pdf -o - | zathura - 2>/dev/null
 }
 
-function peekweb() {
-  curl -s $1 | pandoc - --from=html --to=markdown -o - | zathura - 2>/dev/null
-}
 
 # Grep for help
 grelp() {
 $1 --help | grep --color=always ${@:2} 
 }
-
-# NOTE:Highly experimental. Currently nonfunctional
-# m() {
-# 	while true; do
-# 		ls --color=always | cat -n
-# 		echo -n "-> "
-# 		read -n 2 response
-# 		count=1
-# 		[[ $response = 00 ]] && echo && cd .. || for i in `ls`;
-# 		do [[ $count = $response ]] && cd $i && echo && break
-# 			((count++))
-# 		done;
-# 	done;
-# }
 
 # File modification
 function mkcd() {
@@ -128,39 +111,32 @@ function nd() {
   fi
 }
 
-# BUG: Nonfunctional
-# function tex() {
-# 	[[ ${1%*.} == "latex" ]] && lualatex $1 -output-directory=/tmp/
-# 	[[ ${1%*.} == "tex" ]] && pdftex $1 -output-directory=/tmp/ 
-# 	# echo /tmp/${1%.*}.pdf
-# 	zathura /tmp/${1%.*}.pdf &
-# }
 
-# Random man page
-# BUG: Nonfunctional
-# function man-app() {
-# a=sed "1q;d" "$HOME/manPages/count" | awk -F " " '{print $2}'
-# echo $a
-# man $(find /usr/share/man/man1 -type f | shuf --random-source $HOME/manPages/random | sed "${a}q;d") #  
-# }
-
-function man-file() {
-	man $(find /usr/share/man/man4 -type f | shuf | head -1)
+# Like nd but for latex
+function nt() {
+  if [[ $1 = "" ]]; then
+    ls | grep "$(day).*\.nt" > /dev/null && nvim -p $(day)*.latex || nvim "$(day).latex" 
+  else
+    nvim "$(day)-$1.latex"
+  fi
 }
 
 
-function man-app() {
-	man $(find /usr/share/man/man1 -type f | shuf | head -1)
+# /Only/ place the pdf in current directory, nothing else.
+function justpdflatex() {
+  lualatex --output-directory=/tmp/ $1 > /dev/null 2>&1; mv /tmp/${1%.*}.pdf .
 }
 
-function man-game() {
-	man $(find /usr/share/man/man6 -type f | shuf | head -1)
+function peeklatex() {
+	if [[ ${1%*.} == "latex" ]]; then 
+    lualatex --output-directory=/tmp/ $1 > /dev/null 2>&1
+  elif [[ ${1%*.} == "tex" ]]; then
+    pdftex --output-directory=/tmp/ $1 /dev/null 2>&1
+  fi
+	zathura /tmp/${1%.*}.pdf
 }
 
-
-function man-format() {
-	man $(find /usr/share/man/man5 -type f | shuf | head -1)
-}
+alias tex=peeklatex
 
 ### Fast Fetch ###
 alias ff="clear; fastfetch"

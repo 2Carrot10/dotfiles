@@ -7,8 +7,6 @@ require("core/lazy")
     })
 ]]--
 
-vim.api.nvim_create_user_command("Pdf",":w | !lualatex %", {})
-
 local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
 
 parser_config.mylang = {

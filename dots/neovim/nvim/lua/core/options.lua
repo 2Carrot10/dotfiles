@@ -62,3 +62,6 @@ vim.api.nvim_create_autocmd("FileType", {
     opt.conceallevel = 0
   end
 })
+
+-- Pdf compilation
+vim.api.nvim_create_user_command("P",":w | silent !lualatex % 1> /dev/null", {})
