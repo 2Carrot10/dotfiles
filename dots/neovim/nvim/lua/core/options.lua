@@ -43,9 +43,7 @@ vim.keymap.set("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current spli
 
 
 vim.keymap.set("n", "<leader>bt",
-  function()
-    opt.showtabline = (opt.showtabline:get() == 0) and 2 or 0
-  end,
+  function() opt.showtabline = (opt.showtabline:get() == 0) and 2 or 0 end,
   { desc = "toggle buffer" }
 )
 

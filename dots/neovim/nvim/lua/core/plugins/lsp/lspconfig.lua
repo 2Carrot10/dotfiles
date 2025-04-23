@@ -63,9 +63,6 @@ return {
         opts.desc = "See available code actions"
         keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
 
-        opts.desc = "Smart rename"
-        keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
-
         opts.desc = "Show buffer diagnostics"
         keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
 
@@ -86,8 +83,6 @@ return {
         vim.keymap.set("n", "<leader>lh", vim.lsp.buf.hover, { desc = "Gives information about current function"})
 
         vim.keymap.set("n", "<leader>ln", vim.lsp.buf.rename, { desc = "Rename function"})
-
-        vim.keymap.set("n", "<leader>ld", vim.lsp.buf.declaration, { desc = "Go to decleration"})
 
         vim.keymap.set("n", "<leader>lr", vim.lsp.buf.references, { desc = "Go to references"})
 

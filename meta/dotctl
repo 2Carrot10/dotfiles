@@ -440,4 +440,4 @@ try:
             label = not args.nolabel
             for_all_files(lambda file: [print(package, end="\n" if label else " ") for package in get_packages(file)], label, label, label)
 except KeyboardInterrupt:
-    print('')
+    pass

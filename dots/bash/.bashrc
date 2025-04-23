@@ -195,8 +195,9 @@ eval "$(fzf --bash)"
 FZF_HEIGHT=10
 # TODO: put the query first so that it does not need to jump down.
 __get_file__() {
-  READLINE_LINE="${READLINE_LINE}$(fzf --print-query --header="a" --height=$FZF_HEIGHT)"
-  READLINE_POINT=0x7fffffff
+  # READLINE_LINE="${READLINE_LINE}$(fzf --print-query --header="a" --height=$FZF_HEIGHT)"
+  # READLINE_POINT=0x7fffffff
+  echo ${READLINE_LINE}
 }
 bind -x '"\C-r":__get_file__'
 

@@ -6,6 +6,6 @@ return {
 	{"vhyrro/luarocks.nvim",
 	priority = 1000,
 	config = true
-	}
-	,"christoomey/vim-tmux-navigator",
+	},
+  "christoomey/vim-tmux-navigator"
 }
