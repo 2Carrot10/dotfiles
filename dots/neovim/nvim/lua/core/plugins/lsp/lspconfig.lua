@@ -79,12 +79,13 @@ return {
         keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
 
 
-        -- TODO: remove duplicates
         vim.keymap.set("n", "<leader>lh", vim.lsp.buf.hover, { desc = "Gives information about current function"})
 
         vim.keymap.set("n", "<leader>ln", vim.lsp.buf.rename, { desc = "Rename function"})
 
         vim.keymap.set("n", "<leader>lr", vim.lsp.buf.references, { desc = "Go to references"})
+
+        vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format, { desc = "Format code"})
 
       end,
     })

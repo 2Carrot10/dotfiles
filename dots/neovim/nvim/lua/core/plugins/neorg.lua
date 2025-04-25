@@ -14,15 +14,7 @@ return {
           ["core.defaults"] = {},
 					["core.summary"] = {},
           ["core.concealer"] = {},
-          ["core.latex.renderer"] = {},
-          ["core.dirman"] = {
-            config = {
-              workspaces = {
-                notes = "~/notes",
-              },
-              --default_workspace = "notes",
-            },
-          },
+          ["core.latex.renderer"] = {}
         },
       }
 

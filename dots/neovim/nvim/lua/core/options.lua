@@ -12,6 +12,11 @@ opt.tabstop = 2
 opt.shiftwidth = 2
 -- opt.autoindent = true
 
+-- vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+-- vim.opt.foldtext = "v:lua.vim.treesitter.foldtext()"
+vim.wo.foldmethod = 'expr'
+vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+
 opt.termguicolors = true
 opt.background = "dark"
 opt.signcolumn = "yes"
