@@ -1,35 +1,32 @@
 vim.cmd("let g:netrw_liststyle = 3")
-local opt = vim.opt
-opt.clipboard:append("unnamedplus")
+vim.opt.clipboard:append("unnamedplus")
 vim.g.mapleader = " "
-opt.relativenumber = true
-opt.number = true
+vim.opt.number = true
+vim.o.cursorline = false
 
-opt.signcolumn = "yes"
+vim.opt.signcolumn = "yes"
 
 vim.opt.expandtab = true
-opt.tabstop = 2
-opt.shiftwidth = 2
--- opt.autoindent = true
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.wrap = false
 
--- vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
--- vim.opt.foldtext = "v:lua.vim.treesitter.foldtext()"
 vim.wo.foldmethod = 'expr'
 vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 
-opt.termguicolors = true
-opt.background = "dark"
-opt.signcolumn = "yes"
+vim.opt.termguicolors = true
+vim.opt.background = "dark"
+vim.opt.signcolumn = "yes"
 
-opt.ignorecase = true
-opt.smartcase = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
 
-opt.iskeyword:append("-")
+vim.opt.iskeyword:append("-")
 
-opt.cursorline = true
+vim.opt.cursorline = true
 
-opt.spelllang = 'en_us'
-opt.spell = true
+vim.opt.spelllang = 'en_us'
+vim.opt.spell = true
 
 vim.opt.backupcopy = "yes"
 
@@ -48,21 +45,33 @@ vim.keymap.set("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current spli
 
 
 vim.keymap.set("n", "<leader>bt",
-  function() opt.showtabline = (opt.showtabline:get() == 0) and 2 or 0 end,
+  function() vim.opt.showtabline = (vim.opt.showtabline:get() == 0) and 2 or 0 end,
   { desc = "toggle buffer" }
 )
 
-vim.keymap.set("n", "<leader>bn", "<cmd>set number!<CR><cmd> set relativenumber!<CR>", { desc = "toggle lines"})
+vim.keymap.set("n", "<leader>bn",
+  function ()
+    vim.o.number = not vim.o.number
+      vim.o.relativenumber = vim.o.number
+  end,
+  { desc = "toggle lines"}
+)
+
+
+vim.keymap.set("n", "<leader>bw",
+  function () vim.o.wrap = not vim.wo.wrap end,
+  { desc = "toggle wrap"}
+)
 
 vim.opt.cmdheight = 0
 vim.opt.laststatus = 0
-opt.showtabline = 0
+vim.opt.showtabline = 0
 
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "json", "jsonc" },
   callback = function()
-    opt.conceallevel = 0
+    vim.opt.conceallevel = 0
   end
 })
 
