@@ -43,25 +43,26 @@ vim.keymap.set("n", "<leader>sh", "<C-w>s", { desc = "Split window horizontally"
 vim.keymap.set("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" })
 vim.keymap.set("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" })
 
-
-vim.keymap.set("n", "<leader>bt",
+vim.keymap.set("n", "<leader>kt",
   function() vim.opt.showtabline = (vim.opt.showtabline:get() == 0) and 2 or 0 end,
-  { desc = "toggle buffer" }
+  { desc = "Toggle buffer" }
 )
 
-vim.keymap.set("n", "<leader>bn",
+vim.keymap.set("n", "<leader>kn",
   function ()
     vim.o.number = not vim.o.number
       vim.o.relativenumber = vim.o.number
   end,
-  { desc = "toggle lines"}
+  { desc = "Toggle lines"}
 )
 
 
-vim.keymap.set("n", "<leader>bw",
+vim.keymap.set("n", "<leader>kw",
   function () vim.o.wrap = not vim.wo.wrap end,
-  { desc = "toggle wrap"}
+  { desc = "Toggle wrap"}
 )
+
+vim.keymap.set("n", "<leader>kc", "<cmd>TSContextToggle<CR>", {desc = "Toggle context"})
 
 vim.opt.cmdheight = 0
 vim.opt.laststatus = 0

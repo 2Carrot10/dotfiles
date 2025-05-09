@@ -7,14 +7,14 @@ return {
   {
     "nvim-neorg/neorg",
     dependencies = { "luarocks.nvim" },
-    version = "*",
+    version = "v7.0.0", -- TODO: update this eventually ( https://vhyrro.github.io/posts/neorg-and-luarocks/#the-fix )
     config = function()
       require("neorg").setup {
         load = {
           ["core.defaults"] = {},
-					["core.summary"] = {},
+					-- ["core.summary"] = {},
           ["core.concealer"] = {},
-          ["core.latex.renderer"] = {}
+          -- ["core.latex.renderer"] = {},
         },
       }
 

@@ -50,7 +50,11 @@ rfv() (
 )
 
 function logall() {
-  ls | xargs -I {} bash -c "echo -e \"\\\\e[32m*{}\\\\e[00m\"; cat {}"
+  ls | grep "\.norg$" | xargs -I {} bash -c "echo -e \"\\\\e[32m*{}\\\\e[00m\"; cat {}"
+}
+
+cl() {
+  cd "$1" && l
 }
 
 c() {
