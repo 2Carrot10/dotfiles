@@ -30,16 +30,16 @@ config_file_name = "meta.json"
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-s", "--silent",
-                    help="Do not display logs",
+                    help="Do not display logs (still display prompts)",
                     action="store_true")
 
 
 parser.add_argument("-y", "--yes",
-                    help="Do not ask before excecuting commands (BE CAUTIOUS)",
+                    help="Do not ask before excecuting commands",
                     action="store_true")
 
 parser.add_argument("-r", "--remove",
-                    help="When files must be removed to procede, remove them without asking (BE CAUTIOUS)",
+                    help="When files must be removed to procede, remove them without asking",
                     action="store_true")
 
 parsers = {}
@@ -57,6 +57,7 @@ parsers["info"] = subp.add_parser("info", help="Get all static tracking "
                                   + f"information (stored in {col.BLUE}{config_file_name}{col.ENDC})")
 parsers["list"] = subp.add_parser("list", help="List all tracked files")
 parsers["help"] = subp.add_parser("help", help="Show this help message and exit")
+parsers["location"] = subp.add_parser("location", help="Print storage location")
 
 parsers["modify"] = subp.add_parser("modify", help=f"Modify the {col.BLUE}{config_file_name}{col.ENDC} file.")
 parsers["modify"].add_argument("filename", help="Tracked file to start editing")
@@ -79,11 +80,10 @@ parsers["track"].add_argument("-c", "--clone",
 
 
 parsers["track"].add_argument("filename",
-                              help="Full path of file to start tracking.")
-
+                              help="Path of file to start tracking")
 
 parsers["track"].add_argument("-t", "--title",
-                              help="Dotfile title to use within tracking")
+                              help="Title to use within dotctl")
 
 
 parsers["track"].add_argument("-p", "--package", nargs="*",
@@ -160,7 +160,7 @@ def info(name):
 
 class Status(Enum):
     LINKED = 0
-    CLONED = 1 # not yet is use
+    CLONED = 1
     NOT_ADDED = 2
     BAD_FILES = 3
     BAD_LINK = 3
@@ -171,7 +171,6 @@ class Desired_Status(Enum):
     LINK = Status.LINKED
     CLONE = Status.CLONED
 
-# very messy code but not quite bad enough that I will fix it yet
 def print_status(name):
     stat = status(name)
     if stat is Status.LINKED:
@@ -274,11 +273,12 @@ def calculate_desired_endpoint(endpoint):
 
 def sync(name):
     desired_status = Desired_Status.CLONE if args.clone else Desired_Status.LINK
+    desired_status_verb = "cloned" if desired_status == Desired_Status.CLONE else "linked"
     current_status = status(name)
 
     if desired_status.value == current_status:
         if not args.silent:
-            print(f"{name} is already {"cloned" if desired_status == Desired_Status.CLONE else "linked"}. There is no more work to do.")
+            print(f"{name} is already {desired_status_verb}. There is no more work to do.")
         return
 
     data = get_json_of_name(name)
@@ -292,7 +292,7 @@ def sync(name):
         print(
             f"{col.BLUE}{endpoint_with_name}{col.ENDC} is a link to "
             + f"{col.BLUE}{os.path.realpath(endpoint_with_name)}{col.ENDC}."
-            + f" It should be linked to {col.BLUE}{target_files}{col.ENDC}"
+            + f" It should be {desired_status_verb} based on {col.BLUE}{target_files}{col.ENDC}"
         )
 
         if args.remove or confirm_response("Remove link?"):
@@ -317,7 +317,7 @@ def sync(name):
             print(f"Sucsessfully added dotfiles from {col.BLUE}{name}{col.ENDC}!")
 
 
-def for_all_files(func, seperator = True, name = True, newLine = True):
+def for_dots(func, seperator = True, name = True, newLine = True):
     if len(specified_files) == 0:
         print("No valid files selected")
     elif len(specified_files) == 1:
@@ -384,23 +384,23 @@ def track(file):
 
     if os.path.islink(file):
         if not args.silent:
-            print("Files is already a link.")
+            print("File is already a link.")
         return
 
-    if hasattr(args, "title"):
+    if args.title is None:
         args.title = input("Title of new files: ")
 
     tracked_file_location = canonicalize_name(args.title)
     if os.path.isdir(tracked_file_location):
         if not args.silent:
-            print("Title already contains files")
+            print(f"{col.BLUE}{args.title}{col.ENDC} already contains files")
         if confirm_response(f"Remove tracked file {col.BLUE}{tracked_file_location}{col.ENDC}?"):
             confirm_command(f"rm -r {tracked_file_location}")
 
     if not os.path.isdir(tracked_file_location):
         confirm_command(f"mkdir {tracked_file_location}")
         confirm_command(f"mv {file} {tracked_file_location}")
-    split_file = file.split(os.path.sep) # WARNING: BAD CODE! This should be part of path library, not string parsing
+    split_file = file.split(os.path.sep)
     target = split_file[len(split_file) - 1]
     split_file.pop(-1)
     first = "/".join(split_file)
@@ -423,13 +423,13 @@ try:
         parser.print_help()
     else:
         if args.command == "status":
-            for_all_files(print_status, False, True, False)
+            for_dots(print_status, False, True, False)
         if args.command == "info":
-            for_all_files(info, True, True, True)
+            for_dots(info, True, True, True)
         if args.command == "sync":
-            for_all_files(sync, not args.silent, not args.silent, not args.silent)
+            for_dots(sync, not args.silent, not args.silent, not args.silent)
         if args.command == "list":
-            for_all_files(print, False, False)
+            for_dots(print, False, False)
         if args.command == "track":
             track(args.filename)
         if args.command == "install":
@@ -438,6 +438,8 @@ try:
             modify(args.filename)
         if args.command == "packages":
             label = not args.nolabel
-            for_all_files(lambda file: [print(package, end="\n" if label else " ") for package in get_packages(file)], label, label, label)
+            for_dots(lambda file: [print(package, end="\n" if label else " ") for package in get_packages(file)], label, label, label)
+        if args.command == "location":
+            print(dots_dir);
 except KeyboardInterrupt:
     pass

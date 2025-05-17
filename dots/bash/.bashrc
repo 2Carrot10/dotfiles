@@ -30,55 +30,59 @@ alias iwdon="iwctl device wlan0 set-property Powered on"
 alias iwdcon="iwctl station wlan0 connect $1" # Con stands for connect
 alias fzf="fzf --ansi --prompt='-> ' --pointer='⚫'"
 
+# used in conjunction with \C-z
+bind '\C-y:"fg\n"'
+
+
 # ripgrep->fzf->vim [QUERY]
 rfv() (
-  RELOAD='reload:rg --column --color=always --smart-case {q} || :'
-  OPENER='if [[ $FZF_SELECT_COUNT -eq 0 ]]; then
-            nvim {1} +{2}     # No selection. Open the current line in Vim.
-          else
-            nvim +cw -q {+f}  # Build quickfix list for the selected items.
-          fi'
-  fzf --ansi --multi \
-      --bind "start:$RELOAD" --bind "change:$RELOAD" \
-      --bind "enter:become:$OPENER" \
-      --bind "ctrl-o:execute:$OPENER" \
-      --bind 'alt-a:select-all,alt-d:deselect-all,ctrl-/:toggle-preview' \
-      --delimiter : \
-      --preview 'bat --color=always --highlight-line {2} {1}' \
-      --preview-window '~4,+{2}+4/3,<80(up)' \
-      --query "$*"
-)
+    RELOAD='reload:rg --column --color=always --smart-case {q} || :'
+    OPENER='if [[ $FZF_SELECT_COUNT -eq 0 ]]; then
+    nvim {1} +{2}     # No selection. Open the current line in Vim.
+else
+    nvim +cw -q {+f}  # Build quickfix list for the selected items.
+    fi'
+    fzf --ansi --multi \
+        --bind "start:$RELOAD" --bind "change:$RELOAD" \
+        --bind "enter:become:$OPENER" \
+        --bind "ctrl-o:execute:$OPENER" \
+        --bind 'alt-a:select-all,alt-d:deselect-all,ctrl-/:toggle-preview' \
+        --delimiter : \
+        --preview 'bat --color=always --highlight-line {2} {1}' \
+        --preview-window '~4,+{2}+4/3,<80(up)' \
+        --query "$*"
+    )
 
-function logall() {
-  ls | grep "\.norg$" | xargs -I {} bash -c "echo -e \"\\\\e[32m*{}\\\\e[00m\"; cat {}"
-}
+    function logall() {
+        ls | grep "\.norg$" | xargs -I {} bash -c "echo -e \"\\\\e[32m*{}\\\\e[00m\"; cat '{}'"
+    }
 
 cl() {
-  cd "$1" && l
+    cd "$1" && l
 }
 
 c() {
-  z "$1" && pwd && l
+    z "$1" && pwd && l
 }
 
 function peekmd() {
-  pandoc $1 --from=markdown --to=pdf -o - | zathura - 2>/dev/null
+    pandoc "$1 --from=markdown --to=pdf -o - | zathura - 2>/dev/null"
 }
 
 
 # Grep for help
 grelp() {
-$1 --help | grep --color=always ${@:2} 
+    "$1" --help | grep --color=always ${@:2} 
 }
 
 # File modification
 function mkcd() {
-	mkdir $1
-	c $1
+    mkdir "$1"
+    c "$1"
 }
 
 function bak() {
-  cp $1 ${1}.bak
+    cp "$1" "${1}.bak"
 }
 
 ### Search ###
@@ -101,43 +105,43 @@ alias dt="date +'%y-%m-%d %R'"
 alias image="kitten icat"
 
 color() {
-$1 --color=always ${@:2}
+    $1 --color=always ${@:2}
 }
 
 # .norg file for day
 # Automatically handles adding a name to the file
 # If not given a name and today's file already exists, use that one.
 function nd() {
-  if [[ $1 = "" ]]; then
-    ls | grep "$(day).*\.norg" > /dev/null && nvim -p $(day)*.norg || nvim "$(day).norg" 
-  else
-    nvim "$(day)-$1.norg"
-  fi
+    if [[ $1 = "" ]]; then
+        ls | grep "$(day).*\.norg" > /dev/null && nvim -p $(day)*.norg || nvim "$(day).norg" 
+    else
+        nvim "$(day)-$1.norg"
+    fi
 }
 
 
 # Like nd but for latex
 function nt() {
-  if [[ $1 = "" ]]; then
-    ls | grep "$(day).*\.nt" > /dev/null && nvim -p $(day)*.latex || nvim "$(day).latex" 
-  else
-    nvim "$(day)-$1.latex"
-  fi
+    if [[ $1 = "" ]]; then
+        ls | grep "$(day).*\.nt" > /dev/null && nvim -p $(day)*.latex || nvim "$(day).latex" 
+    else
+        nvim "$(day)-$1.latex"
+    fi
 }
 
 
 # /Only/ place the pdf in current directory, nothing else.
 function justpdflatex() {
-  lualatex --output-directory=/tmp/ $1 > /dev/null 2>&1; mv /tmp/${1%.*}.pdf .
+    lualatex --output-directory=/tmp/ "$1" > /dev/null 2>"&1"; mv "/tmp/${1%.*}.pdf" .
 }
 
 function peeklatex() {
-	if [[ ${1%*.} == "latex" ]]; then 
-    lualatex --output-directory=/tmp/ $1 > /dev/null 2>&1
-  elif [[ ${1%*.} == "tex" ]]; then
-    pdftex --output-directory=/tmp/ $1 /dev/null 2>&1
-  fi
-	zathura /tmp/${1%.*}.pdf
+    if [[ ${1%*.} == "latex" ]]; then 
+        lualatex --output-directory=/tmp/ "$1" > /dev/null 2>"&1"
+    elif [[ ${1%*.} == "tex" ]]; then
+        pdftex --output-directory=/tmp/ "$1" /dev/null 2>"&1"
+    fi
+    zathura /tmp/${1%.*}.pdf
 }
 
 alias tex=peeklatex
@@ -167,7 +171,7 @@ alias weather="curl https://wttr.in/"
 ### Git ###
 # acp = add, commit, push
 gitacp(){
-	git add . && git commit -m "$1" && git push
+    git add . && git commit -m "$1" && git push
 }
 
 alias g="git"
@@ -180,14 +184,23 @@ alias gdif="git diff --name-only"
 
 # Python
 function venv() {
-  source .venv/bin/activate
+    source .venv/bin/activate
 }
 
-PS1="\$(err=\$?; echo -n '\['; tput sgr0; tput setaf 5; [[ \$err == 0 ]] || tput setaf 1; echo -n '\e[1m\]-> '; echo -ne '\['; tput sgr0)\]"
+PS1="\$(err=\$?;
+echo -n '\[';
+tput sgr0; tput setaf 0; tput setab 5; [[ \$err == 0 ]] || tput setab 1;
+echo -n '\e[1m\] ';
+
+echo -n '\[';
+tput sgr0; tput setaf 5; [[ \$err == 0 ]] || tput setaf 1;
+echo -n '\e[1m\] ';
+echo -ne '\['; tput sgr0)\]"
 
 # Don't display IUA characters in the tty
 if [ $TERM = "linux" ]; then
-  alias eza="eza --sort time --icons never --no-filesize"
+    alias eza="eza --sort time --icons never --no-filesize"
+    PS1="\$(err=\$?; echo -n '\['; tput sgr0; tput setaf 5; [[ \$err == 0 ]] || tput setaf 1; echo -n '\e[1m\]-> '; echo -ne '\['; tput sgr0)\]"
 fi
 
 source /etc/bash_completion.d/000_bash_completion_compat.bash
@@ -199,9 +212,9 @@ eval "$(fzf --bash)"
 FZF_HEIGHT=10
 # TODO: put the query first so that it does not need to jump down.
 __get_file__() {
-  # READLINE_LINE="${READLINE_LINE}$(fzf --print-query --header="a" --height=$FZF_HEIGHT)"
-  # READLINE_POINT=0x7fffffff
-  echo ${READLINE_LINE}
+    # READLINE_LINE="${READLINE_LINE}$(fzf --print-query --header="a" --height=$FZF_HEIGHT)"
+    # READLINE_POINT=0x7fffffff
+    echo ${READLINE_LINE}
 }
 bind -x '"\C-r":__get_file__'
 
