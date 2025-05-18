@@ -197,11 +197,13 @@ tput sgr0; tput setaf 5; [[ \$err == 0 ]] || tput setaf 1;
 echo -n '\e[1m\] ';
 echo -ne '\['; tput sgr0)\]"
 
-# Don't display IUA characters in the tty
-if [ $TERM = "linux" ]; then
+function __disable_pua() {
     alias eza="eza --sort time --icons never --no-filesize"
     PS1="\$(err=\$?; echo -n '\['; tput sgr0; tput setaf 5; [[ \$err == 0 ]] || tput setaf 1; echo -n '\e[1m\]-> '; echo -ne '\['; tput sgr0)\]"
-fi
+}
+
+# Don't display the private use area range codepoints in the tty
+if [ $TERM = "linux" ]; then __disable_pua; fi
 
 source /etc/bash_completion.d/000_bash_completion_compat.bash
 eval "$(fzf --bash)"
