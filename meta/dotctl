@@ -160,11 +160,10 @@ def confirm_command(command):
         question = f"Would you like to excecute this command? {col.BLUE}{command}{col.ENDC}" # Single line formatting
 
 
-    if not (args.yes and args.silent): # If we both want silence and do not want confirmation, execution logs should not be printed.
-        print(f"Excecuting '{col.BLUE}{command}{col.ENDC}'...")
-
     if args.yes or confirm_response(question):
         excecute_command(command)
+        if not (args.yes and args.silent): # If we both want silence and do not want confirmation, execution logs should not be printed.
+            print(f"Excecuting '{col.BLUE}{command}{col.ENDC}'...")
     else:
         print("Command will not be excecuted.")
 

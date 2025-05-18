@@ -204,7 +204,6 @@ function __disable_pua() {
 
 # Don't display the private use area range codepoints in the tty
 if [ $TERM = "linux" ]; then __disable_pua; fi
-__disable_pua
 
 source /etc/bash_completion.d/000_bash_completion_compat.bash
 eval "$(fzf --bash)"
