@@ -20,6 +20,8 @@ All programs use the same color scheme ([Tokyo Night](https://github.com/tokyo-n
 ## Extensibility
 The final filepath locations of each configuration is not hardcoded. Instead, each config has a `meta.json` file. If you add your own dotfiles, they will be detected by the `dotctl` script.
 
+## Dotctl
+[![asciicast](https://asciinema.org/a/ZB2jCXMaclOJGxPbNVFK5Mti3.svg)](https://asciinema.org/a/ZB2jCXMaclOJGxPbNVFK5Mti3)
 You can link all tracked dotfiles into the desired location using this command:
 ```sh
 dotctl sync
@@ -52,7 +54,7 @@ The window manager features a minimalist system tray that lays on top of all win
 ## Bash (shell) 
 * File navigation functions
 * Shortened command aliases
-* Safer commands (i.e. `rm`, `mv`)
+* Safer commands (`rm`, `mv`)
 * Colorful & shortened PS1
 
 # Installation
@@ -69,7 +71,7 @@ To install the dotfiles, run this command in the desired location:
 ```sh
 bash <(curl -s https://raw.githubusercontent.com/2Carrot10/dotfiles/master/meta/download)
 ```
-The command will automatically download the repo, place the dotfiles in the correct locations('sync'), and install necessary packages. If you want to set everything up with a single command, you can pipe `yes` into the command above.
+The command will automatically download the repo, place the dotfiles in the correct locations ('sync'), and install necessary packages. If you want to set everything up with a single command, you can pipe `yes` into the command above.
 
 ## Archinstall config 
 (I made this `archinstall` config for myself. If you would like to use it, you will likely want to change some settings.)

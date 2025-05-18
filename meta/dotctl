@@ -22,6 +22,21 @@ class col:
     UNDERLINE = '\033[4m'
 
 
+class Status(Enum):
+    LINKED = 0
+    CLONED = 1
+    NOT_ADDED = 2
+    BAD_FILES = 3
+    BAD_LINK = 3
+    BAD_DIR = 4
+    BROKEN_CONFIG = 5
+
+class Desired_Status(Enum):
+    LINK = Status.LINKED
+    CLONE = Status.CLONED
+
+
+
 yes_regex = re.compile("y(es)?", re.IGNORECASE)
 no_regex = re.compile("n(o)?", re.IGNORECASE)
 
@@ -39,7 +54,7 @@ parser.add_argument("-y", "--yes",
                     action="store_true")
 
 parser.add_argument("-r", "--remove",
-                    help="When files must be removed to procede, remove them without asking",
+                    help="When files must be removed to procede, remove them without asking (will still confirm commands unless --yes flag is enabled)",
                     action="store_true")
 
 parsers = {}
@@ -61,9 +76,8 @@ parsers["location"] = subp.add_parser("location", help="Print storage location")
 
 parsers["modify"] = subp.add_parser("modify", help=f"Modify the {col.BLUE}{config_file_name}{col.ENDC} file.")
 parsers["modify"].add_argument("filename", help="Tracked file to start editing")
-parsers["modify"].add_argument("--interminal","-in", help=f"Do not use a text editor, just edit it in the terminal", action="store_true")
 
-parsers["packages"].add_argument("--nolabel","-n", help="hide track file name in list (useful to pass into pacman)", action="store_true")
+parsers["packages"].add_argument("--no-label","-n", help="hide track file name in list (useful to pass into pacman)", action="store_true")
 
 parsers["info"].add_argument("-r", "--raw", help="display raw config" +
                              " file instead of formatted config",
@@ -119,6 +133,10 @@ else:
         else:
             specified_files = dots
 
+def conditional_print(value):
+    if not args.silent:
+        print(value)
+
 
 def confirm_response(question):
     response = input(question + " (Y/N): ")
@@ -137,13 +155,15 @@ def excecute_command(command):
 
 def confirm_command(command):
     if "\n" in command:
-        question = f"Would you like to excecute this command? \n{col.BLUE}{command}{col.ENDC}\n"
+        question = f"Would you like to excecute this command? \n{col.BLUE}{command}{col.ENDC}\n" # Multiple line formatting
     else:
-        question = f"Would you like to excecute this command? {col.BLUE}{command}{col.ENDC}"
+        question = f"Would you like to excecute this command? {col.BLUE}{command}{col.ENDC}" # Single line formatting
 
+
+    if not (args.yes and args.silent): # If we both want silence and do not want confirmation, execution logs should not be printed.
+        print(f"Excecuting '{col.BLUE}{command}{col.ENDC}'...")
 
     if args.yes or confirm_response(question):
-        print(f"Excecuting '{col.BLUE}{command}{col.ENDC}'...")
         excecute_command(command)
     else:
         print("Command will not be excecuted.")
@@ -157,19 +177,6 @@ def info(name):
         data = get_json(config_path)
         for d in data:
             print(f"{d}: {data[d]}")
-
-class Status(Enum):
-    LINKED = 0
-    CLONED = 1
-    NOT_ADDED = 2
-    BAD_FILES = 3
-    BAD_LINK = 3
-    BAD_DIR = 4
-    BROKEN_CONFIG = 5
-
-class Desired_Status(Enum):
-    LINK = Status.LINKED
-    CLONE = Status.CLONED
 
 def print_status(name):
     stat = status(name)
@@ -277,8 +284,7 @@ def sync(name):
     current_status = status(name)
 
     if desired_status.value == current_status:
-        if not args.silent:
-            print(f"{name} is already {desired_status_verb}. There is no more work to do.")
+        conditional_print(f"{name} is already {desired_status_verb}. There is no more work to do.")
         return
 
     data = get_json_of_name(name)
@@ -289,20 +295,22 @@ def sync(name):
 
     # Remove files and links
     if os.path.islink(endpoint_with_name):
-        print(
-            f"{col.BLUE}{endpoint_with_name}{col.ENDC} is a link to "
-            + f"{col.BLUE}{os.path.realpath(endpoint_with_name)}{col.ENDC}."
-            + f" It should be {desired_status_verb} based on {col.BLUE}{target_files}{col.ENDC}"
-        )
+        if not args.remove:
+            print(
+                f"{col.BLUE}{endpoint_with_name}{col.ENDC} is a link to "
+                + f"{col.BLUE}{os.path.realpath(endpoint_with_name)}{col.ENDC}."
+                + f" It should be {desired_status_verb} based on {col.BLUE}{target_files}{col.ENDC}"
+            )
 
         if args.remove or confirm_response("Remove link?"):
             confirm_command(f"rm {endpoint_with_name}")
 
     elif os.path.isdir(endpoint_with_name) or os.path.isfile(endpoint_with_name):
-        print(f"{col.BLUE}{endpoint_with_name}{col.ENDC} already"
-              + " exists! It must be removed before the new dotfiles can "
-              + "be added."
-        )
+        if not args.remove:
+            print(f"{col.BLUE}{endpoint_with_name}{col.ENDC} already"
+                  + " exists! It must be removed before the new dotfiles can "
+                  + "be added."
+            )
 
         if args.remove or confirm_response("Remove files/directories?"):
             confirm_command(f"rm -r {endpoint_with_name}")
@@ -313,13 +321,12 @@ def sync(name):
         return
     tracking_command = "cp -r" if desired_status == Desired_Status.CLONE else "ln -s"
     if confirm_command(f"{tracking_command} {target_files} {desired_endpoint}"):
-        if not args.silent:
-            print(f"Sucsessfully added dotfiles from {col.BLUE}{name}{col.ENDC}!")
+        conditional_print(f"Sucsessfully added dotfiles from {col.BLUE}{name}{col.ENDC}!")
 
 
 def for_dots(func, seperator = True, name = True, newLine = True):
     if len(specified_files) == 0:
-        print("No valid files selected")
+        conditional_print("No valid files selected")
     elif len(specified_files) == 1:
         func(specified_files[0])
         return
@@ -344,21 +351,8 @@ def for_dots(func, seperator = True, name = True, newLine = True):
 
 
 def modify(file):
-    if args.interminal:
-        json_in = get_json_of_name(file)
-        json_out = {}
-
-        for j in json_in:
-            in_data = input(f"Change {j}: {json_in[j]}? (Press return to skip) ")
-            if in_data == "": 
-                json_out[j] = json_in[j]
-            else:
-                json_out[j] = in_data
-
-        set_json_of_file(file, json_out)
-    else:
-        json_location = get_json_path_of_name(file)
-        excecute_command(f"if [ -z \"$EDITOR\" ]; then vi {json_location}; else $EDITOR {json_location}; fi")
+    json_location = get_json_path_of_name(file)
+    excecute_command(f"if [ -z \"$EDITOR\" ]; then vi {json_location}; else $EDITOR {json_location}; fi")
 
 
 def install(filename):
@@ -383,8 +377,7 @@ def track(file):
         file = os.path.join(os.getcwd(),file)
 
     if os.path.islink(file):
-        if not args.silent:
-            print("File is already a link.")
+        conditional_print("File is already a link.")
         return
 
     if args.title is None:
@@ -392,8 +385,7 @@ def track(file):
 
     tracked_file_location = canonicalize_name(args.title)
     if os.path.isdir(tracked_file_location):
-        if not args.silent:
-            print(f"{col.BLUE}{args.title}{col.ENDC} already contains files")
+        conditional_print(f"{col.BLUE}{args.title}{col.ENDC} already contains files")
         if confirm_response(f"Remove tracked file {col.BLUE}{tracked_file_location}{col.ENDC}?"):
             confirm_command(f"rm -r {tracked_file_location}")
 
@@ -414,8 +406,7 @@ def track(file):
     )
     confirm_command(F"echo '{json_to_add}' > {os.path.join(canonicalize_name(args.title), config_file_name)}")
 
-    if not args.silent:
-        print("Tracking complete. Starting resyncing process:")
+    conditional_print("Tracking complete. Starting resyncing process:")
     sync(args.title)
 
 try:
@@ -437,8 +428,8 @@ try:
         if args.command == "modify":
             modify(args.filename)
         if args.command == "packages":
-            label = not args.nolabel
-            for_dots(lambda file: [print(package, end="\n" if label else " ") for package in get_packages(file)], label, label, label)
+            nolabel = not args.nolabel
+            for_dots(lambda file: [print(package, end="\n" if nolabel else " ") for package in get_packages(file)], nolabel, nolabel, nolabel)
         if args.command == "location":
             print(dots_dir);
 except KeyboardInterrupt:

@@ -1,5 +1,5 @@
 {
-    "desired_endpoint": "/home/twocarrot10/.config/",
+    "desired_endpoint": "/home/twocarrot10/.config",
     "target_files": "fastfetch",
-    "packages": "fastfetch" 
+    "packages": "fastfetch"
 }
