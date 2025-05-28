@@ -21,7 +21,7 @@ All programs use the same color scheme ([Tokyo Night](https://github.com/tokyo-n
 The final filepath locations of each configuration is not hardcoded. Instead, each config has a `meta.json` file. If you add your own dotfiles, they will be detected by the `dotctl` script.
 
 ## Dotctl
-[![demo](https://asciinema.org/a/ZB2jCXMaclOJGxPbNVFK5Mti3.svg)](https://asciinema.org/a/ZB2jCXMaclOJGxPbNVFK5Mti3)
+[![dotcl demo](https://asciinema.org/a/ae42h42mnWaO7mW2B2KCijuTJ.svg)](https://asciinema.org/a/ae42h42mnWaO7mW2B2KCijuTJ)
 
 You can link all tracked dotfiles into the desired location using this command:
 ```sh
