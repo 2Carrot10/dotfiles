@@ -182,6 +182,21 @@ alias gp="git push"
 alias gst="git status"
 alias gdif="git diff --name-only"
 
+# Clipboard
+function clipin {
+    if [[ $1 == "p" ]] then $1="primary"; fi
+    if [[ $1 == "c" ]] then $1="clipboard"; fi
+    if [[ $1 == "s" ]] then $1="secondary"; fi
+    xclip -in -selection $1 "{@:2}"
+}
+
+function clipout {
+    if [[ $1 == "p" ]] then $1="primary"; fi
+    if [[ $1 == "c" ]] then $1="clipboard"; fi
+    if [[ $1 == "s" ]] then $1="secondary"; fi
+    xclip -out -selection $1
+}
+
 # Python
 function venv() {
     source .venv/bin/activate
