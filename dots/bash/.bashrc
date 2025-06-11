@@ -10,7 +10,7 @@ alias eza="eza --sort time --icons always --color always --no-filesize" # or use
 alias l="eza" #'ls --color=auto'
 alias li="l -lh --no-user --time-style='+%y-%m-%d %H:%M'" #for /bin/ls: 'ls -goht --time-style="+%y-%m-%d %H:%M" "$@"'
 alias la="l -A"
-alias lia="li -A" # lia and lai are synonyms
+alias lia="li -A"
 alias lai="li -A"
 alias ltree="l --tree -L $1" # Make sure to add level (i.e. ltree 2)
 
@@ -30,15 +30,9 @@ alias iwdon="iwctl device wlan0 set-property Powered on"
 alias iwdcon="iwctl station wlan0 connect $1" # Con stands for connect
 alias fzf="fzf --ansi --prompt='-> ' --pointer='⚫'"
 
-# Regiment
-alias reg=~/.local/bin/regiment
-
 # used in conjunction with \C-z
 bind '\C-y:"fg\n"'
 
-function map() {
-    alias $1=$(pwd)/$2
-}
 
 # ripgrep->fzf->vim [QUERY]
 rfv() (
@@ -93,6 +87,11 @@ function bak() {
 
 ### Search ###
 alias grep="grep --color=auto"
+alias gr="grep"
+alias eg="grep -E" # egrep
+alias fsl="grep -Irl" # Find string, just list matching files
+alias fs="grep -Ir" # Find string
+alias f="find -name" # Find name
 alias fr="find . -regextype sed -regex" # Find regex
 
 ### ETC ###
@@ -150,7 +149,7 @@ alias tex=peeklatex
 ### Fast Fetch ###
 alias ff="clear; fastfetch"
 
-### VI ###
+### vi ###
 alias ":q"="exit"
 alias np="nvim -p" # allows opening multiple files with `np a.txt b.txt c.txt`
 alias v="nvim"

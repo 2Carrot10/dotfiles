@@ -1,20 +1,20 @@
 (defcfg process-unmapped-keys yes)
 
-(defsrc               caps  a      s      d       f      g      h      j      k      l      ;      rsft   v      m      b      n      )
-(deflayer default     @cap  _      _      _       _      _      _      _      _      _      _      @lsf   _      _      _      _      )
+(defsrc               caps  a      s      d       f      g      h      j      k      l      ;      rsft   v      n  )
+(deflayer default     @cap  _      _      _       _      _      _      _      _      _      _      @lsf   _      _  )
 
-(deflayer lcommands   @cap  lalt   lctl   lmet    lsft   esc    _      _      _      _      _      @lsf   @v     _      @b     _      )
-(deflayer rcommands   @cap  _      _      _       _      _      esc    lsft   lmet   lctl   lalt   @lsf   _      @m     _      @n     )
+(deflayer lcommands   @cap  lalt   lctl   lmet    lsft   esc    _      _      _      _      _      @lsf   @v     _  )
+(deflayer rcommands   @cap  _      _      _       _      _      esc    lsft   lmet   lctl   lalt   @lsf   _      @n )
 
-(deflayer nums        @cap  1      2      3       4      5      6      7      8      9      0      @lsf   @v     @m     _      _      )
-(deflayer dirs        @cap  _      _      _       _      _      left   down   up     right  _      @lsf   _      _      @b     @n     )
+(deflayer lnums       @cap  1      2      3       4      5      6      7      8      9      0      @lsf   @v     _  )
+(deflayer rnums       @cap  1      2      3       4      5      6      7      8      9      0      @lsf   _      @n )
+
+(deflayer dirs        @cap  _      _      _       _      _      left   down   up     right  _      @lsf   _      _  ) ;; not yet implemented
+
 
 (defalias
   lsf (layer-while-held rcommands)
   cap (layer-while-held lcommands)
-  v (layer-while-held   nums)
-  m (layer-while-held   nums)
-
-  b (layer-while-held   dirs)
-  n (layer-while-held   dirs)
+  v (layer-while-held   lnums)
+  n (layer-while-held   rnums)
 )
