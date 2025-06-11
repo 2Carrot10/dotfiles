@@ -1,11 +1,12 @@
-# About
-This repo contains the main dotfiles I use on Arch Linux with AwesomeWM, as well as an installer and an archinstall config file. The locations of all configuration folders can be set up automatically with the `meta/dotctl sync` script. By default, the `meta/dotctl sync` command creates symlinks so you can manage all your dotfiles from a single directory.
-
 <img src="https://raw.githubusercontent.com/2carrot10/dotfiles/master/READMEAssets/example1.png" alt="img" align="right" width="400px">
 <img src="https://raw.githubusercontent.com/2carrot10/dotfiles/master/READMEAssets/example2.png" alt="img" align="right" width="400px">
 <img src="https://raw.githubusercontent.com/2carrot10/dotfiles/master/READMEAssets/example3.png" alt="img" align="right" width="400px">
 
-# Included configurations
+# About
+This repo contains the main dotfiles I use on Arch Linux with AwesomeWM, as well as an installer and an archinstall config file. The locations of all configuration folders can be set up automatically with the `meta/dotctl sync` script. By default, the `meta/dotctl sync` command creates symlinks so you can manage all your dotfiles from a single directory.
+
+
+# ⚙️ Included configurations
 * AwesomeWM
 * Nvim
 * Rofi
@@ -13,7 +14,7 @@ This repo contains the main dotfiles I use on Arch Linux with AwesomeWM, as well
 * Bash
 * Tmux
 
-# Notable Features
+# ✨ Notable Features
 ## Keybind and color consistency
 All programs use the same color scheme ([Tokyo Night](https://github.com/tokyo-night/tokyo-night-vscode-theme)), font ([Jet Brains Mono](https://www.programmingfonts.org/#jetbrainsmono)), and keymaps ([Vi](https://en.wikipedia.org/wiki/Vi_(text_editor))).
 
@@ -58,7 +59,7 @@ The window manager features a minimalist system tray that lays on top of all win
 * Safer commands (`rm`, `mv`)
 * Colorful & shortened PS1
 
-# Installation
+# 🚀 Installation
 ## Dotfiles
 To install these dotfiles, either clone this GitHub repo or run the download script.
 ### Option 1: Clone repo
