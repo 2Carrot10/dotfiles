@@ -230,7 +230,6 @@ def status(name):
         else:
             return Status.NOT_ADDED
     except:
-        # TODO: add more information than that it is just a broken config.
         return Status.BROKEN_CONFIG
 
 
