@@ -1,9 +1,9 @@
 # About
 This repo contains the main dotfiles I use on Arch Linux with AwesomeWM, as well as an installer and an archinstall config file. The locations of all configuration folders can be set up automatically with the `meta/dotctl sync` script. By default, the `meta/dotctl sync` command creates symlinks so you can manage all your dotfiles from a single directory.
 
-![Example Screenshot](READMEAssets/example1.png?raw=true)
-![Example Screenshot](READMEAssets/example2.png?raw=true)
-![Example Screenshot](READMEAssets/example3.png?raw=true)
+<img src="https://raw.githubusercontent.com/2carrot10/dotfiles/master/READMEAssets/example1.png" alt="img" align="right" width="400px">
+<img src="https://raw.githubusercontent.com/2carrot10/dotfiles/master/READMEAssets/example2.png" alt="img" align="right" width="400px">
+<img src="https://raw.githubusercontent.com/2carrot10/dotfiles/master/READMEAssets/example3.png" alt="img" align="right" width="400px">
 
 # Included configurations
 * AwesomeWM
