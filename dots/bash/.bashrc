@@ -66,7 +66,7 @@ c() {
 }
 
 function peekmd() {
-    pandoc "$1 --from=markdown --to=pdf -o - | zathura - 2>/dev/null"
+    pandoc "$1" --from=markdown --to=pdf -o - | zathura - 2>/dev/null
 }
 
 

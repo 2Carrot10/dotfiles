@@ -234,9 +234,9 @@ mode "battery" {
 #
 # Read `man 5 sway-bar` for more information about this section.
 gaps inner 12
-exec eww daemon
-exec eww open ui
-exec eww open switcher
+# exec eww daemon
+# exec eww open ui
+# exec eww open switcher
 exec dunst
 
 default_border pixel 3
