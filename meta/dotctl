@@ -1,4 +1,6 @@
 #!/bin/python
+
+# vi:ft=python;ts=4
 from enum import Enum
 import subprocess
 import re
@@ -31,10 +33,10 @@ class Status(Enum):
     BAD_DIR = 4
     BROKEN_CONFIG = 5
 
+
 class Desired_Status(Enum):
     LINK = Status.LINKED
     CLONE = Status.CLONED
-
 
 
 yes_regex = re.compile("y(es)?", re.IGNORECASE)
@@ -63,21 +65,28 @@ subp = parser.add_subparsers(title="subcommands", dest="command")
 
 parsers["sync"] = subp.add_parser("sync", help="Sync tracked files and" +
                                   " current active files")
-parsers["install"] = subp.add_parser("install", help="install using pacman (Arch Linux only)")
-parsers["packages"] = subp.add_parser("packages", help="list all neccecary packages")
+parsers["install"] = subp.add_parser(
+    "install", help="install using pacman (Arch Linux only)")
+parsers["packages"] = subp.add_parser(
+    "packages", help="list all neccecary packages")
 parsers["track"] = subp.add_parser("track", help="Start tracking a new file")
 parsers["status"] = subp.add_parser("status", help="Get current loaded status of" +
                                     " tracked files")
 parsers["info"] = subp.add_parser("info", help="Get all static tracking "
                                   + f"information (stored in {col.BLUE}{config_file_name}{col.ENDC})")
 parsers["list"] = subp.add_parser("list", help="List all tracked files")
-parsers["help"] = subp.add_parser("help", help="Show this help message and exit")
-parsers["location"] = subp.add_parser("location", help="Print storage location")
+parsers["help"] = subp.add_parser(
+    "help", help="Show this help message and exit")
+parsers["location"] = subp.add_parser(
+    "location", help="Print storage location")
 
-parsers["modify"] = subp.add_parser("modify", help=f"Modify the {col.BLUE}{config_file_name}{col.ENDC} file.")
-parsers["modify"].add_argument("filename", help="Tracked file to start editing")
+parsers["modify"] = subp.add_parser("modify", help=f"Modify the {col.BLUE}{
+                                    config_file_name}{col.ENDC} file.")
+parsers["modify"].add_argument(
+    "filename", help="Tracked file to start editing")
 
-parsers["packages"].add_argument("--no-label","-n", help="hide track file name in list (useful to pass into pacman)", action="store_true")
+parsers["packages"].add_argument(
+    "--no-label", "-n", help="hide track file name in list (useful to pass into pacman)", action="store_true")
 
 parsers["info"].add_argument("-r", "--raw", help="display raw config" +
                              " file instead of formatted config",
@@ -89,8 +98,8 @@ parsers["sync"].add_argument("-c", "--clone",
 
 
 parsers["track"].add_argument("-c", "--clone",
-                             help="Maintain the loaded file as real files instead of replacing them with symlinks",
-                             action="store_true")
+                              help="Maintain the loaded file as real files instead of replacing them with symlinks",
+                              action="store_true")
 
 
 parsers["track"].add_argument("filename",
@@ -133,6 +142,7 @@ else:
         else:
             specified_files = dots
 
+
 def conditional_print(value):
     if not args.silent:
         print(value)
@@ -155,14 +165,16 @@ def excecute_command(command):
 
 def confirm_command(command):
     if "\n" in command:
-        question = f"Would you like to excecute this command? \n{col.BLUE}{command}{col.ENDC}\n" # Multiple line formatting
+        question = f"Would you like to excecute this command? \n{
+            col.BLUE}{command}{col.ENDC}\n"  # Multiple line formatting
     else:
-        question = f"Would you like to excecute this command? {col.BLUE}{command}{col.ENDC}" # Single line formatting
-
+        question = f"Would you like to excecute this command? {
+            col.BLUE}{command}{col.ENDC}"  # Single line formatting
 
     if args.yes or confirm_response(question):
         excecute_command(command)
-        if not (args.yes and args.silent): # If we both want silence and do not want confirmation, execution logs should not be printed.
+        # If we both want silence and do not want confirmation, execution logs should not be printed.
+        if not (args.yes and args.silent):
             print(f"Excecuting '{col.BLUE}{command}{col.ENDC}'...")
     else:
         print("Command will not be excecuted.")
@@ -176,6 +188,7 @@ def info(name):
         data = get_json(config_path)
         for d in data:
             print(f"{d}: {data[d]}")
+
 
 def print_status(name):
     stat = status(name)
@@ -199,6 +212,7 @@ def print_status(name):
             print("Unknown status.")
     print(col.ENDC, end="")
 
+
 def status(name):
     try:
         data = get_json_of_name(name)
@@ -217,13 +231,13 @@ def status(name):
             else:
                 return Status.BAD_LINK
         elif os.path.isdir(endpoint_with_name):
-            diff = dircmp(endpoint_with_name,target_files).diff_files
+            diff = dircmp(endpoint_with_name, target_files).diff_files
             if len(diff) == 0:
                 return Status.CLONED
             else:
                 return Status.BAD_DIR
         elif os.path.isfile(endpoint_with_name):
-            if cmp(endpoint_with_name,target_files):
+            if cmp(endpoint_with_name, target_files):
                 return Status.CLONED
             else:
                 return Status.BAD_FILES
@@ -244,19 +258,23 @@ def get_json(json_file):
         data = json.load(json_data)
     return data
 
+
 def get_json_raw(json_file):
     with open(json_file) as json_data:
         data = json_data.read()
     return data
 
+
 def canonicalize_name(name):
     return os.path.join(dots_dir, name)
+
 
 def get_json_path_of_name(name):
     return os.path.join(canonicalize_name(name), config_file_name)
 
+
 def get_json_of_name(name):
-   return get_json(get_json_path_of_name(name))
+    return get_json(get_json_path_of_name(name))
 
 
 def set_json_of_file(name, data):
@@ -266,15 +284,18 @@ def set_json_of_file(name, data):
 def canonicalize_target_files(name, target_files):
     return os.path.normpath(os.path.join(canonicalize_name(name), target_files))
 
+
 def calculate_desired_endpoint(endpoint):
-    endpoint_group = glob.glob(os.path.expanduser(endpoint)) 
+    endpoint_group = glob.glob(os.path.expanduser(endpoint))
     if len(endpoint_group) == 0:
-        raise ValueError(f"There are no files that match the pattern {col.BLUE}{endpoint_group}{endpoint_group}{col.ENDC}!")
+        raise ValueError(f"There are no files that match the pattern {
+                         col.BLUE}{endpoint_group}{endpoint_group}{col.ENDC}!")
     elif len(endpoint_group) > 1:
         raise ValueError(f"There are mutliple files that match the pattern {col.BLUE}{endpoint}{col.ENDC}: {col.BLUE}{endpoint_group}{col.ENDC}!" +
-              "Multiple file syncing not yet added.")
+                         "Multiple file syncing not yet added.")
     else:
         return endpoint_group[0]
+
 
 def sync(name):
     desired_status = Desired_Status.CLONE if args.clone else Desired_Status.LINK
@@ -282,14 +303,16 @@ def sync(name):
     current_status = status(name)
 
     if desired_status.value == current_status:
-        conditional_print(f"{name} is already {desired_status_verb}. There is no more work to do.")
+        conditional_print(f"{name} is already {
+                          desired_status_verb}. There is no more work to do.")
         return
 
     data = get_json_of_name(name)
     target_files = canonicalize_target_files(name, data["target_files"])
 
     desired_endpoint = calculate_desired_endpoint(data["desired_endpoint"])
-    endpoint_with_name = os.path.join(desired_endpoint, os.path.basename(target_files))
+    endpoint_with_name = os.path.join(
+        desired_endpoint, os.path.basename(target_files))
 
     # Remove files and links
     if os.path.islink(endpoint_with_name):
@@ -308,21 +331,23 @@ def sync(name):
             print(f"{col.BLUE}{endpoint_with_name}{col.ENDC} already"
                   + " exists! It must be removed before the new dotfiles can "
                   + "be added."
-            )
+                  )
 
         if args.remove or confirm_response("Remove files/directories?"):
             confirm_command(f"rm -r {endpoint_with_name}")
 
     # Start linking
     if os.path.isdir(endpoint_with_name) or os.path.exists(endpoint_with_name):
-        print(f"{col.BLUE}{endpoint_with_name}{col.ENDC} is full. No further opperations can be done on this file.")
+        print(f"{col.BLUE}{endpoint_with_name}{
+              col.ENDC} is full. No further opperations can be done on this file.")
         return
     tracking_command = "cp -r" if desired_status == Desired_Status.CLONE else "ln -s"
     if confirm_command(f"{tracking_command} {target_files} {desired_endpoint}"):
-        conditional_print(f"Sucsessfully added dotfiles from {col.BLUE}{name}{col.ENDC}!")
+        conditional_print(f"Sucsessfully added dotfiles from {
+                          col.BLUE}{name}{col.ENDC}!")
 
 
-def for_dots(func, seperator = True, name = True, newLine = True):
+def for_dots(func, seperator=True, name=True, newLine=True):
     if len(specified_files) == 0:
         conditional_print("No valid files selected")
     elif len(specified_files) == 1:
@@ -350,29 +375,32 @@ def for_dots(func, seperator = True, name = True, newLine = True):
 
 def modify(file):
     json_location = get_json_path_of_name(file)
-    excecute_command(f"if [ -z \"$EDITOR\" ]; then vi {json_location}; else $EDITOR {json_location}; fi")
+    excecute_command(
+        f"if [ -z \"$EDITOR\" ]; then vi {json_location}; else $EDITOR {json_location}; fi")
 
 
 def install(filename):
     packages = ""
     for file in filename:
         addition = " ".join(get_packages(file))
-        packages = packages + (" " if packages != "" and addition != "" else "") + addition
+        packages = packages + (" " if packages !=
+                               "" and addition != "" else "") + addition
     confirm_command(f"sudo pacman -S --needed {packages}")
 
 
 def get_packages(file):
     packages_raw = get_json_of_name(file)
     if not "packages" in packages_raw:
-       return list() 
-    packages = packages_raw if isinstance(packages_raw, list) else list([packages_raw["packages"]]) 
-    return filter(lambda x: x is not None,packages)
+        return list()
+    packages = packages_raw if isinstance(
+        packages_raw, list) else list([packages_raw["packages"]])
+    return filter(lambda x: x is not None, packages)
 
 
 def track(file):
     file = os.path.normpath(file)
     if not os.path.isabs(file):
-        file = os.path.join(os.getcwd(),file)
+        file = os.path.join(os.getcwd(), file)
 
     if os.path.islink(file):
         conditional_print("File is already a link.")
@@ -383,7 +411,8 @@ def track(file):
 
     tracked_file_location = canonicalize_name(args.title)
     if os.path.isdir(tracked_file_location):
-        conditional_print(f"{col.BLUE}{args.title}{col.ENDC} already contains files")
+        conditional_print(f"{col.BLUE}{args.title}{
+                          col.ENDC} already contains files")
         if confirm_response(f"Remove tracked file {col.BLUE}{tracked_file_location}{col.ENDC}?"):
             confirm_command(f"rm -r {tracked_file_location}")
 
@@ -402,33 +431,37 @@ def track(file):
             "packages": args.package if args.package is None else [],
         }, indent=4
     )
-    confirm_command(F"echo '{json_to_add}' > {os.path.join(canonicalize_name(args.title), config_file_name)}")
+    confirm_command(F"echo '{json_to_add}' > {os.path.join(
+        canonicalize_name(args.title), config_file_name)}")
 
     conditional_print("Tracking complete. Starting resyncing process:")
     sync(args.title)
 
+
 try:
-    if args.command is None or args.command == "help":
-        parser.print_help()
-    else:
-        if args.command == "status":
+    match args.command:
+        case "status":
             for_dots(print_status, False, True, False)
-        if args.command == "info":
+        case "info":
             for_dots(info, True, True, True)
-        if args.command == "sync":
-            for_dots(sync, not args.silent, not args.silent, not args.silent)
-        if args.command == "list":
+        case "sync":
+            for_dots(sync, not args.silent,
+                     not args.silent, not args.silent)
+        case "list":
             for_dots(print, False, False)
-        if args.command == "track":
+        case "track":
             track(args.filename)
-        if args.command == "install":
+        case "install":
             install(specified_files)
-        if args.command == "modify":
+        case "modify":
             modify(args.filename)
-        if args.command == "packages":
+        case "packages":
             nolabel = not args.nolabel
-            for_dots(lambda file: [print(package, end="\n" if nolabel else " ") for package in get_packages(file)], nolabel, nolabel, nolabel)
-        if args.command == "location":
-            print(dots_dir);
+            for_dots(lambda file: [print(package, end="\n" if nolabel else " ")
+                     for package in get_packages(file)], nolabel, nolabel, nolabel)
+        case "location":
+            print(dots_dir)
+        case _:
+            parser.print_help()
 except KeyboardInterrupt:
     pass
