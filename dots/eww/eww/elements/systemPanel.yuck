@@ -51,7 +51,7 @@
   )
 )
 
-(defpoll currentVolume :interval "1m"
+(defpoll currentVolume :interval "1s"
   :initial "0"
   :runWhile {selectionNames["system"] == 1}
   `pamixer --get-volume`
@@ -64,7 +64,7 @@
         :orientation "v"
         :flipped true
         :min 0
-        :max 10
+        :max 100
         :value currentVolume
         :onchange `pamixer --set-volume {}`
       )

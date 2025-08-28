@@ -63,13 +63,14 @@ output * bg ~/.config/sway/forestWall.jpg fill
 #
     # Start a terminal
     bindsym $mod+Return exec $term
+    bindsym $mod+Shift+Return exec $term start --class "floated-term"
 
     # Kill focused window
     bindsym $mod+q kill
 
     # Start your launcher
     bindsym $mod+d exec $menu -show run
-    bindsym $mod+b exec $menu -p "Url" -dmenu -theme-str "listview {lines: 0;}" <<<"" | xargs -I {} bash -c "[ -z '{}'] || firefox --new-tab '{}'"
+    bindsym $mod+Shift+b exec $menu -p "Url" -dmenu -theme-str "listview {lines: 0;}" <<<"" | xargs -I {} bash -c "[ -z '{}'] || firefox --new-tab '{}'"
 
 
     # Drag floating windows by holding down $mod and left mouse button.
@@ -78,6 +79,8 @@ output * bg ~/.config/sway/forestWall.jpg fill
     # Change normal to inverse to use left mouse button for resizing and right
     # mouse button for dragging.
     floating_modifier $mod normal
+
+	for_window [app_id="floated-term"] floating enable, move position 20 20, floating-maximum-size 40 x 100
 
     # Reload the configuration file
     bindsym $mod+Shift+c reload
@@ -142,8 +145,8 @@ output * bg ~/.config/sway/forestWall.jpg fill
     # You can "split" the current object of your focus with
     # $mod+b or $mod+v, for horizontal and vertical splits
     # respectively.
-    # bindsym $mod+b splith
-    # bindsym $mod+v splitv
+    bindsym $mod+b splith
+    bindsym $mod+v splitv
 
     # Switch the current container between different layout styles
     bindsym $mod+s layout stacking
@@ -169,7 +172,6 @@ output * bg ~/.config/sway/forestWall.jpg fill
 
     # Move the currently focused window to the scratchpad
     bindsym $mod+Shift+minus move scratchpad
-    bindsym $mod+n move workspace 1
 
     # Show the next scratchpad window or hide the focused scratchpad window.
     # If there are multiple scratchpad windows, this command cycles through them.
@@ -271,6 +273,13 @@ input "type:touchpad" {
 	scroll_factor .5
     natural_scroll enabled
 }
+
+bindsym XF86AudioMute exec pamixer --toggle-mute
+bindsym XF86AudioRaiseVolume exec pamixer --increase 2
+bindsym XF86AudioLowerVolume exec pamixer --decrease 2
+
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl s 2%+
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl s 2%-
 
 # TOGGLES
 

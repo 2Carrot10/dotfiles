@@ -1,4 +1,5 @@
 {
-  "desired_endpoint": "~/",
-  "target_files": ".tmux.conf" 
+    "desired_endpoint": "/home/twocarrot10",
+    "target_files": ".tmux.conf",
+    "packages": null
 }
