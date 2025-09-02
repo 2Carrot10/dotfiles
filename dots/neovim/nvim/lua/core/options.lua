@@ -80,3 +80,6 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- Pdf compilation
 vim.api.nvim_create_user_command("P", ":w | silent !lualatex % 1> /dev/null", {})
+
+-- In part for bacon-ls
+-- vim.diagnostics.opts.update_in_insert = true

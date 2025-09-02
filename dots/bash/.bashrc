@@ -12,7 +12,7 @@ alias li="l -lh --no-user --time-style='+%y-%m-%d %H:%M'" #for /bin/ls: 'ls -goh
 alias la="l -A"
 alias lia="li -A"
 alias lai="li -A"
-alias ltree="l --tree -L $1" # Make sure to add level (i.e. ltree 2)
+alias ltree="l --tree -L $1"
 
 ### Shortened cd ###
 alias ".."="z ../"
@@ -27,7 +27,7 @@ alias sourceb=". ~/.bashrc"
 alias iwdget="iwctl station wlan0 get-networks"
 alias iwdoff="iwctl device wlan0 set-property Powered off"
 alias iwdon="iwctl device wlan0 set-property Powered on"
-alias iwdcon="iwctl station wlan0 connect $1" # Con stands for connect
+alias iwdcon="iwctl station wlan0 connect $1"
 alias fzf="fzf --ansi --prompt='-> ' --pointer='⚫'"
 
 # used in conjunction with \C-z

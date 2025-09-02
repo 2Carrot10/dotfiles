@@ -18,6 +18,13 @@ return {
 
 		local keymap = vim.keymap -- for conciseness
 
+		-- TODO: Move bad code
+		lspconfig["bacon_ls"].setup({
+			init_options = {
+				updateOnSave = true,
+				updateOnSaveWaitMillis = 1000
+			}
+		})
 
 		lspconfig["racket_langserver"].setup({
 			filetypes = { "racket" },
@@ -177,6 +184,33 @@ return {
 					},
 				})
 			end,
+			["rust_analyzer"] = function()
+				lspconfig["rust_analyzer"].setup({
+					capabilities = capabilities,
+					settings = {
+
+						rust_analyzer = {
+							imports = {
+								granularity = {
+									group = "module",
+								},
+								prefix = "self",
+							},
+							cargo = {
+								buildScripts = {
+									enable = true,
+								},
+							},
+							procMacro = {
+								enable = true
+							},
+							checkOnSave = { enable = false },
+							diagnostics = { enable = false }
+						},
+					}
+
+				})
+			end
 		})
 	end,
 }
