@@ -17,6 +17,7 @@ vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 vim.opt.termguicolors = true
 vim.opt.background = "dark"
 vim.opt.signcolumn = "yes"
+vim.opt.relativenumber = true
 
 vim.opt.ignorecase = true
 vim.opt.smartcase = true

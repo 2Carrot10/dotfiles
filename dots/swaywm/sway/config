@@ -81,6 +81,8 @@ exec swayidle -w \
     floating_modifier $mod normal
 
 	for_window [app_id="floated-term"] floating enable, move position 20 20, floating-maximum-size 40 x 100
+	for_window [class="SFML Shader"] fullscreen
+	for_window [title="(?:Open|Save) (?:File|Folder|As)"] floating enable, resize set width 1030 height 710
 
     # Reload the configuration file
     bindsym $mod+Shift+c reload
@@ -229,7 +231,6 @@ mode "battery" {
     bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume \@DEFAULT_SINK@ -5%
     bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
     # Special key to take a screenshot with grim
-    bindsym Print exec grim
 
 #
 # Status Bar:
@@ -269,8 +270,8 @@ input "type:keyboard" {
 }
 
 input "type:touchpad" {
-    dwt enabled
     tap enabled
+	dwt disabled
 	scroll_factor .5
     natural_scroll enabled
 }
@@ -287,6 +288,9 @@ bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl s 2%-
 bindsym $mod+grave exec ~/.config/eww/scripts/toggleBoolean barVisible
 bindsym $mod+o exec ~/.config/eww/scripts/toggleBoolean windowsBarVisible
 bindsym $mod+tab exec ~/.config/eww/scripts/toggleBoolean switcherVisible
+
+bindsym $mod+Shift+s exec grim - | wl-copy
+bindsym Print exec grim -g "`slurp`" - | wl-copy
 
 # bar {
 #     position top
