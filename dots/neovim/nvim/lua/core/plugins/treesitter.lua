@@ -24,6 +24,7 @@ return {
 				"python",
 				"javascript",
 				"java",
+				"haskell",
 				"typescript",
 				"tsx",
 				"yaml",

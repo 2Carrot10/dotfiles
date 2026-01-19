@@ -65,7 +65,15 @@ vim.keymap.set("n", "<leader>kw",
     { desc = "Toggle wrap" }
 )
 
+vim.keymap.set("n", "<leader>kl",
+	"<cmd>set linebreak!<CR>",
+    { desc = "Toggle wrap" }
+)
+
 vim.keymap.set("n", "<leader>kc", "<cmd>TSContextToggle<CR>", { desc = "Toggle context" })
+
+
+vim.keymap.set("n", "<leader>ks", "<cmd>set spell!<CR>", { desc = "Toggle spell check" })
 
 vim.opt.cmdheight = 0
 vim.opt.laststatus = 0
@@ -81,6 +89,3 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- Pdf compilation
 vim.api.nvim_create_user_command("P", ":w | silent !lualatex % 1> /dev/null", {})
-
--- In part for bacon-ls
--- vim.diagnostics.opts.update_in_insert = true

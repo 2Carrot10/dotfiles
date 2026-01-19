@@ -1,7 +1,7 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [[ "$TERM" =~ linux ]]; then
+if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [[ ! "$TERM" =~ linux ]]; then
   exec tmux
 fi
 
@@ -57,12 +57,8 @@ else
         --query "$*"
     )
 
-    function logall() {
-        ls | grep "\.norg$" | xargs -I {} bash -c "echo -e \"\\\\e[32m*{}\\\\e[00m\"; cat '{}'"
-    }
-
-cl() {
-    cd "$1" && l
+function logall() {
+	ls | grep "\.norg$" | xargs -I {} bash -c "echo -e \"\\\\e[32m*{}\\\\e[00m\"; cat '{}'"
 }
 
 c() {
@@ -206,7 +202,7 @@ function venv() {
     source .venv/bin/activate
 }
 
-PS1="\$(err=\$?;
+PS1="\n \$(err=\$?;
 echo -n '\[';
 tput sgr0; tput setaf 0; tput setab 5; [[ \$err == 0 ]] || tput setab 1;
 echo -n '\e[1m\] ';
@@ -218,7 +214,7 @@ echo -ne '\['; tput sgr0)\]"
 
 function __disable_pua() {
     alias eza="eza --sort time --icons never --no-filesize"
-    PS1="\$(err=\$?; echo -n '\['; tput sgr0; tput setaf 5; [[ \$err == 0 ]] || tput setaf 1; echo -n '\e[1m\]-> '; echo -ne '\['; tput sgr0)\]"
+    PS1="\n\$(err=\$?; echo -n '\['; tput sgr0; tput setaf 5; [[ \$err == 0 ]] || tput setaf 1; echo -n '\e[1m\]-> '; echo -ne '\['; tput sgr0)\]"
 }
 
 # Don't display the private use area range codepoints in the tty
@@ -249,3 +245,8 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 alias archive="wget --recursive --no-parent --convert-links"
+alias sq="Xephyr -br -ac -noreset -screen 1000x1600 :1 & DISPLAY=:1 ~/myPrograms/sqldeveloper/sqldeveloper.sh"
+alias cdtemp='cd $(mktemp -d)'
+PATH="~/.local/bin/:$PATH"
+
+[ -f "/home/twocarrot10/.ghcup/env" ] && . "/home/twocarrot10/.ghcup/env" # ghcup-env

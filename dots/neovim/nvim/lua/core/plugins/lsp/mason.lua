@@ -27,6 +27,7 @@ return {
 			-- list of servers for mason to install
 			ensure_installed = {
 				"lua_ls",
+				"wgsl_analyzer",
 				-- pylsp",
 				"pyright",
 				"clangd",

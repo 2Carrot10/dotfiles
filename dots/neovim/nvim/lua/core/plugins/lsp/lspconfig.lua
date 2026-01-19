@@ -1,4 +1,5 @@
 return {
+
 	"neovim/nvim-lspconfig",
 	event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
@@ -17,6 +18,8 @@ return {
 		local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
 		local keymap = vim.keymap -- for conciseness
+
+		lspconfig.hls.setup({})
 
 
 		lspconfig.pylsp.setup {
@@ -107,6 +110,16 @@ return {
 					capabilities = capabilities,
 				})
 			end,
+			["wgsl_analyzer"] = function()
+				lspconfig.wgsl_analyzer.setup({
+					cmd = { vim.fn.expand("$HOME") .. "/.local/bin/wgsl_analyzer" },
+					filetypes = { "wgsl" },
+					root_dir = lspconfig.util.root_pattern(".git", "wgsl"),
+					settings = {},
+					-- on_attach = on_attach,
+					capabilities = capabilities,
+				})
+			end,
 			["svelte"] = function()
 				-- configure svelte server
 				lspconfig["svelte"].setup({
@@ -148,6 +161,11 @@ return {
 				lspconfig["emmet_ls"].setup({
 					capabilities = capabilities,
 					filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
+				})
+			end,
+			["sqlls"] = function()
+				lspconfig["sqlls"].setup({
+					root_dir = lspconfig.util.root_pattern(".git", "wgsl"),
 				})
 			end,
 			["glslls"] = function()

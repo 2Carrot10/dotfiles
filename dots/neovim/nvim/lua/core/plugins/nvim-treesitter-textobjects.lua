@@ -64,12 +64,12 @@ return {
 					swap_next = {
 						["<leader>na"] = "@parameter.inner", -- swap parameters/argument with next
 						["<leader>nm"] = "@function.outer", -- swap function with next
-						["<leader>nt"] = "@statement.outer", -- swap function with next
+						["<leader>nt"] = "@statement.outer", -- swap statement with next
 					},
 					swap_previous = {
 						["<leader>pa"] = "@parameter.inner", -- swap parameters/argument with prev
 						["<leader>pm"] = "@function.outer", -- swap function with previous
-						["<leader>pt"] = "@statement.outer", -- swap function with previous
+						["<leader>pt"] = "@statement.outer", -- swap statement with previous
 					},
 				},
 				move = {
