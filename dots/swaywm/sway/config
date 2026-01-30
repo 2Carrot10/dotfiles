@@ -81,7 +81,7 @@ exec swayidle -w \
 
 	for_window [app_id="floated-term"] floating enable, move position 20 20, floating-maximum-size 40 x 100
 	for_window [class="SFML Shader"] fullscreen
-	# for_window [title="(?:Open|Save) (?:File|Folder|As)"] floating enable, resize set width 1030 height 710
+	for_window [title="(?:Open|Save) (?:File|Folder|As)"] floating enable, resize set width 1030 height 710
 
     # Reload the configuration file
     bindsym $mod+Shift+c reload
