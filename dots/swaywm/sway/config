@@ -321,3 +321,5 @@ bindsym $mod+Ctrl+l move container to output right
 bindsym $mod+Ctrl+h move container to output left
 
 seat seat0 hide_cursor 10000
+
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway XDG_SESSION_DESKTOP=sway

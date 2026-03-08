@@ -182,21 +182,6 @@ alias gp="git push"
 alias gst="git status"
 alias gdif="git diff --name-only"
 
-# Clipboard
-function clipin {
-    if [[ $1 == "p" ]] then $1="primary"; fi
-    if [[ $1 == "c" ]] then $1="clipboard"; fi
-    if [[ $1 == "s" ]] then $1="secondary"; fi
-    xclip -in -selection $1 "{@:2}"
-}
-
-function clipout {
-    if [[ $1 == "p" ]] then $1="primary"; fi
-    if [[ $1 == "c" ]] then $1="clipboard"; fi
-    if [[ $1 == "s" ]] then $1="secondary"; fi
-    xclip -out -selection $1
-}
-
 # Python
 function venv() {
     source .venv/bin/activate
@@ -228,12 +213,21 @@ eval "$(fzf --bash)"
 
 FZF_HEIGHT=10
 # TODO: put the query first so that it does not need to jump down.
-__get_file__() {
+__eval_in__() {
+	READLINE_LINE="$($READLINE_LINE)"
     # READLINE_LINE="${READLINE_LINE}$(fzf --print-query --header="a" --height=$FZF_HEIGHT)"
     # READLINE_POINT=0x7fffffff
-    echo ${READLINE_LINE}
+    # echo ${READLINE_LINE}
+	# READLINE_LINE="test"
 }
-bind -x '"\C-r":__get_file__'
+
+__eval_in_python__() {
+	python -c $READLINE_LINE
+	READLINE_LINE=""
+}
+bind -x '"\C-r":__eval_in__'
+
+bind -x '"\C-p":__eval_in_python__'
 
 ### fzf ###
 
@@ -250,3 +244,5 @@ alias cdtemp='cd $(mktemp -d)'
 PATH="~/.local/bin/:$PATH"
 
 [ -f "/home/twocarrot10/.ghcup/env" ] && . "/home/twocarrot10/.ghcup/env" # ghcup-env
+
+alias chromium="chromium --ozone-platform=wayland"
