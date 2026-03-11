@@ -241,7 +241,7 @@ export NVM_DIR="$HOME/.nvm"
 alias archive="wget --recursive --no-parent --convert-links"
 alias sq="Xephyr -br -ac -noreset -screen 1000x1600 :1 & DISPLAY=:1 ~/myPrograms/sqldeveloper/sqldeveloper.sh"
 alias cdtemp='cd $(mktemp -d)'
-PATH="~/.local/bin/:$PATH"
+PATH="~/.local/bin/:~/.cargo/bin:$PATH"
 
 [ -f "/home/twocarrot10/.ghcup/env" ] && . "/home/twocarrot10/.ghcup/env" # ghcup-env
 

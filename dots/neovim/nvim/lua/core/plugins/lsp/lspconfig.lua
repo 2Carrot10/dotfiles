@@ -197,6 +197,9 @@ return {
 					settings = {
 
 						rust_analyzer = {
+							diagnostics = {
+								disabled = { "inactive-code" },
+							},
 							imports = {
 								granularity = {
 									group = "module",
@@ -212,7 +215,6 @@ return {
 								enable = true
 							},
 							checkOnSave = { enable = false },
-							diagnostics = { enable = false }
 						},
 					}
 
