@@ -1,5 +1,5 @@
 {
     "desired_endpoint": "/home/twocarrot10/.config",
-    "target_files": "kanata.kbd",
+    "target_files": "kanata",
     "packages": null
 }
