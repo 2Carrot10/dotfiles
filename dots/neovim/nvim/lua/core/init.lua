@@ -6,14 +6,3 @@ require("core/lazy")
       command = "silent !lualatex %"
     })
 ]]--
-
-local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
-
-parser_config.mylang = {
-	install_info = {
-		url = "~/path/to/mylang-parser",
-		files = { "src/parser.c" },
-		branch = "main",
-	},
-	filetype = "mylang",
-}

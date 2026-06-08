@@ -36,6 +36,7 @@ alias fzf="fzf --ansi --prompt='-> ' --pointer='⚫'"
 
 # used in conjunction with \C-z
 bind '\C-y:"fg\n"'
+bind '\C-n:"!!\n"'
 
 
 # ripgrep->fzf->vim [QUERY]
@@ -108,14 +109,14 @@ color() {
     $1 --color=always ${@:2}
 }
 
-# .norg file for day
+# .md file for day
 # Automatically handles adding a name to the file
 # If not given a name and today's file already exists, use that one.
 function nd() {
     if [[ $1 = "" ]]; then
-        ls | grep "$(day).*\.norg" > /dev/null && nvim -p $(day)*.norg || nvim "$(day).norg" 
+        ls | grep "$(day).*\.md" > /dev/null && nvim -p $(day)*.md || nvim "$(day).md" 
     else
-        nvim "$(day)-$1.norg"
+        nvim "$(day)-$1.md"
     fi
 }
 
@@ -157,7 +158,7 @@ alias vi="nvim"
 alias vim="nvim"
 
 ### Safety ###
-alias rm="trash-put" # you could also use rm -i # sudo -S trash-cli
+# alias rm="trash-put" # you could also use rm -i # sudo -S trash-cli
 alias mv="mv -i"
 
 # Edit configurations
@@ -216,14 +217,16 @@ FZF_HEIGHT=10
 __eval_in__() {
 	READLINE_LINE="$($READLINE_LINE)"
     # READLINE_LINE="${READLINE_LINE}$(fzf --print-query --header="a" --height=$FZF_HEIGHT)"
-    # READLINE_POINT=0x7fffffff
+    READLINE_POINT=0x7fffffff
     # echo ${READLINE_LINE}
 	# READLINE_LINE="test"
 }
 
 __eval_in_python__() {
-	python -c $READLINE_LINE
-	READLINE_LINE=""
+	javac Main.java
+	java Main.java
+	# python -c $READLINE_LINE
+	# READLINE_LINE=""
 }
 bind -x '"\C-r":__eval_in__'
 
@@ -246,3 +249,10 @@ PATH="~/.local/bin/:~/.cargo/bin:$PATH"
 [ -f "/home/twocarrot10/.ghcup/env" ] && . "/home/twocarrot10/.ghcup/env" # ghcup-env
 
 alias chromium="chromium --ozone-platform=wayland"
+
+
+
+# ZVM
+export ZVM_INSTALL="$HOME/.zvm/self"
+export PATH="$PATH:$HOME/.zvm/bin"
+export PATH="$ZVM_INSTALL/:$PATH"

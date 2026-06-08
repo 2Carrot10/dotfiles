@@ -174,6 +174,12 @@ return {
 					filetypes = { "glsl", "html", "vert", "frag" },
 				})
 			end,
+			["zls"] = function()
+				lspconfig["zls"].setup({
+					cmd = { "/home/twocarrot10/.zvm/master/zls" }
+				})
+
+			end,
 			["lua_ls"] = function()
 				-- configure lua server (with special settings)
 				lspconfig["lua_ls"].setup({
@@ -194,6 +200,7 @@ return {
 			["rust_analyzer"] = function()
 				lspconfig["rust_analyzer"].setup({
 					capabilities = capabilities,
+					cmd = { "/usr/lib/rustup/bin/rust-analyzer" },
 					settings = {
 
 						rust_analyzer = {

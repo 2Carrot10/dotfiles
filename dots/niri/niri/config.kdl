@@ -275,6 +275,10 @@ layout {
 spawn-sh-at-startup "eww open ui"
 spawn-sh-at-startup "kanata &"
 spawn-sh-at-startup "swaybg --image ~/.config/sway/forestWall.jpg &"
+spawn-sh-at-startup "exec swayidle -w
+         timeout 900 'swaylock -f -c 000000'
+         timeout 1200 'swaymsg \"output * power off\"' resume 'swaymsg \"output * power on\"'
+         before-sleep 'swaylock -f -c 000000'"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
@@ -360,6 +364,7 @@ binds {
     // Suggested binds for running programs: terminal, app launcher, screen locker.
     Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
     Mod+B hotkey-overlay-title="Open a Browser: firefox" { spawn "firefox"; }
+    Mod+Shift+B hotkey-overlay-title="Open a bookmark" { spawn-sh "firefox \"$(sqlite3 -csv 'file:/home/twocarrot10/.mozilla/firefox/6z6g19ay.default-release/places.sqlite?immutable=1' 'SELECT moz_places.url, moz_bookmarks.title FROM moz_places JOIN moz_bookmarks ON moz_places.id = moz_bookmarks.fk;' | rofi -dmenu -format q)\""; }
     Mod+D hotkey-overlay-title="Run an Application: rofi" { spawn-sh "rofi -show run"; }
 	Mod+Alt+U hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock -f -c 000000"; }
 
@@ -472,7 +477,8 @@ binds {
 
     Mod+Shift+Page_Down { move-workspace-down; }
     Mod+Shift+Page_Up   { move-workspace-up; }
-    Mod+Shift+U         { move-workspace-down; }
+    Mod+Shift+U         { spawn-sh "systemctl suspend"; }
+    // Mod+Shift+U         { move-workspace-down; }
     Mod+Shift+I         { move-workspace-up; }
 
     // You can bind mouse wheel scroll ticks using the following syntax.
